@@ -1,0 +1,81 @@
+{
+  "updatedAt": "2026-06-21T18:09:10.000Z",
+  "createdAt": "2026-06-21T15:12:23.701Z",
+  "id": "7BdoKSsnOhApjEP8",
+  "name": "My workflow 2",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Debug Minimal Form UI",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "project_slug",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "blueprint_text",
+              "fieldType": "textarea",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "path": "debug-minimal-form-ui"
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        0,
+        0
+      ],
+      "id": "c1fddbf9-ba98-4412-a489-a8a8886a1d8c",
+      "name": "On form submission",
+      "webhookId": "b6593795-95c8-4dcf-9018-942fd6e87595"
+    }
+  ],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "60293743-7910-4fe8-a685-127d6b9cce62",
+  "activeVersionId": "60293743-7910-4fe8-a685-127d6b9cce62",
+  "versionCounter": 10,
+  "triggerCount": 1,
+  "sourceWorkflowId": null,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-06-21T15:12:23.703Z",
+      "createdAt": "2026-06-21T15:12:23.703Z",
+      "role": "workflow:owner",
+      "workflowId": "7BdoKSsnOhApjEP8",
+      "projectId": "fLfBCnB9rifW9Cu2",
+      "project": {
+        "updatedAt": "2026-06-20T09:40:07.515Z",
+        "createdAt": "2026-06-20T06:27:48.180Z",
+        "id": "fLfBCnB9rifW9Cu2",
+        "name": "Raik M├╝ller <0xxammaxx0@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "customTelemetryTags": [],
+        "creatorId": "b86a946c-3ec8-4317-bb8d-07626ceb4705"
+      }
+    }
+  ],
+  "versionMetadata": {
+    "name": null,
+    "description": null
+  }
+}
