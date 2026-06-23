@@ -1,30 +1,32 @@
 # STATUS: GREEN_PARTIAL
 
-**Last Updated:** 2026-06-23T06:45:00Z
-**Session:** ssh-credential-runner-test
-**Previous Session:** v2-activation-ui-test
+**Last Updated:** 2026-06-23T07:30:00Z
+**Session:** runner-permission-fix
+**Previous Session:** ssh-credential-runner-test
 
 ## Current State
 
 | Component | Status | Detail |
 |-----------|--------|--------|
-| n8n Service | UP | Running since 2026-06-23T06:16:38Z (restarted for JS code fix) |
+| n8n Service | UP | Running since 2026-06-23T06:16:38Z |
 | Debug Form (`/form/debug-minimal-form-ui`) | HTTP 200 | Working reference |
 | Old Blueprint Form (`/form/blueprint-speckit-bootstrap`) | HTTP 404 | Broken — legacy, not fixable |
 | Slug Form (`/form/blueprint-speckit-bootstrap-v2`) | HTTP 404 | Slug URL never worked — use UUID |
-| **V2 Production Form** (`/form/ae9f52c1-...`) | **HTTP 200** | **LIVE** — UUID preserved across republish |
+| **V2 Production Form** (`/form/ae9f52c1-...`) | **HTTP 200** | **LIVE** — UUID preserved |
 | V2 Test Form (`/form-test/ae9f52c1-...`) | HTTP 404 | Expected — only works in editor test mode |
-| V2 Workflow (Published) | YES | Published via CLI after JS code fixes |
+| V2 Workflow (Published) | YES | Published and active |
 | V2 Workflow (Active) | YES | Active — executing successfully |
-| Form Submission (Browser) | ✅ SUCCESS | Browser-based form submit works — "Your response has been recorded" |
-| Form Submission (curl) | ⚠️ NULL FIELDS | curl sends multipart correctly but n8n v2.26.8 parses all fields as null |
-| `dev-runner-ssh` Credential | ✅ VERIFIED | Host: 192.168.1.53, Port: 22, User: runner, Auth: Private Key — Connection test OK |
+| Form Submission (Browser) | ✅ SUCCESS | Browser-based form submit works |
+| Form Submission (curl) | ⚠️ NULL FIELDS | curl multipart fields parsed as null — use browser or `field-N` names |
+| `dev-runner-ssh` Credential | ✅ VERIFIED | Host=192.168.1.53, Port=22, User=runner, Auth=PrivateKey |
 | **SSH Nodes (Write/Start/Read)** | ✅ ALL SUCCESS | All 3 SSH nodes execute and return data |
-| JS Code (Validate node) | ✅ FIXED | Removed `require('crypto')` (blocked by n8n task runner), replaced with pure-JS alternatives |
-| **End-to-End Execution** | ✅ SUCCESS | Execution #10: all 8 nodes completed, status=success |
-| Runner Evidence | ⚠️ PERMISSION | SSH start command fails: `mkdir: Permission denied` on `/opt/dev-fabric/` |
+| JS Code (Validate node) | ✅ FIXED | `crypto` replaced with pure-JS; doubled quotes fixed |
+| **End-to-End Execution** | ✅ SUCCESS | Executions #10 and #14: all 8 nodes ✅ |
+| **Runner Permissions** | ✅ FIXED | `chown runner:runner` on projects/evidence/logs subdirs |
+| **Runner Evidence** | ✅ PRODUCED | BLUEPRINT.md, INITIALISIERUNG_PROMPT_BLUEPRINT.md, status.json, run-report.md, agent.log, etc. |
+| **Project Directory** | ✅ CREATED | Full SpecKit structure with git repo, .github/, .opencode/, .specify/ |
 | Git Repo (local) | ACTIVE | `C:\n8n-blueprint-workflow` |
-| Git Repo (GitHub) | LIVE | `https://github.com/xxammaxx/n8n-blueprint-workflow` — commit `64766ed` |
+| Git Repo (GitHub) | LIVE | `https://github.com/xxammaxx/n8n-blueprint-workflow` — commit `b9022d6` |
 
 ## UUID-Based Production URL
 
@@ -86,32 +88,29 @@ The old `blueprint-speckit-opencode-bootstrap` workflow has a persistent webhook
 - [x] V2 workflow published and active
 - [x] Production form URL confirmed: HTTP 200
 - [x] `dev-runner-ssh` credential verified: Host=192.168.1.53, Port=22, User=runner, Auth=PrivateKey
-- [x] Connection test: "Connection tested successfully"
 - [x] All 3 SSH nodes verified — use `dev-runner-ssh` credential correctly
 - [x] JS code fixed: doubled-quote corruption removed, `crypto` replaced with pure-JS
-- [x] **End-to-end execution SUCCESS**: all 8 nodes completed (Execution #10)
+- [x] **End-to-end execution SUCCESS**: Executions #10 and #14 — all 8 nodes ✅
 - [x] All SSH nodes return data (Write, Start, Read)
-- [x] All documentation created
+- [x] **Runner permissions fixed**: `chown runner:runner` on operational subdirs only (not n8n, not backups)
+- [x] **Evidence produced**: BLUEPRINT.md, INITIALISIERUNG_PROMPT_BLUEPRINT.md, status.json, run-report.md, etc.
+- [x] **Project directory created**: Full SpecKit structure with git repo
+- [x] All documentation created and updated
 - [x] Secret scan passed
-- [x] JSON validation passed
 - [x] Pushed to GitHub
 
 ## What's Pending
 
-- [ ] Fix runner permissions on `/opt/dev-fabric/` (chown runner:runner or pre-create dirs)
-- [ ] Re-run after permissions fix to produce actual evidence files
-- [ ] Install OpenCode/Hermes on runner (needed for full GREEN)
-- [ ] Investigate curl form submission null-field issue (n8n v2.26.8 bug?)
+- [ ] Install OpenCode/Hermes on runner (needed for full GREEN — next separate run)
+- [ ] Investigate curl form submission null-field issue (n8n v2.26.8 — use `field-N` names as workaround?)
 - [ ] Path switch from UUID to stable slug (if desired — may not be possible in n8n)
 
 ## Blockers
 
-- **Runner directory permissions** — `/opt/dev-fabric/` not writable by runner user
 - OpenCode/Hermes not yet installed on runner (needed for full GREEN)
-- curl-based form submissions produce null fields (browser required for testing)
 
 ## Next Steps
 
-1. Fix runner permissions: `chown -R runner:runner /opt/dev-fabric/evidence /opt/dev-fabric/logs /opt/dev-fabric/workspaces`
-2. Re-submit form via browser to produce actual runner evidence
-3. Install OpenCode/Hermes on runner for full GREEN status
+1. Install OpenCode on runner for full GREEN status (separate, approved run)
+2. Optional: Hermes as secondary reviewer/agent
+3. Optional: Investigate `field-N` form field naming for curl compatibility

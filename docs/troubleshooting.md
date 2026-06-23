@@ -84,11 +84,22 @@ SELECT data FROM execution_data WHERE executionId=<ID>;
 ## Symptom: SSH nodes work but evidence not created — `Permission denied`
 
 ### Root cause: Runner user lacks write permissions
-The `runner` user on LXC 102 cannot create directories under `/opt/dev-fabric/`.
+The `runner` user on LXC 102 cannot create directories under `/opt/dev-fabric/`. The parent directories (`/opt/dev-fabric/workspaces/`, etc.) are `runner:runner` but subdirectories (`projects/`, `blueprint-bootstrap/`) are `root:root` with no write for others (755).
 
-**Fix:**
+**Fix (limited scope — only operational subdirs, NOT n8n or system paths):**
 ```bash
-ssh root@192.168.1.136 'pct exec 102 -- chown -R runner:runner /opt/dev-fabric/evidence /opt/dev-fabric/logs /opt/dev-fabric/workspaces'
+ssh root@192.168.1.136 'pct exec 102 -- bash -lc "
+chown -R runner:runner /opt/dev-fabric/workspaces/projects
+chown -R runner:runner /opt/dev-fabric/evidence/blueprint-bootstrap
+chown -R runner:runner /opt/dev-fabric/logs/blueprint-bootstrap
+chmod 750 /opt/dev-fabric/workspaces/projects /opt/dev-fabric/evidence/blueprint-bootstrap /opt/dev-fabric/logs/blueprint-bootstrap
+"'
+```
+
+**Verify:**
+```bash
+ssh root@192.168.1.136 'pct exec 102 -- runuser -u runner -- bash -c "mkdir -p /opt/dev-fabric/workspaces/projects/test && echo ok && rmdir /opt/dev-fabric/workspaces/projects/test"'
+# Expected: "ok"
 ```
 
 ### Check SSH credential

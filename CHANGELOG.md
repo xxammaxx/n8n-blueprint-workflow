@@ -1,5 +1,27 @@
 # CHANGELOG
 
+## 2026-06-23 — Runner Permission Fix & Full Evidence Production
+
+### Completed
+- **Runner permissions fixed:** Operational subdirectories now owned by `runner:runner`:
+  - `/opt/dev-fabric/workspaces/projects` (750)
+  - `/opt/dev-fabric/evidence/blueprint-bootstrap` (750)
+  - `/opt/dev-fabric/logs/blueprint-bootstrap` (750)
+- **NOT changed:** `/opt/dev-fabric/n8n`, spec-kit-src, scripts, backups, system dirs
+- Write test as `runner` user: all 3 paths PASS ✅
+- Browser form submit: "Your response has been recorded" ✅
+- **Execution #14: SUCCESS** — all 8 nodes green ✅
+- **Evidence produced:** status.json (GREEN_PARTIAL), run-report.md, agent.log, commands.log, preflight.md, RUN_INPUT.json, etc.
+- **Project directory created:** `perm-fix-test/` with full SpecKit structure, git repo, BLUEPRINT.md, INITIALISIERUNG_PROMPT_BLUEPRINT.md
+
+### Key Findings
+- Root cause was `root:root` ownership on subdirectories while parent was `runner:runner`
+- Browser form submission uses `field-N` HTML names (mapped server-side by n8n)
+- `curl`/`.NET` multipart with `field-N` names doesn't fully work — browser required
+
+### Status
+**GREEN_PARTIAL** — Only blocker is OpenCode/Hermes installation on runner.
+
 ## 2026-06-23 — SSH Credential Verification & JS Code Fix (End-to-End Success)
 
 ### Completed
