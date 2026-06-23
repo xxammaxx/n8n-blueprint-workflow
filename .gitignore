@@ -65,3 +65,9 @@ _*.sh
 .ruff_cache/
 __pycache__/
 *.pyc
+
+# Evidence screenshots and temp artifacts
+*.png
+*.jpg
+*.before-*.export.json
+*.backup-*.export.json

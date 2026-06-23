@@ -1,0 +1,14 @@
+{
+  "_comment": "MCP Client Configuration Template for n8n MCP Integration",
+  "_warning": "DO NOT store this file with real tokens. Use placeholder only.",
+  "_usage": "Copy to your MCP client config location and replace <N8N_MCP_TOKEN> with a real token generated in n8n UI.",
+  "mcpServers": {
+    "n8n-mcp": {
+      "type": "http",
+      "url": "http://192.168.1.52:5678/mcp-server/http",
+      "headers": {
+        "Authorization": "Bearer <N8N_MCP_TOKEN_NOT_IN_REPO>"
+      }
+    }
+  }
+}
