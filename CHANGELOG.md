@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## 2026-06-23 — V2 Activation & UI Form Test
+
+### Completed
+- V2 workflow activated via n8n UI (Playwright automation — session was still valid, no login needed)
+- Form Trigger node deactivated → reactivated → republished successfully
+- Production form URL confirmed: HTTP 200 at UUID-based URL
+- Form submission tested: HTTP 200 with multipart/form-data
+- Form fields verified: 11 fields loading correctly
+
+### Key Findings
+- **Form URLs are UUID-based**, not slug-based. UUID: `ae9f52c1-b02f-4ebc-b7ba-a91f8ddc6e60`
+- **Slug URL never worked** (`/form/blueprint-speckit-bootstrap-v2` → 404)
+- **UUID changes on deactivate/reactivate** — must always read from Form Trigger Node
+- **Form requires `multipart/form-data`** — `application/x-www-form-urlencoded` rejected
+- **`N8N_READY_TO_RUN_WORKFLOWS_DISMISSED`** in localStorage suppresses Production Checklist
+- **Container 101 → 102 SSH** uses `dev-runner-ssh` credential; TCP reachable at `192.168.1.53:22`
+
+### Known Issue
+- Runner evidence not yet produced — SSH execution may need credential host reconfiguration
+- `dev-runner-ssh` credential host verification needed in n8n UI
+
 ## 2026-06-22 — V2 Reconstruction Initiated
 
 ### Added

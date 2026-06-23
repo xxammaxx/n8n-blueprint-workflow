@@ -58,6 +58,9 @@ _*.sh
 # Playwright MCP artifacts
 .playwright-mcp/
 
+# OpenCode agent runtime (reports, screenshots, session logs)
+.opencode/
+
 # Python/Ruff cache
 .ruff_cache/
 __pycache__/
