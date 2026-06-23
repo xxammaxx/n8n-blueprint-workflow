@@ -1,10 +1,10 @@
-# Evidence Report — v2-activation-ui-test-20260623T034500Z
+# Evidence Report — ssh-credential-runner-test-20260623T064500Z
 
 ## Status: GREEN_PARTIAL
 
-**Session ID:** v2-activation-ui-test
-**Completed:** 2026-06-23T03:45:00Z
-**Previous Session:** blueprint-clean-reconstruct-v2
+**Session ID:** ssh-credential-runner-test
+**Completed:** 2026-06-23T06:45:00Z
+**Previous Session:** v2-activation-ui-test
 **Orchestrator:** issue-orchestrator (opencode)
 
 ---
@@ -16,144 +16,153 @@
 | Local path | `C:\n8n-blueprint-workflow` |
 | GitHub URL | `https://github.com/xxammaxx/n8n-blueprint-workflow` |
 | Remote branch | `main` |
-| Previous commit | `c3a9b706bf7d277ef2c4f2caffaf3b5a84599aea` |
-| Push status | Repo already live from previous session |
+| Previous commit | `64766ed030d6aca4a23e43ff094ac46b2ac77728` |
+| Push status | Pending (after doc updates) |
 
 ## 2. Remote Connection Used
 
 | Field | Value |
 |-------|-------|
 | Remote infrastructure access | Yes (SSH to Proxmox 192.168.1.136) |
-| Browser automation | Yes (delegated to playwright-agent) |
-| Browser automation result | SUCCESS — session still valid, no login required |
-| Manual login needed | No (previous session still authenticated) |
+| Browser automation | Yes (delegated to playwright-agent — form submit via real browser) |
+| Browser form submit | SUCCESS — "Your response has been recorded" |
+| curl form submit | PARTIAL — HTTP 200 but all fields parsed as null by n8n v2.26.8 |
 
-## 3. V2 Workflow — UI Activation Results
+## 3. `dev-runner-ssh` Credential Verification
 
-| Field | Value |
-|-------|-------|
-| Workflow found in UI | YES — "Blueprint -> SpecKit/OpenCode Bootstrap V2" |
-| Session login required | NO — previous Playwright session still valid |
-| Published status | YES — button shows "Published" (disabled) |
-| Active status | YES — Form Trigger node shows "Deactivate", page title shows ▶️ |
-| Production Checklist | NOT visible — previously dismissed (`N8N_READY_TO_RUN_WORKFLOWS_DISMISSED`) |
-| Trigger indicators | ▶️ unicode prefix in page title (n8n doesn't show X/3 style indicators) |
-| Deactivate/Reactivate | Performed successfully — fixed listening issue |
-| Republish | Executed — generated new UUID production URL |
+| Field | Expected | Actual | Match |
+|-------|----------|--------|-------|
+| Host | 192.168.1.53 | 192.168.1.53 | ✅ |
+| Port | 22 | 22 | ✅ |
+| Username | runner | runner | ✅ |
+| Auth Type | Private Key | SSH Private Key | ✅ |
+| Passphrase | (empty) | (empty) | ✅ |
+| Connection Test | N/A | "Connection tested successfully" | ✅ |
+| Private Key | (not read) | (properly masked) | ✅ |
 
-## 4. Production Form URLs
+**Verdict: `dev-runner-ssh` credential is correctly configured. No changes needed.**
+
+## 4. SSH Nodes in V2 Workflow
+
+| Node | Credential Used | Credential ID |
+|------|----------------|---------------|
+| SSH — Write RUN_INPUT to Runner | dev-runner-ssh | 42a60f05-16eb-493f-8257-3eeb5aef531a |
+| SSH — Start Blueprint Bootstrap | dev-runner-ssh | 42a60f05-16eb-493f-8257-3eeb5aef531a |
+| SSH — Read Status | dev-runner-ssh | 42a60f05-16eb-493f-8257-3eeb5aef531a |
+
+**All 3 SSH nodes correctly use `dev-runner-ssh`.**
+
+## 5. Root Cause Analysis: Why Previous Executions Failed
+
+### Issue 1: Corrupted JavaScript (FIXED)
+The V2 workflow export/import process corrupted single quotes in JS code:
+```javascript
+// BROKEN (caused SyntaxError):
+const crypto = require(''crypto'');
+Buffer.from(data, ''base64'').toString(''utf8'');
+
+// FIXED: Removed crypto dependency, fixed remaining doubled quotes
+```
+
+### Issue 2: `crypto` Module Blocked by n8n Task Runner (FIXED)
+n8n v2.26.8's JS Task Runner blocks the `crypto` built-in:
+```
+Module 'crypto' is disallowed
+```
+**Fix applied:**
+- `require('crypto')` → removed
+- `crypto.randomBytes(3).toString('hex')` → `Math.floor(Math.random()*16777216).toString(16).padStart(6,'0')`
+- `crypto.createHash('sha256').update(...).digest('hex')` → DJB2-style hash via `TextEncoder`
+
+### Issue 3: curl Form Submissions Yield Null Fields (DOCUMENTED)
+n8n Form Trigger V2 under v2.26.8 parses curl multipart submissions with all fields as `null`. Browser-based submissions work correctly.
+
+## 6. Production Form URLs
 
 | URL Type | Path | Result |
 |----------|------|--------|
-| **Production (from node)** | `/form/ae9f52c1-b02f-4ebc-b7ba-a91f8ddc6e60` | **HTTP 200** ✅ |
-| Test (from node) | `/form-test/ae9f52c1-b02f-4ebc-b7ba-a91f8ddc6e60` | HTTP 404 (expected) |
+| **Production (UUID)** | `/form/ae9f52c1-b02f-4ebc-b7ba-a91f8ddc6e60` | **HTTP 200** ✅ |
+| Test | `/form-test/ae9f52c1-b02f-4ebc-b7ba-a91f8ddc6e60` | HTTP 404 (expected) |
 | Slug (never worked) | `/form/blueprint-speckit-bootstrap-v2` | HTTP 404 |
-| Old UUID (stale) | `/form/42fd41ad-7f10-45d9-b6c2-af674bcabf8b` | HTTP 404 (stale) |
 | Debug (reference) | `/form/debug-minimal-form-ui` | HTTP 200 ✅ |
 
-⚠️ **IMPORTANT**: Form URLs are UUID-based. The UUID changes on deactivate/reactivate/republish. Always read from the Form Trigger Node in the UI — never guess.
+**UUID preserved across CLI import/republish.** Same UUID: `ae9f52c1-b02f-4ebc-b7ba-a91f8ddc6e60`
 
-## 5. Form Submission Test
+## 7. End-to-End Execution Results (Execution #10)
 
-| Field | Value |
-|-------|-------|
-| Method | POST |
-| URL | `http://192.168.1.52:5678/form/ae9f52c1-b02f-4ebc-b7ba-a91f8ddc6e60` |
-| Content-Type | `multipart/form-data` (REQUIRED) |
-| Fields submitted | 11 (project_slug, project_title, blueprint_text, llm_command_mode, opencode_model, max_runtime_minutes, dry_run, allow_github_issue_script_generation, allow_github_actions_files, extra_instruction) |
-| Response | HTTP 200 — `{"status":200}` |
-| First attempt (urlencoded) | FAILED — "Expected multipart/form-data" |
-| Second attempt (multipart) | SUCCESS — HTTP 200 |
+| # | Node | Status | Duration | Notes |
+|---|------|--------|----------|-------|
+| 1 | Form Trigger | ✅ success | 1ms | |
+| 2 | Validate + Extract Blueprint | ✅ success | 14ms | No crypto, no syntax errors |
+| 3 | Prepare RUN_INPUT | ✅ success | 7ms | |
+| 4 | **SSH — Write RUN_INPUT to Runner** | ✅ success | 25s | File uploaded successfully |
+| 5 | **SSH — Start Blueprint Bootstrap** | ✅ success | 25s | Script started, permission error on mkdir |
+| 6 | Wait — Initial Status Delay | ✅ success | 10s | |
+| 7 | **SSH — Read Status** | ✅ success | 25s | Status: PENDING (script couldn't write) |
+| 8 | Format Result | ✅ success | 17ms | Formatted output with instructions |
 
-## 6. Form Fields Verified
+**Overall: SUCCESS — all 8 nodes completed. First successful end-to-end execution.**
 
-| Field Name | Label | Type |
-|------------|-------|------|
-| project_slug | Projekt-Kurzname | text (required) |
-| project_title | Projektname | text (required) |
-| blueprint_file | BLUEPRINT.md hochladen | file |
-| blueprint_text | Blueprint als Markdown einfügen | textarea |
-| llm_command_mode | Startmodus | dropdown |
-| opencode_model | Modell optional | text |
-| max_runtime_minutes | Maximale Laufzeit in Minuten | number (required) |
-| dry_run | Dry Run | checkbox |
-| allow_github_issue_script_generation | GitHub Issue Scripts erlauben | checkbox |
-| allow_github_actions_files | GitHub Actions Dateien erlauben | checkbox |
-| extra_instruction | Extra Prompt Instruction | textarea |
+## 8. Runner Evidence Status
 
-## 7. SSH Runner Connectivity
+| Check | Result |
+|-------|--------|
+| Project directory | NOT created (permission denied) |
+| Evidence directory | NOT created (permission denied) |
+| RUN_INPUT.json | Uploaded to /tmp but couldn't be moved |
+| `start_blueprint_bootstrap.sh` | Executed but failed at mkdir |
+| Error message | `mkdir: cannot create directory '/opt/dev-fabric/evidence/...': Permission denied` |
 
-| Field | Value |
-|-------|-------|
-| Container 101 IP | `192.168.1.52` |
-| Container 102 IP | `192.168.1.53` |
-| TCP reachable (101→102:22) | YES |
-| SSH auth from CLI | FAILED — "Permission denied (publickey,password)" |
-| n8n credential | `dev-runner-ssh` (ID `42a60f05-16eb-493f-8257-3eeb5aef531a`) |
-| Credential host verification | PENDING — needs n8n UI check |
+**Root cause:** The `runner` user on LXC 102 lacks write permissions on `/opt/dev-fabric/`.
+**Fix needed:** `chown -R runner:runner /opt/dev-fabric/evidence /opt/dev-fabric/logs /opt/dev-fabric/workspaces`
 
-## 8. localStorage Findings
-
-| Key | Relevance |
-|-----|-----------|
-| `N8N_READY_TO_RUN_WORKFLOWS_DISMISSED` | Production Checklist dismissed — suppresses checklist dialog |
-| Other keys | No checklist/activation/onboarding-related keys found |
-
-## 9. Playwright Automation
-
-| Field | Value |
-|-------|-------|
-| Agent | playwright-agent (subagent) |
-| Screenshots saved | 11 screenshots in `.opencode/reports/screenshots/` |
-| Key screenshots | `00-initial-page.png` through `10-final-state.png` |
-| Login required | NO |
-| Form Trigger URLs captured | YES |
-
-## 10. What the System Can Do Now vs. Previous Session
+## 9. What the System Can Do Now vs. Previous Session
 
 | Capability | Previous Session | This Session |
 |------------|-----------------|--------------|
-| V2 workflow in UI | Imported (not published) | Published + Active |
-| Production form | HTTP 404 | HTTP 200 (UUID-based) |
-| Form submission | Untested | Tested — HTTP 200 with multipart |
-| UI automation | Blocked by login | Successful (session active) |
-| Form URL knowledge | Guessed (slug) | Verified (UUID from node) |
-| Checklist status | Unknown | Dismissed (known key) |
-| Runner connectivity | Unknown | TCP confirmed, SSH auth pending |
-| Production Checklist | Unknown | Previously dismissed |
+| V2 workflow | Published + Active | Published + Active (re-imported with fixes) |
+| SSH credential | Unverified | Verified correct (no changes needed) |
+| JS code execution | SyntaxError (corrupted quotes) | Runs successfully (crypto-free) |
+| SSH Nodes | Never tested | All 3 execute and return data ✅ |
+| End-to-end execution | Failed at Validate node | SUCCESS — all 8 nodes complete ✅ |
+| Form submission (browser) | Not tested | SUCCESS — "Your response has been recorded" ✅ |
+| Form submission (curl) | HTTP 200 (null fields unknown) | Documented null-field bug |
+| Runner connectivity | TCP confirmed only | Full SSH auth works ✅ |
+| Runner evidence | None | Script executes but fails on permissions |
 
-## 11. Security Status
+## 10. Security Status
 
 | Check | Status |
 |-------|--------|
-| No private keys in repo | VERIFIED |
-| No .env files in repo | VERIFIED |
-| No database files in repo | VERIFIED |
-| No credentials in workflow JSON | VERIFIED |
-| .gitignore enforced | VERIFIED |
-| No GitHub Actions | VERIFIED |
-| No force-push | VERIFIED |
-| No SQL patches applied | VERIFIED |
-| No credential export | VERIFIED |
+| No private keys in repo | ✅ VERIFIED |
+| No .env files in repo | ✅ VERIFIED |
+| No database files in repo | ✅ VERIFIED |
+| No credentials in workflow JSON | ✅ VERIFIED |
+| .gitignore enforced | ✅ VERIFIED |
+| No GitHub Actions | ✅ VERIFIED |
+| No force-push | ✅ VERIFIED |
+| No SQL patches applied | ✅ VERIFIED |
+| No credential export | ✅ VERIFIED |
+| Private Key never read/displayed | ✅ VERIFIED |
+| No secrets in screenshots | ✅ VERIFIED |
 
-## 12. Open Constraints
+## 11. Open Constraints
 
-1. **SSH credential host** may need reconfiguration — `dev-runner-ssh` needs host `192.168.1.53` (check in n8n UI)
-2. **Runner evidence** not produced — SSH execution didn't complete
+1. **Runner directory permissions** — `runner` user cannot write to `/opt/dev-fabric/` (needs `chown`)
+2. **curl form submissions** — n8n v2.26.8 parses curl multipart fields as null (browser required for testing)
 3. **OpenCode/Hermes** not yet installed on runner (needed for full GREEN)
 4. **UUID volatility** — republishing changes the production URL (limitation, not a bug)
 5. **Slug URL** never worked — form path is UUID-based, not slug-based
 
-## 13. Next Steps
+## 12. Next Steps
 
-1. **Check `dev-runner-ssh` credential** in n8n UI → verify host is `192.168.1.53`
-2. **Re-run form submission** with verified SSH credential
-3. **Verify Runner evidence** after successful execution
-4. **Install OpenCode** on runner for real processing
-5. Optional: Re-export updated workflow JSON with new UUID
+1. **Fix runner permissions:** `chown -R runner:runner /opt/dev-fabric/evidence /opt/dev-fabric/logs /opt/dev-fabric/workspaces` (on LXC 102)
+2. **Re-submit form via browser** to produce actual runner evidence after permissions fix
+3. **Install OpenCode/Hermes** on runner for real processing
+4. **Investigate curl null-field issue** — possible n8n v2.26.8 bug, check for updates or workarounds
 
-## 14. Required Approvals
+## 13. Required Approvals
 
-- SSH credential modification (if host needs changing)
+- Runner permission changes (`chown` on LXC 102)
 - OpenCode/Hermes installation on runner
 - Old broken workflow removal (if desired)
