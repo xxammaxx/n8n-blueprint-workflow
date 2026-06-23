@@ -2,6 +2,19 @@
 
 GitHub source of truth for the n8n Blueprint → SpecKit/OpenCode Bootstrap workflow.
 
+## GitHub Source of Truth
+
+- **GitHub Issue** = Auftrag / Source of Truth
+- **GitHub Repo Files** = Regeln, Specs, Kontext
+- **n8n** = Orchestrator / Router / Status-Synchronizer
+- **Runner** (LXC 102) = Execution Boundary
+- **OpenCode v1.17.9** = vorbereiteter Worker (Provider/Auth fehlt noch)
+- **Issue Comments** = Evidence-Zusammenfassung
+
+Agentenaufträge werden als GitHub Issues erstellt. n8n liest das Issue, startet den Runner, und kommentiert das Ergebnis zurück ins Issue.
+
+Siehe: `docs/github-source-of-truth.md`, `docs/github-issue-intake-runbook.md`
+
 ## Repo Structure
 
 ```
@@ -11,14 +24,19 @@ GitHub source of truth for the n8n Blueprint → SpecKit/OpenCode Bootstrap work
 ├── CHANGELOG.md           ← Version history
 ├── SECURITY.md            ← Security rules and boundaries
 ├── .gitignore             ← Strict exclusions
+├── .github/
+│   └── ISSUE_TEMPLATE/
+│       └── agent-task.yml              ← Agent Task Issue Template
 ├── workflows/             ← n8n workflow JSON exports
 │   ├── README.md
 │   ├── debug-minimal-form-ui.export.json       ← Working reference form
 │   ├── blueprint-old-broken.export.json        ← Broken V1 (historical)
 │   ├── blueprint-v2.clean.export.json          ← Reconstructed V2
-│   └── speckit-smoke-workflow.json             ← Smoke-test workflow
+│   ├── speckit-smoke-workflow.json             ← Smoke-test workflow
+│   └── github-issue-intake.export.json         ← GitHub Issue → Runner Intake
 ├── scripts/               ← Runner shell scripts
 │   ├── start_blueprint_bootstrap.sh
+│   ├── start_github_issue_run.sh
 │   ├── speckit_iteration.sh
 │   ├── export_n8n_workflows.sh
 │   ├── publish_check.sh
@@ -29,7 +47,10 @@ GitHub source of truth for the n8n Blueprint → SpecKit/OpenCode Bootstrap work
 │   ├── troubleshooting.md
 │   ├── architecture.md
 │   ├── security-boundaries.md
-│   └── evidence-index.md
+│   ├── evidence-index.md
+│   ├── github-source-of-truth.md              ← GitHub SoT architecture
+│   ├── github-issue-intake-runbook.md         ← Intake operating runbook
+│   └── run-input-schema.md                    ← RUN_INPUT contract
 ├── templates/             ← Prompt templates
 │   └── INITIALISIERUNG_PROMPT_BLUEPRINT.md
 ├── evidence-index/        ← Evidence trail
@@ -44,13 +65,16 @@ GitHub source of truth for the n8n Blueprint → SpecKit/OpenCode Bootstrap work
 ## Infrastructure
 
 - **n8n Instance:** `http://192.168.1.52:5678` (LXC container 101 on Proxmox 192.168.1.136)
-- **Runner:** LXC container 102 on Proxmox 192.168.1.136
+- **Runner:** LXC container 102 on Proxmox 192.168.1.136, IP `192.168.1.53`
 - **Form Path (V2):** `/form/blueprint-speckit-bootstrap-v2`
 - **Form Path (debug):** `/form/debug-minimal-form-ui`
+- **GitHub Repo:** `https://github.com/xxammaxx/n8n-blueprint-workflow`
 
 ## Quick Start
 
-See `docs/import-publish-guide.md` for importing workflows into n8n.
+- **Form Submission:** Open `http://192.168.1.52:5678/form/ae9f52c1-...` in browser
+- **Agent Task:** Create Issue via `.github/ISSUE_TEMPLATE/agent-task.yml`
+- **Import Workflow:** See `docs/import-publish-guide.md`
 
 ## Status
 

@@ -109,6 +109,63 @@ n8n Form → RUN_INPUT.json → start_blueprint_bootstrap.sh
           └── specify-init.log / specify-check.log
 ```
 
+## GitHub Source-of-Truth Architecture
+
+```
+┌─────────────────────────────────────────┐
+│         GitHub (Source of Truth)        │
+│  Issue ← Auftrag                        │
+│  Labels ← Status                        │
+│  Issue Comments ← Evidence-Zusammenfassung│
+└──────────────┬──────────────────────────┘
+               │ read/write (GitHub API)
+               ▼
+┌─────────────────────────────────────────┐
+│     n8n (Orchestrator / Router)         │
+│  GitHub Trigger / Manual Trigger        │
+│  Validate Issue Contract                │
+│  Prepare RUN_INPUT.json                 │
+│  SSH Write/Start/Read → Runner          │
+│  Format Issue Comment                   │
+│  Update Labels                          │
+└──────────────┬──────────────────────────┘
+               │ SSH (key-based auth)
+               ▼
+┌─────────────────────────────────────────┐
+│     Runner (LXC 102)                    │
+│  start_github_issue_run.sh              │
+│  Evidence: status.json, run-report.md   │
+│  Mode: manual-terminal (default)        │
+│  OpenCode v1.17.9 (vorbereitet)         │
+└─────────────────────────────────────────┘
+```
+
+### GitHub Agent Workflow
+
+1. **Intake:** GitHub Issue mit Template `agent-task.yml` erstellen
+2. **Queue:** Labels `agent:queued`, `mode:*`, `risk:*`, `human-approval-required`
+3. **Ready:** Label `agent:queued` → `agent:ready` (NUR mit explizitem Nutzer-Start)
+4. **Execute:** n8n liest Issue → Runner führt aus → Evidence wird geschrieben
+5. **Report:** n8n kommentiert Issue mit Evidence-Zusammenfassung
+6. **Done:** Labels `agent:done` + `evidence:attached` setzen
+
+### Labelmodell
+
+| Label | Bedeutung |
+|-------|-----------|
+| `agent:queued` | Auftrag existiert, nicht startbereit |
+| `agent:ready` | **Startsignal** für n8n |
+| `agent:running` | Lauf aktiv |
+| `agent:blocked` | Lauf blockiert |
+| `agent:needs-review` | Human Review nötig |
+| `agent:done` | Abgeschlossen |
+| `evidence:attached` | Evidence-Kommentar geschrieben |
+| `human-approval-required` | Nächster Schritt braucht Freigabe |
+| `mode:manual-terminal` | Default (keine Autonomie) |
+| `mode:opencode-run` | OpenCode in tmux (braucht Provider) |
+| `mode:hermes-review` | Hermes-Sidecar (zukünftig) |
+| `risk:low/medium/high` | Risikostufe |
+
 ## Security Architecture
 
 See `docs/security-boundaries.md` for detailed security architecture.

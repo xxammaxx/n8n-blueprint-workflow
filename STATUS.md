@@ -1,8 +1,8 @@
 # STATUS: GREEN_PARTIAL
 
-**Last Updated:** 2026-06-23T10:00:00Z
-**Session:** opencode-runner-integration
-**Previous Session:** runner-permission-fix
+**Last Updated:** 2026-06-23T12:00:00Z
+**Session:** github-source-of-truth-intake
+**Previous Session:** opencode-runner-integration
 
 ## Current State
 
@@ -27,8 +27,16 @@
 | **Adapter Layer** | ✅ DEPLOYED | `manual_terminal_adapter.sh`, `opencode_adapter.sh`, security utils |
 | **`opencode-run` Mode** | ✅ SUPPORTED | `start_blueprint_bootstrap.sh` handles `opencode-run` in tmux |
 | **`manual-terminal`** | ✅ DEFAULT | Safe fallback when OpenCode unavailable |
+| **GitHub Source of Truth** | ✅ DEPLOYED | Issues as agent tasks, labels, templates, intake workflow |
+| **GitHub Agent Labels** | ✅ CREATED | 14 labels (agent:*, mode:*, risk:*, evidence:*, human-approval-required) |
+| **Issue Template** | ✅ CREATED | `.github/ISSUE_TEMPLATE/agent-task.yml` |
+| **n8n GitHub Intake Workflow** | ✅ PREPARED | `github-issue-intake.export.json` (Manual Trigger Fallback) |
+| **Runner GitHub Run Script** | ✅ PREPARED | `start_github_issue_run.sh` validiert source_of_truth=github |
+| **GitHub Issue #1** | ✅ CREATED | Feat-Issue für GitHub SoT: `agent:queued` + Alle Labels |
+| **Evidence Comment Format** | ✅ DEFINED | Standardisierte Issue-Kommentar-Struktur |
+| **RUN_INPUT Schema** | ✅ EXTENDED | GitHub SoT-Felder (issue_url, issue_number, approval_policy) |
 | Git Repo (local) | ACTIVE | `C:\n8n-blueprint-workflow` |
-| Git Repo (GitHub) | LIVE | `https://github.com/xxammaxx/n8n-blueprint-workflow` — commit `4599829` |
+| Git Repo (GitHub) | LIVE | `https://github.com/xxammaxx/n8n-blueprint-workflow` — commit `01f1c67` |
 
 ## UUID-Based Production URL
 
@@ -103,19 +111,23 @@ The old `blueprint-speckit-opencode-bootstrap` workflow has a persistent webhook
 
 ## What's Pending
 
+- [ ] Configure n8n GitHub API credential (`github-n8n-blueprint`) for automated trigger
 - [ ] Configure LLM provider for OpenCode (needs separate API-key approval)
 - [ ] First real `opencode-run` execution with provider configured
+- [ ] Smoke-test the GitHub Issue → Runner intake end-to-end
 - [ ] Optional: Hermes as secondary reviewer/agent (future run)
 - [ ] Optional: Investigate `field-N` form field naming for curl compatibility
 
 ## Blockers
 
+- n8n GitHub API credential not yet configured (blocks automated GitHub Trigger — Manual Trigger works)
 - OpenCode provider/API-key not yet configured (blocks autonomous agent runs)
 - OpenCode interactive provider prompt blocks non-interactive execution
 
 ## Next Steps
 
-1. Obtain approval for LLM provider API key configuration
-2. Configure provider via `opencode providers login`
-3. Run first controlled `opencode-run` execution via n8n form
-4. Optional: Hermes as secondary agent (separate, approved run)
+1. Configure n8n GitHub API credential for automated Issue→Runner trigger
+2. Obtain approval for LLM provider API key configuration
+3. Configure provider via `opencode providers login`
+4. Run first controlled `opencode-run` execution via n8n form or GitHub issue
+5. Optional: Hermes as secondary agent (separate, approved run)

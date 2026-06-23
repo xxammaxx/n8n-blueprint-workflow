@@ -1,0 +1,141 @@
+name: Agent Task
+description: Auftrag für lokalen n8n/Runner-Agentenlauf
+title: "[agent] "
+labels:
+  - agent:queued
+  - mode:manual-terminal
+  - human-approval-required
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Agent Task — GitHub Source of Truth
+
+        Dieser Auftrag wird von n8n gelesen und an den Runner (LXC 102) übergeben.
+        GitHub Issue = Source of Truth. Keine stillen Änderungen.
+
+  - type: textarea
+    id: task
+    attributes:
+      label: Aufgabe
+      description: Was soll der Agent tun? Präzise, ausführbare Beschreibung.
+      placeholder: |
+        Beispiel:
+        - Smoke-Test für GitHub Issue Source-of-Truth Intake
+        - Blueprint-Bootstrap für Projekt "my-app"
+        - Security-Audit für Modul X
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Kontext
+      description: |
+        Relevanter Projektkontext. GitHub bleibt Source of Truth.
+        Verlinke verwandte Issues, verweise auf Specs oder Blueprint-Dateien.
+      placeholder: |
+        - Repo: n8n-blueprint-workflow
+        - Verwandte Issues: #1, #2
+        - Spec: docs/architecture.md
+        - Blueprint: BLUEPRINT.md (falls vorhanden)
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Akzeptanzkriterien
+      description: |
+        Konkrete, überprüfbare Kriterien. Jedes Kriterium muss via
+        Runner-Befehl oder GitHub-Kommentar verifizierbar sein.
+      placeholder: |
+        - [ ] RUN_INPUT.json enthält source_of_truth=github
+        - [ ] Runner schreibt Evidence unter erwartetem Pfad
+        - [ ] n8n kommentiert Issue mit Evidence-Zusammenfassung
+        - [ ] Labels werden korrekt aktualisiert
+        - [ ] Kein Push/PR/Merge ohne Approval
+    validations:
+      required: true
+
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification Contract
+      description: |
+        Welche lokalen Befehle/Gates müssen laufen?
+        Diese Befehle werden vom Runner ausgeführt.
+      placeholder: |
+        ```bash
+        bash tests/validate-json.sh
+        bash tests/validate-shell.sh
+        bash tests/smoke-checks.sh
+        test ! -d .github/workflows
+        ```
+    validations:
+      required: true
+
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Laufmodus
+      description: |
+        - **manual-terminal**: Sicherer Default. Keine Agenten-Autonomie. Runner erzeugt Evidence und Handoff-Kommandos.
+        - **opencode-run**: OpenCode-Autonomie in tmux. Nur wenn Provider/Auth konfiguriert und freigegeben.
+        - **hermes-review**: Hermes-Sidecar-Review. Nur wenn Hermes installiert (noch nicht verfügbar).
+      options:
+        - manual-terminal
+        - opencode-run
+        - hermes-review
+    validations:
+      required: true
+
+  - type: dropdown
+    id: risk
+    attributes:
+      label: Risiko
+      description: |
+        - **low**: Nur lesende Operationen oder isolierte Tests
+        - **medium**: Schreibende Operationen im Projektverzeichnis
+        - **high**: Systemweite Änderungen oder Netzwerkzugriffe
+      options:
+        - low
+        - medium
+        - high
+    validations:
+      required: true
+
+  - type: input
+    id: max_runtime
+    attributes:
+      label: Maximale Laufzeit (Minuten)
+      description: Nach dieser Zeit wird der Lauf abgebrochen.
+      placeholder: "30"
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: approvals
+    attributes:
+      label: Approvals (Pflicht — müssen alle bestätigt sein)
+      options:
+        - label: Kein Push ohne separate Freigabe
+          required: true
+        - label: Kein PR ohne separate Freigabe
+          required: true
+        - label: Kein Merge ohne separate Freigabe
+          required: true
+        - label: Keine GitHub Actions ohne separate Freigabe
+          required: true
+        - label: Keine Provider-/API-Key-Konfiguration ohne separate Freigabe
+          required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ## Nach dem Erstellen
+
+        1. Prüfe die Labels: `agent:queued`, `mode:...`, `risk:...`, `human-approval-required`
+        2. Wenn der Auftrag startbereit ist: `agent:queued` → `agent:ready` ändern
+        3. n8n liest das Issue und startet den Runner
+        4. Ergebnis erscheint als Issue-Kommentar (Evidence-Zusammenfassung)

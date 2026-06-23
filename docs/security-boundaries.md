@@ -61,6 +61,27 @@ Zone 3: Evidence / Workspace (read-only for n8n)
 - `--yolo`: never (approval always required)
 - Provider/Auth: explicitly NOT configured (requires separate approval)
 
+## GitHub API Security Boundaries
+
+### Token Requirements
+- **Scopes needed:** `repo` (Issues read/write, Contents read), `read:org` (optional)
+- **Scopes NOT needed:** `workflow`, `admin:*`, `secrets`, `packages`
+- **Credential:** Stored in n8n credential store (encrypted), referenced by name
+
+### Operations Allowed via GitHub API
+| Operation | Allowed | Gate |
+|-----------|---------|------|
+| Read Issue | ✅ | Automatic |
+| Read Labels | ✅ | Automatic |
+| Set/Remove Labels | ✅ | Workflow logic |
+| Create Comment | ✅ | After evidence written |
+| Read Repo Contents | ✅ | For context |
+| **Push code** | ❌ | Requires separate approval |
+| **Create PR** | ❌ | Requires separate approval |
+| **Merge PR** | ❌ | Requires separate approval |
+| **Trigger Actions** | ❌ | Prohibited |
+| **Modify Secrets** | ❌ | Prohibited |
+
 ## Audit Trail
 
 See `evidence-index/` for known evidence paths and `evidence-index/latest.md` for current session report.

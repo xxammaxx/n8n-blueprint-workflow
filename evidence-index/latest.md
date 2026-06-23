@@ -1,11 +1,11 @@
-# Evidence Report — opencode-runner-integration-20260623T100000Z
+# Evidence Report — github-source-of-truth-intake-20260623T120000Z
 
 ## Status: GREEN_PARTIAL
 
-**Session ID:** opencode-runner-integration
-**Completed:** 2026-06-23T10:00:00Z
-**Previous Session:** runner-permission-fix
+**Session ID:** github-source-of-truth-intake
+**Completed:** 2026-06-23T12:00:00Z
 **Orchestrator:** issue-orchestrator (opencode)
+**Previous Session:** opencode-runner-integration
 
 ---
 
@@ -16,198 +16,202 @@
 | Local path | `C:\n8n-blueprint-workflow` |
 | GitHub URL | `https://github.com/xxammaxx/n8n-blueprint-workflow` |
 | Remote branch | `main` |
-| Previous commit | `4599829` |
-| New commit | `06ea982` |
-| Push status | ✅ Pushed to GitHub |
+| Previous commit | `01f1c67` |
+| New commit | (pending push) |
+| Push status | ⚠️ pending |
 
-## 2. OpenCode Installation
+## 2. GitHub Source of Truth — Architecture
 
-| Field | Value |
-|-------|-------|
-| OpenCode previously installed | no |
-| OpenCode installed | ✅ yes |
-| Version | v1.17.9 |
-| Install method | GitHub Releases direct download (`anomalyco/opencode`) |
-| Binary location | `/opt/dev-fabric/opencode/opencode` (166,897,792 bytes) |
-| Symlink | `/usr/local/bin/opencode` |
-| Node.js required | no (standalone native binary) |
-| Provider/Auth configured | ❌ no (needs separate approval) |
-| `opencode --version` verified | ✅ 1.17.9 |
-| `opencode --help` verified | ✅ all commands listed |
-| `opencode providers list` | ✅ 0 credentials (expected) |
-| `opencode run` without provider | ⚠️ hangs (waits for interactive provider config) |
+| Component | Status |
+|-----------|--------|
+| GitHub Issue als Auftrag | ✅ eingerichtet |
+| GitHub Labels (14) | ✅ angelegt |
+| Issue Template | ✅ `.github/ISSUE_TEMPLATE/agent-task.yml` |
+| n8n Workflow | ✅ `github-issue-intake.export.json` |
+| Runner Script | ✅ `start_github_issue_run.sh` |
+| RUN_INPUT Schema | ✅ um GitHub SoT erweitert |
+| Evidence Comment Format | ✅ definiert |
 
-## 3. OpenCode Security Profile (`opencode.json`)
+## 3. GitHub Labels
 
-| Field | Value |
-|-------|-------|
-| Template created | ✅ yes |
-| Template location (runner) | `/opt/dev-fabric/workflows/templates/opencode.json` |
-| Template location (repo) | `templates/opencode.json` |
-| Default permission | `ask` |
-| `git push*` | `deny` |
-| `gh pr create*` | `deny` |
-| `gh workflow run*` | `deny` |
-| `rm -rf *` | `deny` |
-| `docker *` | `deny` |
-| `edit` | `ask` |
-| `webfetch/websearch` | `ask` |
-| `share` | `disabled` |
-| `autoupdate` | `false` |
-| `mcp` | `{}` (none configured) |
-| Copied to new projects | ✅ by `start_blueprint_bootstrap.sh` |
+| Label | Status |
+|-------|--------|
+| `agent:queued` | ✅ created |
+| `agent:ready` | ✅ created |
+| `agent:running` | ✅ created |
+| `agent:blocked` | ✅ created |
+| `agent:needs-review` | ✅ created |
+| `agent:done` | ✅ created |
+| `evidence:attached` | ✅ created |
+| `human-approval-required` | ✅ created |
+| `mode:manual-terminal` | ✅ created |
+| `mode:opencode-run` | ✅ created |
+| `mode:hermes-review` | ✅ created |
+| `risk:low` | ✅ created |
+| `risk:medium` | ✅ created |
+| `risk:high` | ✅ created |
 
-## 4. Runner Script Enhancement
+## 4. GitHub Issue #1
 
 | Field | Value |
 |-------|-------|
-| Script updated | `start_blueprint_bootstrap.sh` |
-| Lines | 503 (was 424) |
-| `manual-terminal` default | ✅ yes |
-| `opencode-run` supported | ✅ yes |
-| Tmux session creation | ✅ yes |
-| Graceful fallback on missing OpenCode | ✅ yes |
-| OpenCode version in evidence | ✅ yes |
-| OpenCode availability in evidence | ✅ yes |
-| Tmux availability in evidence | ✅ yes |
-| Syntax check (bash -n) | ✅ passed |
+| Issue Number | #1 |
+| URL | `https://github.com/xxammaxx/n8n-blueprint-workflow/issues/1` |
+| Title | `feat: GitHub als Source of Truth für n8n/Runner-Agentenläufe einführen` |
+| Labels | `agent:queued`, `mode:manual-terminal`, `risk:medium`, `human-approval-required`, `enhancement` |
+| Start Comment | ✅ posted (`#issuecomment-4778421398`) |
 
-## 5. Adapter Layer
+## 5. Documentation Created
 
-| File | Status |
-|------|--------|
-| `agent-adapters/manual_terminal_adapter.sh` | ✅ active, executable |
-| `agent-adapters/opencode_adapter.sh` | ✅ active, executable |
-| `agent-adapters/hermes_reviewer_adapter.sh.disabled` | ✅ placeholder, NOT executable |
-| `agent-adapters/common/run_input_validate.sh` | ✅ active, executable |
-| `agent-adapters/common/evidence_write.sh` | ✅ active, executable |
-| `agent-adapters/common/security_guard.sh` | ✅ active, executable |
+| File | Lines/Bytes |
+|------|-------------|
+| `docs/github-source-of-truth.md` | Architecture, Labelmodell, RUN_INPUT Contract, Evidence Comment Contract, Approval-Regeln |
+| `docs/github-issue-intake-runbook.md` | Normalbetrieb (10 steps) + 9 Recovery-Szenarien |
+| `docs/run-input-schema.md` | Vollständiges RUN_INPUT Schema mit GitHub SoT Extension |
+| `.github/ISSUE_TEMPLATE/agent-task.yml` | 4405 bytes, 5 Pflichtfelder + Approvals |
 
-## 6. Tmux Status
+## 6. Documentation Updated
 
-| Field | Value |
-|-------|-------|
-| Tmux installed | ✅ yes |
-| Tmux version | v3.3a |
-| Binary location | `/usr/bin/tmux` |
-| Available to runner | ✅ (via default PATH) |
+| File | Changes |
+|------|---------|
+| `README.md` | GitHub SoT section, updated repo structure, infrastructure |
+| `STATUS.md` | New session, GitHub SoT components, updated pending/blockers |
+| `CHANGELOG.md` | New entry: GitHub Source of Truth Intake |
+| `docs/architecture.md` | GitHub SoT architecture diagram + label model |
+| `docs/security-boundaries.md` | GitHub API security boundaries + token requirements |
 
-## 7. Hermes Status
+## 7. Scripts Created
 
-| Field | Value |
-|-------|-------|
-| Hermes installed | ❌ no (deliberately excluded) |
-| Plan | Optional future sidecar for research, review, evidence analysis |
-| Adapter placeholder | `hermes_reviewer_adapter.sh.disabled` (not executable) |
+| File | Lines | Validation |
+|------|-------|------------|
+| `scripts/start_github_issue_run.sh` | 471 | shebang ✅, set -euo pipefail ✅ |
 
-## 8. Smoke Test
+## 8. n8n Workflow Created
 
-| Test | Result |
-|------|--------|
-| Test project | `/opt/dev-fabric/workspaces/projects/opencode-smoke-test/` |
-| BLUEPRINT.md | ✅ created |
-| INITIALISIERUNG_PROMPT_BLUEPRINT.md | ✅ created |
-| AGENTS.md, PROJECT_CONTEXT.md, README.md | ✅ created |
-| opencode.json (copied from template) | ✅ present |
-| `opencode --version` | ✅ 1.17.9 |
-| `opencode --help` | ✅ all commands |
-| `opencode providers list` | ✅ 0 credentials |
-| `opencode run` without provider | ⚠️ hangs (expected — needs provider config) |
-| No file changes during smoke test | ✅ confirmed |
+| File | Nodes | Trigger |
+|------|-------|---------|
+| `workflows/github-issue-intake.export.json` | 9 | Manual Trigger (Fallback) |
 
-## 9. n8n Integration Check
+**Node Chain:**
+1. Manual Trigger (Fallback)
+2. Validate Issue Contract (JS Code)
+3. Prepare RUN_INPUT.json (JS Code)
+4. SSH Write RUN_INPUT to Runner
+5. SSH Start Runner Script
+6. Wait (5s)
+7. SSH Read status.json
+8. Format Evidence Comment (JS Code)
+9. Format Final Result (JS Code)
+
+## 9. OpenCode Status
 
 | Field | Value |
 |-------|-------|
-| Workflow JSON has `llm_command_mode` | ✅ yes |
-| Valid modes in JS validation | `['opencode-run', 'hermes-run', 'manual-terminal']` |
-| `opencode-run` flows to RUN_INPUT.json | ✅ yes |
-| `start_blueprint_bootstrap.sh` reads mode | ✅ yes |
-| Integration ready for `opencode-run` | ✅ structure verified |
+| OpenCode installed | ✅ v1.17.9 |
+| Provider/Auth configured | ❌ No |
+| `manual-terminal` mode | ✅ Default |
+| `opencode-run` mode | ⚠️ Prepared but blocked (no provider) |
+| Provider check in script | ✅ `start_github_issue_run.sh` detects and falls back |
 
-## 10. Security Status
+## 10. Validation Results
+
+| Check | Result |
+|-------|--------|
+| JSON Validation (8 workflow files) | ✅ ALL VALID |
+| Shell Script Syntax (6 scripts) | ✅ ALL with shebang + set -e |
+| `.github/workflows` absent | ✅ PASS (no directory) |
+| Forbidden files | ✅ NONE FOUND |
+| Private keys in repo | ✅ NONE FOUND |
+| Tokens/passwords | ✅ NONE FOUND |
+| Secret scan false positives | ✅ 2 hits — both in security check scripts (valid) |
+
+## 11. Security Status
 
 | Check | Status |
 |-------|--------|
-| No private keys in repo | ✅ VERIFIED |
-| No .env files in repo | ✅ VERIFIED |
-| No database files in repo | ✅ VERIFIED |
-| No credentials in workflow JSON | ✅ VERIFIED |
-| .gitignore enforced | ✅ VERIFIED |
+| No private keys | ✅ VERIFIED |
+| No .env files | ✅ VERIFIED |
+| No database files | ✅ VERIFIED |
+| No credentials in JSON | ✅ VERIFIED |
+| No GitHub Actions | ✅ VERIFIED |
 | No force-push | ✅ VERIFIED |
 | No SQL patches | ✅ VERIFIED |
-| /opt/dev-fabric/n8n untouched | ✅ VERIFIED |
-| Private keys untouched | ✅ VERIFIED |
-| opencode.json blocks push/PR/merge | ✅ VERIFIED |
-| Secret scan on new files | ✅ PASSED |
-| Forbidden file check (.env, .sqlite, .pem, .key) | ✅ NONE FOUND |
+| .gitignore enforced | ✅ VERIFIED |
+| gh auth token masked | ✅ VERIFIED |
 
-## 11. What the System Can Do Now
+## 12. What the System Can Do Now
+
+### New Capabilities
 
 | Capability | Before | After |
 |------------|--------|-------|
-| OpenCode installed on runner | ❌ Not installed | ✅ v1.17.9 standalone binary |
-| Security profile for agents | ❌ None | ✅ Restrictive opencode.json template |
-| Controlled agent launch in tmux | ❌ Not supported | ✅ opencode-run mode in script |
-| Adapter layer for agent modes | ❌ None | ✅ 3 adapters + 3 common utilities |
-| Evidence includes agent toolchain | ❌ Basic only | ✅ OpenCode version, tmux status |
-| Safe fallback when agents missing | ❌ Implicit | ✅ Explicit manual-terminal with reason |
-| Block push/PR/merge from agents | ❌ No enforcement | ✅ Deny rules in opencode.json |
-| Agent smoke test capability | ❌ Not possible | ✅ Isolated test project ready |
+| GitHub Issues as agent tasks | ❌ | ✅ Issues + Labels + Template |
+| Agent workflow labels | ❌ | ✅ 14 labels (agent:*, mode:*, risk:*) |
+| n8n reads Issues for context | ❌ | ✅ Workflow prepared (Manual Trigger) |
+| Issue → RUN_INPUT conversion | ❌ | ✅ JS Code validates + prepares |
+| GitHub-aware Runner evidence | ❌ | ✅ `start_github_issue_run.sh` |
+| Evidence Comment Format | ❌ | ✅ Standardized format |
+| RUN_INPUT Schema with SoT | ❌ | ✅ source_of_truth=github |
+| Approval Policy in contract | ❌ | ✅ 5 boolean gates (all default false) |
+| Recovery Runbook | ❌ | ✅ 9 scenarios documented |
 
-## 12. Open Constraints
+### Unchanged Constraints
 
-1. **OpenCode provider/API-key not configured** — blocks autonomous agent runs
-2. **Interactive provider prompt** blocks non-interactive execution (secure by design)
-3. **Hermes not installed** — deliberate, planned as optional sidecar
-4. **No real `opencode-run` execution yet** — pending provider configuration
+| Constraint | Status |
+|------------|--------|
+| No push without approval | ✅ enforced |
+| No PR without approval | ✅ enforced |
+| No merge without approval | ✅ enforced |
+| No GitHub Actions | ✅ enforced (.github/workflows absent) |
+| No provider config without approval | ✅ enforced |
+| No Hermes installation | ✅ deferred |
+| OpenCode Provider/Auth missing | ✅ documented, not configured |
 
-## 13. Next Steps
+## 13. Open Constraints
 
-1. Obtain approval for LLM provider API key configuration on runner
-2. Configure provider via: `opencode providers login`
-3. Run first controlled `opencode-run` execution via n8n form with `llm_command_mode=opencode-run`
-4. Verify evidence production and tmux session behavior
-5. Optional: Hermes as secondary agent (separate, approved run)
+1. **n8n GitHub API Credential fehlt** — Manual Trigger Fallback funktioniert, aber kein automatisierter GitHub Trigger
+2. **OpenCode Provider/Auth nicht konfiguriert** — `mode=opencode-run` fällt auf `manual-terminal` zurück
+3. **Hermes nicht installiert** — `mode=hermes-review` fällt auf `manual-terminal` zurück
+4. **Kein echter End-to-End-Smoke-Test** — benötigt n8n Credential + Runner-Zugriff
 
-## 14. Files Changed in This Run
+## 14. Next Steps
+
+1. **GitHub API Credential in n8n konfigurieren:**
+   - Personal Access Token mit `repo` + `read:org` Scopes
+   - Als n8n Credential `github-n8n-blueprint` speichern
+   - GitHub Trigger Node aktivieren (statt Manual Trigger)
+
+2. **Smoke-Test durchführen:**
+   - Test-Issue mit `[agent] Smoke test GitHub source-of-truth intake` erstellen
+   - Label `agent:ready` setzen
+   - n8n Workflow ausführen
+   - Evidence-Kommentar im Issue prüfen
+
+3. **OpenCode Provider konfigurieren (separate Approval nötig):**
+   - API-Key anfordern
+   - `opencode providers login` ausführen
+   - `mode=opencode-run` aktivieren
+
+4. **Hermes installieren (optional, später):**
+   - Separater, genehmigter Lauf
+
+## 15. Files Changed
 
 ### Modified
-- `CHANGELOG.md` — new entry for OpenCode integration
-- `STATUS.md` — updated component status table
-- `docs/architecture.md` — added agent runtime layer
-- `docs/security-boundaries.md` — added OpenCode security profile
-- `scripts/start_blueprint_bootstrap.sh` — extended with opencode-run support
+- `CHANGELOG.md` — new entry
+- `README.md` — GitHub SoT section + updated structure
+- `STATUS.md` — updated session, components, pending
+- `docs/architecture.md` — GitHub SoT architecture
+- `docs/security-boundaries.md` — GitHub API boundaries
 
 ### Created
-- `agent-adapters/manual_terminal_adapter.sh`
-- `agent-adapters/opencode_adapter.sh`
-- `agent-adapters/hermes_reviewer_adapter.sh.disabled`
-- `agent-adapters/common/run_input_validate.sh`
-- `agent-adapters/common/evidence_write.sh`
-- `agent-adapters/common/security_guard.sh`
-- `templates/opencode.json`
+- `.github/ISSUE_TEMPLATE/agent-task.yml` — Issue template
+- `docs/github-source-of-truth.md` — Architektur-Dokumentation
+- `docs/github-issue-intake-runbook.md` — Betriebs-Runbook
+- `docs/run-input-schema.md` — Schema-Dokumentation
+- `scripts/start_github_issue_run.sh` — Runner-Script
+- `workflows/github-issue-intake.export.json` — n8n Workflow
 
-## 15. Runner Paths Summary
+## 16. Bewertung
 
-```
-/opt/dev-fabric/
-├── opencode/opencode              (159 MB binary, v1.17.9)
-├── workflows/templates/
-│   └── opencode.json              (restrictive security profile)
-├── agent-adapters/
-│   ├── manual_terminal_adapter.sh
-│   ├── opencode_adapter.sh
-│   ├── hermes_reviewer_adapter.sh.disabled
-│   └── common/
-│       ├── run_input_validate.sh
-│       ├── evidence_write.sh
-│       └── security_guard.sh
-├── workspaces/projects/
-│   └── opencode-smoke-test/       (isolated test project)
-└── scripts/
-    └── start_blueprint_bootstrap.sh (enhanced, 503 lines)
-
-/usr/local/bin/opencode → /opt/dev-fabric/opencode/opencode
-/usr/bin/tmux (v3.3a)
-```
+**GREEN_PARTIAL** — Die GitHub Source-of-Truth-Infrastruktur ist vollständig aufgebaut und dokumentiert. Alle Repo-Dateien, Scripts, Templates und der n8n Workflow sind vorbereitet. Zwei Blocker (n8n GitHub Credential und OpenCode Provider/Auth) benötigen separate Approval und sind im Runbook dokumentiert.

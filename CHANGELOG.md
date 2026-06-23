@@ -1,5 +1,53 @@
 # CHANGELOG
 
+## 2026-06-23 — GitHub Source of Truth Intake
+
+### Completed
+- **GitHub als Source of Truth** für n8n/Runner-Agentenläufe eingeführt:
+  - GitHub Issue = Auftrag (Source of Truth)
+  - n8n = Orchestrator / Router / Status-Synchronizer
+  - Runner = Execution Boundary
+  - Issue Comments = Evidence-Zusammenfassung
+- **14 Agent-Labels** im Repo angelegt:
+  - `agent:queued`, `agent:ready`, `agent:running`, `agent:blocked`, `agent:needs-review`, `agent:done`
+  - `evidence:attached`, `human-approval-required`
+  - `mode:manual-terminal`, `mode:opencode-run`, `mode:hermes-review`
+  - `risk:low`, `risk:medium`, `risk:high`
+- **Issue Template** erstellt: `.github/ISSUE_TEMPLATE/agent-task.yml`
+  - Pflichtfelder: Aufgabe, Kontext, Akzeptanzkriterien, Verification Contract
+  - Label-Vorgaben: `agent:queued`, `mode:manual-terminal`, `human-approval-required`
+  - Approval-Checkboxen: Push, PR, Merge, GitHub Actions, Provider-Konfiguration
+- **Dokumentation** erstellt:
+  - `docs/github-source-of-truth.md` — Architektur, Regeln, Labelmodell, Contracts
+  - `docs/github-issue-intake-runbook.md` — Normalbetrieb + 9 Recovery-Szenarien
+  - `docs/run-input-schema.md` — Vollständiges RUN_INPUT-Schema mit GitHub SoT
+- **Runner-Script** erstellt: `scripts/start_github_issue_run.sh`
+  - Validiert `source_of_truth=github`
+  - Erzeugt Evidence unter `/opt/dev-fabric/evidence/github-agent-runs/<owner>/<repo>/issue-<number>/<run_id>/`
+  - Schreibt: status.json, run-report.md, commands.log, agent.log, github-context.md
+  - Blockiert `mode=opencode-run` wenn Provider nicht konfiguriert (fällt auf manual-terminal zurück)
+- **n8n Workflow** erstellt: `workflows/github-issue-intake.export.json`
+  - 9 Nodes: Manual Trigger → Validate → Prepare RUN_INPUT → SSH Write → SSH Start → Wait → SSH Read → Format Comment → Format Result
+  - Manual Trigger Fallback (kein GitHub Trigger bis Credential konfiguriert)
+  - Evidence Comment Format standardisiert
+- **RUN_INPUT Schema** um GitHub SoT-Felder erweitert
+  - `source_of_truth: "github"`
+  - `github.issue_url`, `github.issue_number`, `github.trigger_label`
+  - `approval_policy` Block (push, pr, merge, github_actions, provider_config)
+- **GitHub Issue #1** erstellt: `feat: GitHub als Source of Truth für n8n/Runner-Agentenläufe einführen`
+  - Labels: `agent:queued`, `mode:manual-terminal`, `risk:medium`, `human-approval-required`, `enhancement`
+- **Dokumentation aktualisiert:** README.md, STATUS.md, CHANGELOG.md
+
+### Key Findings
+- GitHub Labels lassen sich via `gh label create --force` idempotent verwalten
+- Agent-Aufträge können vollständig über GitHub Issues + Labels gesteuert werden
+- n8n GitHub API Credential benötigt nur `repo` + `read:org` Scopes (kein workflow, admin, secrets)
+- `mode=manual-terminal` bleibt sicherer Default — kein Provider/API-Key nötig
+- OpenCode v1.17.9 ist als Runtime erkannt, aber ohne Provider/Auth nicht autonom
+
+### Status
+**GREEN_PARTIAL** — GitHub Source-of-Truth-Infrastruktur ist vollständig aufgebaut. n8n GitHub Credential und OpenCode Provider/Auth fehlen noch (benötigen separate Approval).
+
 ## 2026-06-23 — OpenCode Runner Integration (Controlled)
 
 ### Completed
