@@ -278,7 +278,13 @@ write_raw "$PROJECT_DIR/LICENSE" $'MIT License\n\nCopyright (c) 2026\n\nPermissi
 write_raw "$PROJECT_DIR/.gitignore" $'node_modules/\n.dist/\n.venv/\n.env\n*.db\n*.db-shm\n*.db-wal\n'
 write_raw "$PROJECT_DIR/.editorconfig" $'root = true\n\n[*]\ncharset = utf-8\nend_of_line = lf\ninsert_final_newline = true\nindent_style = space\nindent_size = 2\n'
 write_raw "$PROJECT_DIR/.env.example" $'# No secrets here.\n'
-write_raw "$PROJECT_DIR/opencode.json" $'{\n  "autoShare": false,\n  "disableAutoUpdate": true,\n  "localOnly": true\n}\n'
+# Copy restrictive opencode.json from template if available, otherwise write minimal stub
+OPENCODE_CONFIG_TEMPLATE="/opt/dev-fabric/workflows/templates/opencode.json"
+if [[ -f "$OPENCODE_CONFIG_TEMPLATE" ]]; then
+  cp "$OPENCODE_CONFIG_TEMPLATE" "$PROJECT_DIR/opencode.json"
+else
+  write_raw "$PROJECT_DIR/opencode.json" $'{\n  "$schema": "https://opencode.ai/config.json",\n  "share": "disabled",\n  "autoupdate": false,\n  "permission": { "*": "ask", "edit": "ask", "bash": { "*": "ask", "git push*": "deny", "gh pr create*": "deny", "gh workflow run*": "deny", "rm -rf *": "deny" } }\n}\n'
+fi
 
 write_md_stub "$PROJECT_DIR/specs/001-initial-blueprint/spec.md" "Initial Blueprint Spec" "This folder holds the first spec slice for the imported blueprint."
 write_md_stub "$PROJECT_DIR/specs/001-initial-blueprint/plan.md" "Initial Blueprint Plan" "Break the imported blueprint into small, evidence-backed steps."
@@ -298,20 +304,71 @@ MANUAL_REASON="Manual-Terminal-Modus vorbereitet; OpenCode/Hermes/LLM wurde nich
 AGENT_STATUS="GREEN_PARTIAL"
 TMUX_SESSION="$SESSION_NAME"
 
-if [[ "$LLM_COMMAND_MODE" == "opencode-run" ]] && have_cmd opencode && have_cmd tmux && [[ "$SPECIFY_INIT_STATUS" -eq 0 ]]; then
-  EFFECTIVE_MODE="opencode-run"
-  AGENT_STATUS="GREEN"
-  MANUAL_REASON=""
-  export OPENCODE_AUTO_SHARE=false
-  export OPENCODE_DISABLE_AUTOUPDATE=true
-  FINAL_AGENT_MESSAGE='Du befindest dich in einem neuen Projektordner. Lies vollst├ñndig ./INITIALISIERUNG_PROMPT_BLUEPRINT.md und ./BLUEPRINT.md. Befolge INITIALISIERUNG_PROMPT_BLUEPRINT.md als ausf├╝hrenden Bootstrap-Auftrag. BLUEPRINT.md ist die fachliche Source of Truth. Arbeite spec-first, evidence-first und local-only. Erzeuge keine GitHub Actions mit automatischem push/pull_request Trigger. Kein Push, kein PR, kein Merge. Keine Secrets. Am Ende erzeuge einen Run-Report mit Status GREEN/GREEN_PARTIAL/BLOCKED.'
-  tmux new-session -d -s "$TMUX_SESSION" bash -lc "cd \"$PROJECT_DIR\" && opencode run --dir \"$PROJECT_DIR\" --file \"$PROJECT_DIR/INITIALISIERUNG_PROMPT_BLUEPRINT.md\" --file \"$PROJECT_DIR/BLUEPRINT.md\" \"$FINAL_AGENT_MESSAGE\""
+# ── OpenCode Run Mode ───────────────────────────────────────────────
+OPENCODE_AVAILABLE=false
+OPENCODE_VERSION="not-installed"
+if have_cmd opencode; then
+  OPENCODE_VERSION="$(opencode --version 2>/dev/null || echo "unknown")"
+  OPENCODE_AVAILABLE=true
+fi
+
+TMUX_AVAILABLE=false
+if have_cmd tmux; then
+  TMUX_AVAILABLE=true
+fi
+
+if [[ "$LLM_COMMAND_MODE" == "opencode-run" ]]; then
+  if ! $OPENCODE_AVAILABLE; then
+    MANUAL_REASON="opencode-run requested but opencode is not installed on this runner. Falling back to manual-terminal."
+    EFFECTIVE_MODE="manual-terminal"
+    AGENT_STATUS="GREEN_PARTIAL"
+  elif ! $TMUX_AVAILABLE; then
+    MANUAL_REASON="opencode-run requested but tmux is not installed on this runner. Falling back to manual-terminal."
+    EFFECTIVE_MODE="manual-terminal"
+    AGENT_STATUS="GREEN_PARTIAL"
+  elif [[ ! -f "$PROJECT_DIR/opencode.json" ]]; then
+    MANUAL_REASON="opencode-run requested but opencode.json is missing from project directory. Falling back to manual-terminal."
+    EFFECTIVE_MODE="manual-terminal"
+    AGENT_STATUS="GREEN_PARTIAL"
+  elif [[ ! -f "$PROJECT_DIR/BLUEPRINT.md" ]]; then
+    MANUAL_REASON="opencode-run requested but BLUEPRINT.md is missing. Falling back to manual-terminal."
+    EFFECTIVE_MODE="manual-terminal"
+    AGENT_STATUS="GREEN_PARTIAL"
+  elif [[ ! -f "$PROJECT_DIR/INITIALISIERUNG_PROMPT_BLUEPRINT.md" ]]; then
+    MANUAL_REASON="opencode-run requested but INITIALISIERUNG_PROMPT_BLUEPRINT.md is missing. Falling back to manual-terminal."
+    EFFECTIVE_MODE="manual-terminal"
+    AGENT_STATUS="GREEN_PARTIAL"
+  elif [[ "$SPECIFY_INIT_STATUS" -ne 0 ]]; then
+    MANUAL_REASON="opencode-run requested but SpecKit init did not complete cleanly. Falling back to manual-terminal."
+    EFFECTIVE_MODE="manual-terminal"
+    AGENT_STATUS="GREEN_PARTIAL"
+  else
+    EFFECTIVE_MODE="opencode-run"
+    AGENT_STATUS="GREEN"
+    MANUAL_REASON=""
+    export OPENCODE_AUTO_SHARE=false
+    export OPENCODE_DISABLE_AUTOUPDATE=true
+
+    FINAL_AGENT_MESSAGE='Du befindest dich in einem neuen Projektordner. Lies vollstaendig ./INITIALISIERUNG_PROMPT_BLUEPRINT.md und ./BLUEPRINT.md. Befolge INITIALISIERUNG_PROMPT_BLUEPRINT.md als ausfuehrenden Bootstrap-Auftrag. BLUEPRINT.md ist die fachliche Source of Truth. Arbeite spec-first, evidence-first und local-only. Erzeuge keine GitHub Actions mit automatischem push/pull_request Trigger. Kein Push, kein PR, kein Merge. Keine Secrets. Am Ende erzeuge einen Run-Report mit Status GREEN/GREEN_PARTIAL/BLOCKED.'
+
+    TMUX_SESSION="${SESSION_NAME}"
+    tmux new-session -d -s "$TMUX_SESSION" \
+      bash -lc "cd \"$PROJECT_DIR\" && exec opencode run \"$FINAL_AGENT_MESSAGE\" 2>&1 | tee -a \"$AGENT_LOG\""
+
+    echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] opencode-run started in tmux session: $TMUX_SESSION" >> "$AGENT_LOG"
+    echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] opencode_version=$OPENCODE_VERSION" >> "$AGENT_LOG"
+    echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] project_dir=$PROJECT_DIR" >> "$AGENT_LOG"
+  fi
 fi
 
 cat > "$AGENT_LOG" <<EOF
 [$(date -u +%Y-%m-%dT%H:%M:%SZ)] bootstrap started
 [$(date -u +%Y-%m-%dT%H:%M:%SZ)] effective_mode=$EFFECTIVE_MODE
+[$(date -u +%Y-%m-%dT%H:%M:%SZ)] requested_mode=$LLM_COMMAND_MODE
 [$(date -u +%Y-%m-%dT%H:%M:%SZ)] manual_reason=${MANUAL_REASON:-}
+[$(date -u +%Y-%m-%dT%H:%M:%SZ)] opencode_available=$OPENCODE_AVAILABLE
+[$(date -u +%Y-%m-%dT%H:%M:%SZ)] opencode_version=$OPENCODE_VERSION
+[$(date -u +%Y-%m-%dT%H:%M:%SZ)] tmux_available=$TMUX_AVAILABLE
 [$(date -u +%Y-%m-%dT%H:%M:%SZ)] blueprint_sha256=$BLUEPRINT_SHA256
 EOF
 
@@ -328,6 +385,11 @@ Workflow status: $AGENT_STATUS
 Mode: $EFFECTIVE_MODE
 Manual reason: ${MANUAL_REASON:-}
 
+OpenCode available: $OPENCODE_AVAILABLE
+OpenCode version: $OPENCODE_VERSION
+Tmux available: $TMUX_AVAILABLE
+Hermes available: no (not installed, planned as optional sidecar)
+
 Project:
 $PROJECT_TITLE
 
@@ -340,7 +402,7 @@ $RUN_ID
 Evidence:
 $RUN_DIR
 
-Attach:
+Attach (SSH + tmux):
 ssh runner@192.168.1.53
 tmux attach -t $TMUX_SESSION
 
@@ -362,12 +424,21 @@ Requested mode: $LLM_COMMAND_MODE
 Effective mode: $EFFECTIVE_MODE
 Manual reason: ${MANUAL_REASON:-}
 
+## Toolchain
+
+- OpenCode available: $OPENCODE_AVAILABLE
+- OpenCode version: $OPENCODE_VERSION
+- Tmux available: $TMUX_AVAILABLE
+- Hermes available: no (not installed, planned as optional sidecar)
+- Tmux session: $TMUX_SESSION
+
 ## What was built?
 
 - A runner-side bootstrap flow that writes the submitted blueprint into the project directory.
 - A canonical initialization prompt copied into the project.
 - A SpecKit initialization run from the local source checkout.
 - Evidence, operator commands, and a redacted RUN_INPUT snapshot.
+- A restrictive opencode.json security profile copied from template.
 
 ## Relevant Paths
 
@@ -376,20 +447,24 @@ Manual reason: ${MANUAL_REASON:-}
 - Logs: $LOG_DIR
 - Blueprint: $PROJECT_DIR/BLUEPRINT.md
 - Prompt: $PROJECT_DIR/INITIALISIERUNG_PROMPT_BLUEPRINT.md
+- OpenCode config: $PROJECT_DIR/opencode.json
 - Status: $STATUS_JSON
 - Operator commands: $OPERATOR_COMMANDS
 
 ## Limits
 
 - OpenCode/Hermes were not started automatically unless the runner had the toolchain and tmux available.
+- No --yolo, no approval bypass, no auto-push, no auto-PR, no auto-merge.
+- Hermes is deliberately NOT installed in this run (planned as optional sidecar).
 - The current runner state is therefore partial, not blocked.
 
 ## Was kann die Software jetzt im Vergleich zum vorherigen Lauf?
 
-- The blueprint input can be transferred safely into the runner as RUN_INPUT.json.
-- The bootstrap script now records task_text in smoke-run evidence.
-- The bootstrap path now prepares a project scaffold instead of stopping at a smoke-only iteration report.
-- Manual-terminal fallback is explicit and documented.
+- OpenCode v1.17.9 is installed as a standalone binary on the runner.
+- A restrictive opencode.json security profile is applied to all new projects.
+- start_blueprint_bootstrap.sh supports opencode-run mode with tmux.
+- Manual-terminal remains the safe default.
+- Evidence now includes opencode version and availability.
 EOF
 
 status_json="$(jq -n \
@@ -417,7 +492,11 @@ status_json="$(jq -n \
   --arg agent_log "$AGENT_LOG" \
   --arg preflight_md "$PREFLIGHT_MD" \
   --arg commands_log "$COMMANDS_LOG" \
-  '{status:$status, requested_mode:$requested_mode, effective_mode:$effective_mode, manual_reason:$manual_reason, project_slug:$project_slug, project_title:$project_title, run_id:$run_id, project_dir:$project_dir, run_dir:$run_dir, log_dir:$log_dir, session_name:$session_name, blueprint_sha256:$blueprint_sha256, blueprint_length:$blueprint_length, blueprint_source:$blueprint_source, blueprint_filename:$blueprint_filename, dry_run:$dry_run, max_runtime_minutes:$max_runtime_minutes, allow_github_issue_script_generation:$allow_github_issue_script_generation, allow_github_actions_files:$allow_github_actions_files, run_report:$run_report, operator_commands:$operator_commands, agent_log:$agent_log, preflight_md:$preflight_md, commands_log:$commands_log}' \
+  --arg opencode_available "$OPENCODE_AVAILABLE" \
+  --arg opencode_version "$OPENCODE_VERSION" \
+  --arg tmux_available "$TMUX_AVAILABLE" \
+  --arg hermes_available "no" \
+  '{status:$status, requested_mode:$requested_mode, effective_mode:$effective_mode, manual_reason:$manual_reason, project_slug:$project_slug, project_title:$project_title, run_id:$run_id, project_dir:$project_dir, run_dir:$run_dir, log_dir:$log_dir, session_name:$session_name, blueprint_sha256:$blueprint_sha256, blueprint_length:$blueprint_length, blueprint_source:$blueprint_source, blueprint_filename:$blueprint_filename, dry_run:$dry_run, max_runtime_minutes:$max_runtime_minutes, allow_github_issue_script_generation:$allow_github_issue_script_generation, allow_github_actions_files:$allow_github_actions_files, run_report_path:$run_report, operator_commands_path:$operator_commands, agent_log_path:$agent_log, preflight_md_path:$preflight_md, commands_log_path:$commands_log, opencode_available:$opencode_available, opencode_version:$opencode_version, tmux_available:$tmux_available, hermes_available:$hermes_available}' \
 )"
 printf '%s\n' "$status_json" > "$STATUS_JSON"
 

@@ -1,0 +1,61 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  "share": "disabled",
+  "autoupdate": false,
+  "snapshot": true,
+
+  "instructions": [
+    "AGENTS.md",
+    "PROJECT_CONTEXT.md",
+    "SECURITY.md",
+    ".opencode/instructions/*.md"
+  ],
+
+  "mcp": {},
+
+  "permission": {
+    "*": "ask",
+    "read": "allow",
+    "grep": "allow",
+    "glob": "allow",
+    "edit": "ask",
+    "bash": {
+      "*": "ask",
+      "git status*": "allow",
+      "git diff*": "allow",
+      "git log*": "allow",
+      "git fetch*": "allow",
+      "ls*": "allow",
+      "pwd": "allow",
+      "cat *": "allow",
+      "find *": "allow",
+      "grep *": "allow",
+      "python3 -m json.tool *": "allow",
+      "bash tests/*": "ask",
+      "npm test*": "ask",
+      "pnpm test*": "ask",
+      "pytest*": "ask",
+      "git push*": "deny",
+      "git commit*": "ask",
+      "gh pr create*": "deny",
+      "gh workflow run*": "deny",
+      "gh issue comment*": "ask",
+      "rm -rf *": "deny",
+      "rm *": "deny",
+      "docker *": "deny",
+      "curl *": "ask",
+      "wget *": "ask"
+    },
+    "webfetch": "ask",
+    "websearch": "ask",
+    "task": {
+      "*": "deny"
+    },
+    "skill": {
+      "*": "deny"
+    },
+    "external_directory": "deny",
+    "doom_loop": "deny"
+  }
+}

@@ -38,6 +38,29 @@ Zone 3: Evidence / Workspace (read-only for n8n)
 | SSH → Runner | Filesystem path sanitization |
 | Runner → Script | Template variable escaping |
 
+## OpenCode Security Profile
+
+| Permission | Policy | Rationale |
+|-----------|--------|-----------|
+| `*` (default) | ask | No silent operations |
+| read, grep, glob | allow | Read-only inspection safe |
+| edit | ask | File modifications require approval |
+| git push* | deny | No remote writes |
+| gh pr create* | deny | No pull requests |
+| gh workflow run* | deny | No CI/CD triggers |
+| rm -rf * | deny | No destructive operations |
+| docker * | deny | No container manipulation |
+| webfetch/websearch | ask | External access needs approval |
+| task/skill | deny | No subagent delegation |
+| external_directory | deny | No filesystem escape |
+
+### OpenCode Safe Defaults
+- `share`: disabled (no remote sharing)
+- `autoupdate`: false (no automatic updates)
+- `mcp`: {} (no MCP servers configured)
+- `--yolo`: never (approval always required)
+- Provider/Auth: explicitly NOT configured (requires separate approval)
+
 ## Audit Trail
 
 See `evidence-index/` for known evidence paths and `evidence-index/latest.md` for current session report.

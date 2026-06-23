@@ -63,8 +63,35 @@ User Browser (form)
 
 | Script | Purpose |
 |--------|---------|
-| `start_blueprint_bootstrap.sh` | Main bootstrap orchestrator |
+| `start_blueprint_bootstrap.sh` | Main bootstrap orchestrator (supports manual-terminal + opencode-run) |
 | `speckit_iteration.sh` | Speckit workflow iteration runner |
+| `agent-adapters/manual_terminal_adapter.sh` | Safe default — no agent autonomy |
+| `agent-adapters/opencode_adapter.sh` | Controlled OpenCode launch in tmux with security profile |
+| `agent-adapters/hermes_reviewer_adapter.sh.disabled` | Placeholder for future Hermes integration |
+| `agent-adapters/common/run_input_validate.sh` | Validates RUN_INPUT.json structure and security |
+| `agent-adapters/common/evidence_write.sh` | Standardized evidence writing |
+| `agent-adapters/common/security_guard.sh` | Pre-execution security checks |
+
+### Agent Runtime Layer
+
+```
+n8n Form → RUN_INPUT.json → start_blueprint_bootstrap.sh
+                                  |
+                    ┌─────────────┼─────────────┐
+                    |             |             |
+              manual-terminal  opencode-run  (hermes-run)
+              (safe default)   (tmux)        (planned)
+                                    |
+                              OpenCode v1.17.9
+                              /opt/dev-fabric/opencode/opencode
+                                    |
+                              opencode.json (restrictive)
+                              • git push → deny
+                              • gh pr create → deny
+                              • gh workflow run → deny
+                              • edit → ask
+                              • bash → ask (selective allow)
+```
 
 ### Evidence Structure
 

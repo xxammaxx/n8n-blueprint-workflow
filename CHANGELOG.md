@@ -1,5 +1,44 @@
 # CHANGELOG
 
+## 2026-06-23 — OpenCode Runner Integration (Controlled)
+
+### Completed
+- **OpenCode v1.17.9 installed** on Runner (LXC 102):
+  - Standalone binary from GitHub Releases (`anomalyco/opencode`)
+  - Installed at `/opt/dev-fabric/opencode/opencode` (159 MB)
+  - Symlinked to `/usr/local/bin/opencode`
+  - No Node.js required (native binary)
+- **Tmux v3.3a confirmed** available at `/usr/bin/tmux`
+- **Restrictive `opencode.json` template** created:
+  - Located at `/opt/dev-fabric/workflows/templates/opencode.json`
+  - Default: ask for all operations
+  - Blocked: git push, gh pr create, gh workflow run, rm -rf, docker
+  - No auto-push, no auto-PR, no auto-merge
+  - Copied into every new project directory
+- **`start_blueprint_bootstrap.sh` enhanced** (503 lines):
+  - OpenCode availability and version recorded in evidence
+  - `opencode-run` mode starts OpenCode in tmux session
+  - Graceful fallback to `manual-terminal` when OpenCode/tmux missing
+  - Tmux session name, attach/stop/log commands written to evidence
+- **Adapter Layer deployed** at `/opt/dev-fabric/agent-adapters/`:
+  - `manual_terminal_adapter.sh` — safe default (no agent)
+  - `opencode_adapter.sh` — controlled OpenCode in tmux
+  - `hermes_reviewer_adapter.sh.disabled` — placeholder (not executable)
+  - `common/` — validation, evidence writing, security guard utilities
+- **Smoke Test project created** at `/opt/dev-fabric/workspaces/projects/opencode-smoke-test/`
+- **OpenCode verified:** `--version` → 1.17.9, `--help` → all commands listed
+- **Hermes deliberately NOT installed** (planned as optional future sidecar)
+- **Provider/Auth status documented:** No LLM provider configured yet
+
+### Key Findings
+- `opencode.ai` install script URL not reachable from Runner → used GitHub Releases direct download
+- OpenCode binary is fully self-contained (no Node.js, no npm needed)
+- OpenCode cannot run autonomously without a configured LLM provider
+- Interactive provider prompt blocks non-interactive execution (expected, secure)
+
+### Status
+**GREEN_PARTIAL** — OpenCode installed and configured, but LLM provider/API-key needs separate approval.
+
 ## 2026-06-23 — Runner Permission Fix & Full Evidence Production
 
 ### Completed

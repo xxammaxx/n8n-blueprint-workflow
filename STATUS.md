@@ -1,8 +1,8 @@
 # STATUS: GREEN_PARTIAL
 
-**Last Updated:** 2026-06-23T07:30:00Z
-**Session:** runner-permission-fix
-**Previous Session:** ssh-credential-runner-test
+**Last Updated:** 2026-06-23T10:00:00Z
+**Session:** opencode-runner-integration
+**Previous Session:** runner-permission-fix
 
 ## Current State
 
@@ -10,23 +10,25 @@
 |-----------|--------|--------|
 | n8n Service | UP | Running since 2026-06-23T06:16:38Z |
 | Debug Form (`/form/debug-minimal-form-ui`) | HTTP 200 | Working reference |
-| Old Blueprint Form (`/form/blueprint-speckit-bootstrap`) | HTTP 404 | Broken — legacy, not fixable |
-| Slug Form (`/form/blueprint-speckit-bootstrap-v2`) | HTTP 404 | Slug URL never worked — use UUID |
 | **V2 Production Form** (`/form/ae9f52c1-...`) | **HTTP 200** | **LIVE** — UUID preserved |
-| V2 Test Form (`/form-test/ae9f52c1-...`) | HTTP 404 | Expected — only works in editor test mode |
 | V2 Workflow (Published) | YES | Published and active |
 | V2 Workflow (Active) | YES | Active — executing successfully |
 | Form Submission (Browser) | ✅ SUCCESS | Browser-based form submit works |
-| Form Submission (curl) | ⚠️ NULL FIELDS | curl multipart fields parsed as null — use browser or `field-N` names |
 | `dev-runner-ssh` Credential | ✅ VERIFIED | Host=192.168.1.53, Port=22, User=runner, Auth=PrivateKey |
 | **SSH Nodes (Write/Start/Read)** | ✅ ALL SUCCESS | All 3 SSH nodes execute and return data |
-| JS Code (Validate node) | ✅ FIXED | `crypto` replaced with pure-JS; doubled quotes fixed |
 | **End-to-End Execution** | ✅ SUCCESS | Executions #10 and #14: all 8 nodes ✅ |
-| **Runner Permissions** | ✅ FIXED | `chown runner:runner` on projects/evidence/logs subdirs |
-| **Runner Evidence** | ✅ PRODUCED | BLUEPRINT.md, INITIALISIERUNG_PROMPT_BLUEPRINT.md, status.json, run-report.md, agent.log, etc. |
-| **Project Directory** | ✅ CREATED | Full SpecKit structure with git repo, .github/, .opencode/, .specify/ |
+| **Runner Permissions** | ✅ FIXED | `chown runner:runner` on operational subdirs |
+| **Runner Evidence** | ✅ PRODUCED | Full evidence chain operational |
+| **OpenCode v1.17.9** | ✅ INSTALLED | Standalone binary at `/opt/dev-fabric/opencode/opencode` |
+| **OpenCode Config** | ✅ DEPLOYED | Restrictive `opencode.json` template (no auto-push/PR/merge) |
+| **OpenCode Provider/Auth** | ⚠️ NOT CONFIGURED | No LLM provider configured — needs separate approval |
+| **Tmux** | ✅ AVAILABLE | v3.3a at `/usr/bin/tmux` |
+| **Hermes** | ❌ NOT INSTALLED | Deliberately excluded — planned as optional sidecar |
+| **Adapter Layer** | ✅ DEPLOYED | `manual_terminal_adapter.sh`, `opencode_adapter.sh`, security utils |
+| **`opencode-run` Mode** | ✅ SUPPORTED | `start_blueprint_bootstrap.sh` handles `opencode-run` in tmux |
+| **`manual-terminal`** | ✅ DEFAULT | Safe fallback when OpenCode unavailable |
 | Git Repo (local) | ACTIVE | `C:\n8n-blueprint-workflow` |
-| Git Repo (GitHub) | LIVE | `https://github.com/xxammaxx/n8n-blueprint-workflow` — commit `b9022d6` |
+| Git Repo (GitHub) | LIVE | `https://github.com/xxammaxx/n8n-blueprint-workflow` — commit `4599829` |
 
 ## UUID-Based Production URL
 
@@ -101,16 +103,19 @@ The old `blueprint-speckit-opencode-bootstrap` workflow has a persistent webhook
 
 ## What's Pending
 
-- [ ] Install OpenCode/Hermes on runner (needed for full GREEN — next separate run)
-- [ ] Investigate curl form submission null-field issue (n8n v2.26.8 — use `field-N` names as workaround?)
-- [ ] Path switch from UUID to stable slug (if desired — may not be possible in n8n)
+- [ ] Configure LLM provider for OpenCode (needs separate API-key approval)
+- [ ] First real `opencode-run` execution with provider configured
+- [ ] Optional: Hermes as secondary reviewer/agent (future run)
+- [ ] Optional: Investigate `field-N` form field naming for curl compatibility
 
 ## Blockers
 
-- OpenCode/Hermes not yet installed on runner (needed for full GREEN)
+- OpenCode provider/API-key not yet configured (blocks autonomous agent runs)
+- OpenCode interactive provider prompt blocks non-interactive execution
 
 ## Next Steps
 
-1. Install OpenCode on runner for full GREEN status (separate, approved run)
-2. Optional: Hermes as secondary reviewer/agent
-3. Optional: Investigate `field-N` form field naming for curl compatibility
+1. Obtain approval for LLM provider API key configuration
+2. Configure provider via `opencode providers login`
+3. Run first controlled `opencode-run` execution via n8n form
+4. Optional: Hermes as secondary agent (separate, approved run)

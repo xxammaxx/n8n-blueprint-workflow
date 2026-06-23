@@ -1,0 +1,18 @@
+# Hermes Reviewer Adapter — DISABLED
+# 
+# Hermes is deliberately NOT installed in this run.
+# It remains an optional future sidecar for:
+#   - Research assistance
+#   - Code review
+#   - Runbook improvement
+#   - Skill/memory suggestions
+#   - Evidence analysis
+#
+# To enable in a future run:
+#   1. Install Hermes on the runner
+#   2. Rename this file to hermes_reviewer_adapter.sh
+#   3. Make executable: chmod +x hermes_reviewer_adapter.sh
+#   4. Add approval from human operator
+#
+# This file is intentionally NOT executable.
+# Do not rename or enable without explicit approval.
