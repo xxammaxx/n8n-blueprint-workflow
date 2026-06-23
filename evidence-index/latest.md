@@ -1,10 +1,10 @@
-# Evidence Report — runner-permission-fix-20260623T073000Z
+# Evidence Report — opencode-runner-integration-20260623T100000Z
 
 ## Status: GREEN_PARTIAL
 
-**Session ID:** runner-permission-fix
-**Completed:** 2026-06-23T07:30:00Z
-**Previous Session:** ssh-credential-runner-test
+**Session ID:** opencode-runner-integration
+**Completed:** 2026-06-23T10:00:00Z
+**Previous Session:** runner-permission-fix
 **Orchestrator:** issue-orchestrator (opencode)
 
 ---
@@ -16,114 +16,116 @@
 | Local path | `C:\n8n-blueprint-workflow` |
 | GitHub URL | `https://github.com/xxammaxx/n8n-blueprint-workflow` |
 | Remote branch | `main` |
-| Previous commit | `b9022d6` |
-| Push status | Pending (after doc updates) |
+| Previous commit | `4599829` |
+| New commit | `06ea982` |
+| Push status | ✅ Pushed to GitHub |
 
-## 2. Permission Fix
-
-### Problem Diagnosed
-```
-/opt/dev-fabric/workspaces/       runner:runner  drwxr-x--- ✅
-├── projects/                      root:root      drwxr-xr-x ❌ runner can't write!
-/opt/dev-fabric/evidence/         runner:runner  drwxr-x--- ✅
-├── blueprint-bootstrap/           root:root      drwxr-xr-x ❌ runner can't write!
-/opt/dev-fabric/logs/             runner:runner  drwxr-x--- ✅
-└── blueprint-bootstrap/           root:root      drwxr-xr-x ❌ runner can't write!
-```
-
-### Fix Applied (Limited Scope)
-```bash
-chown -R runner:runner /opt/dev-fabric/workspaces/projects
-chown -R runner:runner /opt/dev-fabric/evidence/blueprint-bootstrap
-chown -R runner:runner /opt/dev-fabric/logs/blueprint-bootstrap
-chmod 750 /opt/dev-fabric/workspaces/projects /opt/dev-fabric/evidence/blueprint-bootstrap /opt/dev-fabric/logs/blueprint-bootstrap
-```
-
-### NOT Changed (Safety)
-- `/opt/dev-fabric/n8n` — untouched ✅
-- `/opt/dev-fabric/workspaces/spec-kit-src` — untouched (world-readable) ✅
-- `/opt/dev-fabric/scripts` — untouched (already runner-owned) ✅
-- `/opt/dev-fabric/evidence/n8n-blueprint-workflow` — untouched ✅
-- No private keys, no backups, no system paths changed ✅
-
-### Write Test as `runner`
-```
-PASS: /opt/dev-fabric/workspaces/projects → ok
-PASS: /opt/dev-fabric/evidence/blueprint-bootstrap → ok
-PASS: /opt/dev-fabric/logs/blueprint-bootstrap → ok
-```
-
-## 3. Form Submission (Browser)
+## 2. OpenCode Installation
 
 | Field | Value |
 |-------|-------|
-| URL | `http://192.168.1.52:5678/form/ae9f52c1-b02f-4ebc-b7ba-a91f8ddc6e60` |
-| Method | Browser submit (Playwright) |
-| project_slug | `perm-fix-test` |
-| project_title | `Permission Fix Test` |
-| llm_command_mode | `manual-terminal` |
-| Response | "Your response has been recorded" ✅ |
+| OpenCode previously installed | no |
+| OpenCode installed | ✅ yes |
+| Version | v1.17.9 |
+| Install method | GitHub Releases direct download (`anomalyco/opencode`) |
+| Binary location | `/opt/dev-fabric/opencode/opencode` (166,897,792 bytes) |
+| Symlink | `/usr/local/bin/opencode` |
+| Node.js required | no (standalone native binary) |
+| Provider/Auth configured | ❌ no (needs separate approval) |
+| `opencode --version` verified | ✅ 1.17.9 |
+| `opencode --help` verified | ✅ all commands listed |
+| `opencode providers list` | ✅ 0 credentials (expected) |
+| `opencode run` without provider | ⚠️ hangs (waits for interactive provider config) |
 
-## 4. n8n Execution #14
+## 3. OpenCode Security Profile (`opencode.json`)
 
-| # | Node | Status | Duration |
-|---|------|--------|----------|
-| 1 | Form Trigger | ✅ success | ~1ms |
-| 2 | Validate + Extract Blueprint | ✅ success | ~14ms |
-| 3 | Prepare RUN_INPUT | ✅ success | ~7ms |
-| 4 | SSH — Write RUN_INPUT to Runner | ✅ success | ~25s |
-| 5 | SSH — Start Blueprint Bootstrap | ✅ success | ~25s |
-| 6 | Wait — Initial Status Delay | ✅ success | ~10s |
-| 7 | SSH — Read Status | ✅ success | ~25s |
-| 8 | Format Result | ✅ success | ~17ms |
+| Field | Value |
+|-------|-------|
+| Template created | ✅ yes |
+| Template location (runner) | `/opt/dev-fabric/workflows/templates/opencode.json` |
+| Template location (repo) | `templates/opencode.json` |
+| Default permission | `ask` |
+| `git push*` | `deny` |
+| `gh pr create*` | `deny` |
+| `gh workflow run*` | `deny` |
+| `rm -rf *` | `deny` |
+| `docker *` | `deny` |
+| `edit` | `ask` |
+| `webfetch/websearch` | `ask` |
+| `share` | `disabled` |
+| `autoupdate` | `false` |
+| `mcp` | `{}` (none configured) |
+| Copied to new projects | ✅ by `start_blueprint_bootstrap.sh` |
 
-**Overall: SUCCESS — 87s total runtime.**
+## 4. Runner Script Enhancement
 
-## 5. Runner Evidence Produced
+| Field | Value |
+|-------|-------|
+| Script updated | `start_blueprint_bootstrap.sh` |
+| Lines | 503 (was 424) |
+| `manual-terminal` default | ✅ yes |
+| `opencode-run` supported | ✅ yes |
+| Tmux session creation | ✅ yes |
+| Graceful fallback on missing OpenCode | ✅ yes |
+| OpenCode version in evidence | ✅ yes |
+| OpenCode availability in evidence | ✅ yes |
+| Tmux availability in evidence | ✅ yes |
+| Syntax check (bash -n) | ✅ passed |
 
-### Project Directory
-```
-/opt/dev-fabric/workspaces/projects/perm-fix-test/
-├── BLUEPRINT.md ✅
-├── BLUEPRINT_FINAL.md ✅
-├── INITIALISIERUNG_PROMPT_BLUEPRINT.md ✅
-├── README.md, ARCHITECTURE.md, PROJECT_CONTEXT.md ✅
-├── ROADMAP.md, ISSUE_ROADMAP.md, OPEN_QUESTIONS.md ✅
-├── PROMPTS.md, AGENTS.md, CONTRIBUTING.md ✅
-├── SECURITY.md, LICENSE ✅
-├── opencode.json, .editorconfig, .env.example, .gitignore ✅
-├── .git/ (initialized) ✅
-├── .github/, .opencode/, .specify/ ✅
-├── docs/, portfolio/, scripts/, specs/ ✅
-```
+## 5. Adapter Layer
 
-### Evidence Directory
-```
-/opt/dev-fabric/evidence/blueprint-bootstrap/perm-fix-test/run-20260623T072332Z-7d3488/
-├── agent.log ✅
-├── commands.log ✅
-├── operator-commands.md ✅
-├── preflight.md ✅
-├── RUN_INPUT.json ✅
-├── RUN_INPUT.redacted.json ✅
-├── run-report.md ✅
-├── specify-check.log ✅
-├── specify-init.log ✅
-└── status.json ✅
-```
+| File | Status |
+|------|--------|
+| `agent-adapters/manual_terminal_adapter.sh` | ✅ active, executable |
+| `agent-adapters/opencode_adapter.sh` | ✅ active, executable |
+| `agent-adapters/hermes_reviewer_adapter.sh.disabled` | ✅ placeholder, NOT executable |
+| `agent-adapters/common/run_input_validate.sh` | ✅ active, executable |
+| `agent-adapters/common/evidence_write.sh` | ✅ active, executable |
+| `agent-adapters/common/security_guard.sh` | ✅ active, executable |
 
-### status.json
-```json
-{
-  "status": "GREEN_PARTIAL",
-  "effective_mode": "manual-terminal",
-  "manual_reason": "Manual-Terminal-Modus vorbereitet; OpenCode/Hermes/LLM wurde nicht automatisch gestartet.",
-  "project_slug": "perm-fix-test",
-  "project_title": "Permission Fix Test"
-}
-```
+## 6. Tmux Status
 
-## 6. Security Status
+| Field | Value |
+|-------|-------|
+| Tmux installed | ✅ yes |
+| Tmux version | v3.3a |
+| Binary location | `/usr/bin/tmux` |
+| Available to runner | ✅ (via default PATH) |
+
+## 7. Hermes Status
+
+| Field | Value |
+|-------|-------|
+| Hermes installed | ❌ no (deliberately excluded) |
+| Plan | Optional future sidecar for research, review, evidence analysis |
+| Adapter placeholder | `hermes_reviewer_adapter.sh.disabled` (not executable) |
+
+## 8. Smoke Test
+
+| Test | Result |
+|------|--------|
+| Test project | `/opt/dev-fabric/workspaces/projects/opencode-smoke-test/` |
+| BLUEPRINT.md | ✅ created |
+| INITIALISIERUNG_PROMPT_BLUEPRINT.md | ✅ created |
+| AGENTS.md, PROJECT_CONTEXT.md, README.md | ✅ created |
+| opencode.json (copied from template) | ✅ present |
+| `opencode --version` | ✅ 1.17.9 |
+| `opencode --help` | ✅ all commands |
+| `opencode providers list` | ✅ 0 credentials |
+| `opencode run` without provider | ⚠️ hangs (expected — needs provider config) |
+| No file changes during smoke test | ✅ confirmed |
+
+## 9. n8n Integration Check
+
+| Field | Value |
+|-------|-------|
+| Workflow JSON has `llm_command_mode` | ✅ yes |
+| Valid modes in JS validation | `['opencode-run', 'hermes-run', 'manual-terminal']` |
+| `opencode-run` flows to RUN_INPUT.json | ✅ yes |
+| `start_blueprint_bootstrap.sh` reads mode | ✅ yes |
+| Integration ready for `opencode-run` | ✅ structure verified |
+
+## 10. Security Status
 
 | Check | Status |
 |-------|--------|
@@ -136,28 +138,76 @@ PASS: /opt/dev-fabric/logs/blueprint-bootstrap → ok
 | No SQL patches | ✅ VERIFIED |
 | /opt/dev-fabric/n8n untouched | ✅ VERIFIED |
 | Private keys untouched | ✅ VERIFIED |
-| Limited chown scope only | ✅ VERIFIED |
+| opencode.json blocks push/PR/merge | ✅ VERIFIED |
+| Secret scan on new files | ✅ PASSED |
+| Forbidden file check (.env, .sqlite, .pem, .key) | ✅ NONE FOUND |
 
-## 7. What the System Can Do Now
+## 11. What the System Can Do Now
 
 | Capability | Before | After |
 |------------|--------|-------|
-| End-to-end execution | ✅ (Execution #10) | ✅ (Execution #14 confirmed) |
-| Runner evidence production | ❌ Permission denied | ✅ Full evidence produced |
-| Project directory creation | ❌ Permission denied | ✅ Full SpecKit structure |
-| Git repo init on runner | ❌ Failed | ✅ .git/ created |
-| BLUEPRINT.md written | ❌ Failed | ✅ Written correctly |
-| INITIALISIERUNG_PROMPT written | ❌ Failed | ✅ Written correctly |
-| status.json produced | ❌ Failed | ✅ GREEN_PARTIAL |
+| OpenCode installed on runner | ❌ Not installed | ✅ v1.17.9 standalone binary |
+| Security profile for agents | ❌ None | ✅ Restrictive opencode.json template |
+| Controlled agent launch in tmux | ❌ Not supported | ✅ opencode-run mode in script |
+| Adapter layer for agent modes | ❌ None | ✅ 3 adapters + 3 common utilities |
+| Evidence includes agent toolchain | ❌ Basic only | ✅ OpenCode version, tmux status |
+| Safe fallback when agents missing | ❌ Implicit | ✅ Explicit manual-terminal with reason |
+| Block push/PR/merge from agents | ❌ No enforcement | ✅ Deny rules in opencode.json |
+| Agent smoke test capability | ❌ Not possible | ✅ Isolated test project ready |
 
-## 8. Open Constraints
+## 12. Open Constraints
 
-1. **OpenCode/Hermes** not yet installed on runner (needed for full GREEN)
-2. **curl form submissions** — use browser or `field-N` names as workaround
-3. **UUID volatility** — production URL changes on republish
+1. **OpenCode provider/API-key not configured** — blocks autonomous agent runs
+2. **Interactive provider prompt** blocks non-interactive execution (secure by design)
+3. **Hermes not installed** — deliberate, planned as optional sidecar
+4. **No real `opencode-run` execution yet** — pending provider configuration
 
-## 9. Next Steps
+## 13. Next Steps
 
-1. Install OpenCode on runner for full GREEN status
-2. Optional: Hermes as secondary agent
-3. Optional: Investigate `field-N` form naming for curl compatibility
+1. Obtain approval for LLM provider API key configuration on runner
+2. Configure provider via: `opencode providers login`
+3. Run first controlled `opencode-run` execution via n8n form with `llm_command_mode=opencode-run`
+4. Verify evidence production and tmux session behavior
+5. Optional: Hermes as secondary agent (separate, approved run)
+
+## 14. Files Changed in This Run
+
+### Modified
+- `CHANGELOG.md` — new entry for OpenCode integration
+- `STATUS.md` — updated component status table
+- `docs/architecture.md` — added agent runtime layer
+- `docs/security-boundaries.md` — added OpenCode security profile
+- `scripts/start_blueprint_bootstrap.sh` — extended with opencode-run support
+
+### Created
+- `agent-adapters/manual_terminal_adapter.sh`
+- `agent-adapters/opencode_adapter.sh`
+- `agent-adapters/hermes_reviewer_adapter.sh.disabled`
+- `agent-adapters/common/run_input_validate.sh`
+- `agent-adapters/common/evidence_write.sh`
+- `agent-adapters/common/security_guard.sh`
+- `templates/opencode.json`
+
+## 15. Runner Paths Summary
+
+```
+/opt/dev-fabric/
+├── opencode/opencode              (159 MB binary, v1.17.9)
+├── workflows/templates/
+│   └── opencode.json              (restrictive security profile)
+├── agent-adapters/
+│   ├── manual_terminal_adapter.sh
+│   ├── opencode_adapter.sh
+│   ├── hermes_reviewer_adapter.sh.disabled
+│   └── common/
+│       ├── run_input_validate.sh
+│       ├── evidence_write.sh
+│       └── security_guard.sh
+├── workspaces/projects/
+│   └── opencode-smoke-test/       (isolated test project)
+└── scripts/
+    └── start_blueprint_bootstrap.sh (enhanced, 503 lines)
+
+/usr/local/bin/opencode → /opt/dev-fabric/opencode/opencode
+/usr/bin/tmux (v3.3a)
+```
