@@ -155,11 +155,36 @@ This workflow:
 
 ~~**n8n Instance-level MCP is DISABLED.**~~ **RESOLVED** — MCP activated by user.
 
-### Known Limitation: execute_workflow requires published workflow
+### Known Limitation: execute_workflow requires published workflow for production mode
 
-Manual Trigger workflows cannot be published in n8n, and MCP `execute_workflow` requires the workflow to have an active (published) version. 
+Manual Trigger workflows cannot be published in n8n, and MCP `execute_workflow` in default `production` mode requires the workflow to have an active (published) version. 
 
-**Workaround:** Use a Webhook trigger node instead of Manual Trigger to make the smoke test publishable.
+**Solution:** Use `executionMode: "manual"` to bypass the publish requirement:
+```json
+{
+  "method": "tools/call",
+  "params": {
+    "name": "execute_workflow",
+    "arguments": {
+      "workflowId": "mcpSmoke001",
+      "executionMode": "manual"
+    }
+  }
+}
+```
+
+### Additional Parameter Requirements
+
+- **`get_execution`** requires BOTH `executionId` AND `workflowId` — not just executionId alone.
+- **`test_workflow`** requires `pinData` parameter — use empty object `{}` for workflows without pin data.
+- **`prepare_test_pin_data`** returns schema coverage analysis, not actual pin data values.
+
+### Verified Execution Results
+
+| Mode | Execution | Status | Duration | Notes |
+|------|-----------|--------|----------|-------|
+| `execute_workflow` (manual) | #20 | success | 106ms | No publish required |
+| `test_workflow` | #22 | success | 11ms | `pinData: {}` works |
 
 **MCP Client Config with correct headers:**
 ```json

@@ -1,8 +1,8 @@
 # STATUS: GREEN_PARTIAL_PLUS
 
-**Last Updated:** 2026-06-24T13:30:00Z
-**Session:** n8n-mcp-client-smoke-test
-**Previous Session:** n8n-mcp-activated-and-verified
+**Last Updated:** 2026-06-24T15:00:00Z
+**Session:** n8n-mcp-manual-execution-validation
+**Previous Session:** n8n-mcp-client-smoke-test
 
 ## Current State
 
@@ -146,7 +146,12 @@ The old `blueprint-speckit-opencode-bootstrap` workflow has a persistent webhook
 - **Connected Clients:** 0
 - **MCP tools/list:** ✅ PASS
 - **MCP search_workflows:** ✅ PASS
-- **MCP execute_workflow:** ⚠️ BLOCKED — Manual Trigger workflow can't be published
+- **MCP execute_workflow (default/production):** ❌ BLOCKED — Manual Trigger workflow can't be published
+- **MCP execute_workflow (manual mode):** ✅ PASS — `executionMode:"manual"` works, Execution #20 success
+- **MCP get_execution:** ✅ PASS — requires BOTH `executionId` + `workflowId`
+- **MCP test_workflow:** ✅ PASS — requires `pinData` param, empty `{}` works for mcpSmoke001
+- **MCP prepare_test_pin_data:** ✅ INFO — returns schema coverage, not actual pin data
+- **MCP tools total:** 28 tools discovered (all verified safe scoping)
 - **Token rotated:** ✅ YES (old token invalidated)
 - **Config Template:** `templates/mcp-client-config.example.json` (placeholders only)
 
@@ -164,7 +169,10 @@ The old `blueprint-speckit-opencode-bootstrap` workflow has a persistent webhook
 
 - [x] ~~User approval to enable n8n Instance-level MCP~~ ✅ DONE
 - [x] ~~Import MCP Smoke Test workflow~~ ✅ DONE — `mcpSmoke001`
-- [ ] MCP client connectivity test (requires local token — user to execute)
+- [x] ~~MCP client connectivity test (requires local token — user to execute)~~ ✅ DONE — full manual mode validation complete
+- [x] ~~MCP execute_workflow manual mode test~~ ✅ DONE — Execution #20 + #22 success
+- [x] ~~MCP test_workflow test~~ ✅ DONE — Execution #22 success with pinData={}
+- [x] ~~MCP get_execution test~~ ✅ DONE — confirmed workflowId parameter required
 - [ ] Configure n8n GitHub API credential (`github-n8n-blueprint`) for automated trigger
 - [ ] Configure LLM provider for OpenCode (needs separate API-key approval)
 - [ ] First real `opencode-run` execution with provider configured

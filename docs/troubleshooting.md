@@ -266,10 +266,37 @@ curl -s -X POST http://192.168.1.52:5678/mcp-server/http \
 ## Symptom: MCP execute_workflow fails with "no published version"
 
 ### Root cause: Manual Trigger workflow cannot be published
-n8n requires workflows to be published (active) for MCP execution. Manual Trigger nodes are not publishable triggers. n8n considers only webhooks, cron schedules, and polling nodes as valid triggers.
+n8n requires workflows to be published (active) for MCP `execute_workflow` in default `production` mode. Manual Trigger nodes are not publishable triggers. n8n considers only webhooks, cron schedules, and polling nodes as valid triggers.
 
-### Fix: Use Webhook trigger
-Replace Manual Trigger with a Webhook node to make the workflow publishable. The webhook endpoint is internal-only (192.168.1.52) and harmless for smoke testing.
+### Fix: Use `executionMode: "manual"`
+Add `"executionMode": "manual"` to the execute_workflow arguments to bypass the publish requirement:
+```json
+{
+  "method": "tools/call",
+  "params": {
+    "name": "execute_workflow",
+    "arguments": {
+      "workflowId": "mcpSmoke001",
+      "executionMode": "manual"
+    }
+  }
+}
+```
+This works for non-published Manual Trigger workflows. Verified with Execution #20: `status:success` (106ms).
+
+### Alternative: Use Webhook trigger
+Replace Manual Trigger with a Webhook node to make the workflow publishable for `production` mode. The webhook endpoint is internal-only (192.168.1.52) and harmless for smoke testing.
+
+### Additional: get_execution parameter requirements
+`get_execution` requires BOTH `executionId` AND `workflowId` parameters — not just executionId:
+```json
+{ "executionId": "20", "workflowId": "mcpSmoke001" }
+```
+### Additional: test_workflow parameter requirements
+`test_workflow` requires `pinData` parameter. Use empty object `{}` for workflows without pin data:
+```json
+{ "workflowId": "mcpSmoke001", "pinData": {} }
+```
 
 ### Alternative: Test via n8n UI
 Even without MCP execution, the workflow can be manually executed in the n8n editor UI to verify it works.

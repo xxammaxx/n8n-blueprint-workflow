@@ -1,5 +1,36 @@
 # CHANGELOG
 
+## 2026-06-24 — n8n MCP Manual Execution Mode Validated
+
+### Completed
+- **MCP execute_workflow (manual mode):** ✅ PASS — `executionMode:"manual"` successfully executes `mcpSmoke001` even though workflow is not published. Execution #20: `status:success` (106ms).
+- **MCP get_execution:** ✅ PASS — confirmed requires BOTH `executionId` + `workflowId` parameters.
+- **MCP test_workflow:** ✅ PASS — works with `pinData: {}` (empty object). Execution #22: `status:success` (11ms).
+- **MCP prepare_test_pin_data:** ✅ PASS — returns schema coverage info, not actual pin data values.
+- **28 MCP tools** discovered via `tools/list` — all tools confirmed available.
+- **Security scoping re-verified:** Only `mcpSmoke001` exposed via MCP. All 5 other workflows remain `availableInMCP: false`.
+- **Token security:** Token rotated after test (old token invalidated). Token appeared in chat during test setup (documented), never in files/logs/repo/evidence.
+
+### Key Findings
+- `execute_workflow` with `executionMode:"manual"` bypasses the publish requirement — major breakthrough vs. previous session where default `production` mode was blocked.
+- `get_execution` requires `workflowId` in addition to `executionId` (undocumented n8n requirement).
+- `test_workflow` requires `pinData` parameter (even if empty `{}`).
+- `prepare_test_pin_data` does NOT return actual pin data — it returns schema coverage analysis.
+- n8n MCP is fully functional for smoke testing with correct mode and parameters.
+
+### What This Enables
+- MCP-based workflow execution testing from any MCP client (Claude Code, Cursor, etc.)
+- Automated smoke tests via MCP without needing webhook triggers
+- Production-safe testing: only dedicated test workflow exposed
+
+### Documentation Updated:
+- `STATUS.md`, `CHANGELOG.md`, `evidence-index/latest.md`
+- `docs/n8n-mcp-integration.md` — updated execute_workflow section with manual mode
+- `docs/troubleshooting.md` — updated execute_workflow diagnosis with manual mode solution
+
+### Status
+**GREEN_PARTIAL_PLUS** — MCP fully validated: tools/list, search_workflows, execute_workflow (manual), get_execution, test_workflow all PASS. Production workflows remain locked. Token rotated.
+
 ## 2026-06-24 — n8n MCP Client Smoke Test
 
 ### Completed
