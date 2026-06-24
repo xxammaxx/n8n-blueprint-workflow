@@ -18,7 +18,8 @@
 │              n8n (Orchestrator / Router)                 │
 │  ┌──────────┐  ┌──────────┐  ┌──────────────────────┐   │
 │  │  GitHub  │  │ Validate │  │  Status-Synchronizer │   │
-│  │  Trigger │  │ Contract │  │  (Labels + Comments) │   │
+│  │  Polling │  │ Contract │  │  (Labels + Comments) │   │
+│  │ (Search) │  │          │  │                      │   │
 │  └────┬─────┘  └────┬─────┘  └──────────┬───────────┘   │
 │       │              │                   │               │
 │       │    Prepare RUN_INPUT.json        │               │
@@ -66,6 +67,22 @@ flowchart TD
     N8N -->|comment| I[Issue Comment]
     N8N -->|update| L[Labels]
 ```
+
+## Trigger Strategy
+
+| Option | Decision | Detail |
+|--------|----------|--------|
+| GitHub Trigger (issues:labeled) | ❌ NOT SELECTED | Requires public webhook URL — n8n instance is on internal network (192.168.1.52) |
+| **Polling** (Schedule + GitHub Search API) | ✅ **SELECTED** | Uses n8n Schedule Trigger + GitHub Search API with `label:agent:ready` query. Compatible with internal network. |
+| Manual Trigger | ✅ FALLBACK | Existing 12-node workflow `jb7BgKeWGee5Iq9d` retains Manual Trigger. 15-node dispatcher `k1c2d3FfWHee6Jr0e` also has Manual Trigger for smoke testing. |
+
+**Why Polling was selected:**
+1. n8n instance (LXC 101) has no public URL — GitHub cannot deliver webhooks to `192.168.1.52`
+2. Schedule Trigger runs periodically and queries GitHub Search API: `is:issue is:open repo:xxammaxx/n8n-blueprint-workflow label:"agent:ready"`
+3. No public internet exposure needed — all traffic is outbound from n8n to `api.github.com`
+4. Polling interval is configurable (recommended: every 5 minutes)
+
+**Dispatcher workflow:** `workflows/github-ready-issue-dispatch.export.json` (ID: `k1c2d3FfWHee6Jr0e`, 15 nodes, `active: false`)
 
 ## Source-of-Truth-Regeln
 
@@ -256,6 +273,16 @@ No repository files changed by the agent run.
 - **Installiert:** Nein (deliberately excluded)
 - **Plan:** Optionaler Sidecar für Review/Research (späterer Schritt)
 - **Adapter-Platzhalter:** `agent-adapters/hermes_reviewer_adapter.sh.disabled`
+
+## Dispatcher Workflow Reference
+
+The **GitHub Ready Issue → Runner Agent Dispatch** workflow (ID: `k1c2d3FfWHee6Jr0e`) is the automated dispatcher. See `docs/architecture/github-source-of-truth-flow.md` for full Mermaid diagrams:
+
+- **Full Dispatch Flow** — end-to-end flowchart from `agent:ready` label to evidence comment
+- **Label State Machine** — state diagram for label transitions
+- **Trigger Decision** — polling vs webhook comparison
+- **Component Map** — GitHub → n8n → Runner system architecture
+- **Dual-Start Protection** — guardrails preventing concurrent agent runs
 
 ## Evidence-Pfad-Struktur
 

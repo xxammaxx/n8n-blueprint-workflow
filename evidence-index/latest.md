@@ -1,3 +1,137 @@
+# Evidence Report — github-ready-dispatcher-20260624T220000Z
+
+## Status: GREEN_PARTIAL_PLUS
+
+**Session ID:** github-ready-dispatcher-20260624
+**Completed:** 2026-06-24T22:00:00Z
+**Orchestrator:** documentation-agent (deepseek-v4-flash)
+**Previous Session:** label-dataflow-fix-20260624
+
+---
+
+## 1. Dispatcher Workflow Build Results
+
+| Phase | Test | Result | Detail |
+|-------|------|--------|--------|
+| **Workflow Import** | CLI import of dispatcher JSON | ✅ IMPORTED | 15 nodes, ID `k1c2d3FfWHee6Jr0e` |
+| **Workflow Active** | Check `active` flag | ✅ `active: false` | Needs UI activation after storageState fix |
+| **Workflow Validation** | JSON schema valid | ✅ VALID | `workflows/github-ready-issue-dispatch.export.json` — 369 lines |
+| **Tags** | source-of-truth, github, dispatcher | ✅ SET | 3 tags on workflow |
+| **Manual Trigger** | Smoke Test node present | ✅ INCLUDED | Node 1: Manual Trigger (Smoke Test) |
+
+### Nodes (15)
+
+```
+1. Manual Trigger (Smoke Test)
+2. Fetch Issue from GitHub
+3. Guardrails & Validate
+4. Remove agent:ready Label
+5. Add agent:running Label
+6. Prepare RUN_INPUT.json
+7. SSH Write RUN_INPUT to Runner
+8. SSH Start Runner Script
+9. Wait (5s)
+10. SSH Read status.json
+11. Format Evidence Comment
+12. Create GitHub Comment on Issue
+13. Add Labels (agent:needs-review, evidence:attached)
+14. Remove agent:running Label (404-tolerant)
+15. Format Final Result
+```
+
+## 2. Trigger Strategy Decision
+
+| Option | Decision | Why |
+|--------|----------|-----|
+| GitHub Trigger (webhook) | ❌ NOT SELECTED | n8n on internal network (192.168.1.52) — no public URL |
+| **Polling** (Schedule + Search API) | ✅ **SELECTED** | Compatible with internal network; outbound-only traffic |
+| Manual Trigger | ✅ FALLBACK | Both workflows retain Manual Trigger nodes |
+
+**Decision rationale:**
+- GitHub webhooks require a publicly accessible URL reachable from GitHub's servers
+- Our n8n instance (LXC 101) is on 192.168.1.0/24 internal network
+- No tunnel service (ngrok, Cloudflare) is configured
+- Polling avoids exposing any port to the public internet
+- Schedule Trigger queries: `is:issue is:open repo:xxammaxx/n8n-blueprint-workflow label:"agent:ready"`
+- All traffic is outbound from n8n to `api.github.com`
+
+## 3. Mermaid Diagrams Created
+
+| Diagram | File | Format |
+|---------|------|--------|
+| Full Dispatch Flow | `docs/architecture/github-source-of-truth-flow.md` | Mermaid flowchart + state diagram |
+| System Component Map | `docs/architecture/system-map.mmd` | Standalone Mermaid file |
+| Evidence Flow Sequence | `docs/architecture/evidence-flow.mmd` | Standalone Mermaid file |
+
+## 4. Smoke Test Issue #2
+
+| Property | Value |
+|----------|-------|
+| **Issue Number** | #2 |
+| **Title** | Smoke Test: Dispatcher via agent:ready |
+| **Label** | `agent:ready` |
+| **Status** | ✅ CREATED — pending execution |
+| **Blocked by** | storageState expiry — needs n8n UI re-login to activate dispatcher |
+
+## 5. storageState Expiry
+
+| Check | Status |
+|-------|--------|
+| storageState file path | `C:\Users\xxammaxx\.n8n-automation\playwright\n8n-storage-state.json` |
+| Previous status | ✅ Working (2026-06-24T15:00Z) |
+| Current status | ❌ **EXPIRED** (2026-06-24T22:00Z) |
+| Root cause | n8n session cookies expired after ~7 hours |
+| Impact | Playwright redirects to /signin — blocks UI automation |
+| Fix needed | Manual n8n login → regenerate storageState |
+| Workaround | Use Manual Trigger instead of Schedule Trigger for now |
+
+## 6. Security Scope
+
+| Check | Status |
+|-------|--------|
+| Dispatcher workflow credentials | ✅ References n8n credential store only |
+| Polling credential exposure | ✅ None — uses existing githubApi credential |
+| Guardrails prevent double-run | ✅ Implemented in Node 3 |
+| No public URL exposure | ✅ Polling avoids webhook requirement |
+| storageState in repo | ❌ NO |
+| Secret scan | ✅ CLEAN |
+| .github/workflows | ❌ ABSENT |
+
+## 7. Files Changed / Created
+
+| File | Action |
+|------|--------|
+| `STATUS.md` | UPDATED — dispatcher row, trigger strategy, smoke test, storageState expiry |
+| `CHANGELOG.md` | UPDATED — new entry for dispatcher + diagrams |
+| `README.md` | UPDATED — Mermaid overview diagram, dispatcher reference |
+| `docs/github-source-of-truth.md` | UPDATED — trigger strategy, dispatcher reference |
+| `docs/github-issue-intake-runbook.md` | UPDATED — dispatcher section, guardrails, label transitions |
+| `docs/architecture.md` | UPDATED — dispatcher in architecture overview |
+| `docs/troubleshooting.md` | UPDATED — storageState expiry, dispatcher not found, GitHub Trigger |
+| `docs/n8n-auth-automation.md` | UPDATED — storageState expiry documentation |
+| `docs/security-boundaries.md` | UPDATED — dispatcher security boundaries |
+| `evidence-index/latest.md` | UPDATED — this report |
+| `evidence-index/known-evidence-paths.md` | UPDATED — dispatcher paths + diagrams + issue #2 |
+| `docs/architecture/system-map.mmd` | CREATED — system component diagram |
+| `docs/architecture/evidence-flow.mmd` | CREATED — evidence flow sequence diagram |
+
+## 8. Bewertung
+
+**GREEN_PARTIAL_PLUS** — Dispatcher infrastructure complete:
+
+- ✅ Dispatcher workflow imported (15 nodes, validated JSON)
+- ✅ Trigger strategy decided (Polling — correct for internal network)
+- ✅ Mermaid diagrams created (dispatch flow, state machine, component map, evidence flow)
+- ✅ Smoke test issue #2 created with `agent:ready` label
+- ✅ Guardrails and dual-start protection documented
+- ✅ Security boundaries updated for polling approach
+- ❌ storageState expired — blocks UI activation of dispatcher
+- ⏳ Dispatcher activation pending (needs UI login + activate toggle)
+
+**Nächster Schritt:** Log into n8n UI, regenerate storageState, activate dispatcher workflow, run smoke test against Issue #2.
+
+---
+
 # Evidence Report — label-dataflow-fix-20260624T173000Z
 
 ## Status: GREEN_PARTIAL_PLUS

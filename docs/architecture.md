@@ -193,6 +193,35 @@ Node 3: Prepare RUN_INPUT.json  ← produces stable context (owner, repo, issue_
 | `mode:hermes-review` | Hermes-Sidecar (zukünftig) |
 | `risk:low/medium/high` | Risikostufe |
 
+### GitHub Ready Issue Dispatcher Workflow
+
+A new **dispatcher workflow** (ID: `k1c2d3FfWHee6Jr0e`, 15 nodes) provides automated dispatching for GitHub Issues with `agent:ready` label.
+
+```
+[Schedule Trigger (Polling)] → [Fetch Issue] → [Guardrails & Validate] → [Remove agent:ready]
+→ [Add agent:running] → [Prepare RUN_INPUT] → [SSH Write] → [SSH Start] → [Wait]
+→ [SSH Read] → [Format Comment] → [GitHub Comment] → [Add Labels] → [Remove agent:running] → [Format Result]
+```
+
+**Trigger:** Polling (Schedule + GitHub Search API) — selected because n8n is on internal network without public URL for GitHub webhooks.
+
+**Guardrails:** Anti-double-start protection prevents concurrent runs. See `docs/architecture/github-source-of-truth-flow.md` for full Mermaid diagrams.
+
+**Integration:** The dispatcher reuses the same runner scripts, evidence structure, and label conventions as the manual intake workflow.
+
+### Architecture Diagrams
+
+Full Mermaid diagrams are available in `docs/architecture/github-source-of-truth-flow.md`:
+- **Full Dispatch Flow** — end-to-end flowchart
+- **Label State Machine** — state diagram for label transitions
+- **Trigger Decision** — polling vs webhook comparison
+- **Component Map** — system architecture overview
+- **Dual-Start Protection** — guardrail rules
+
+Standalone diagram files:
+- `docs/architecture/system-map.mmd` — system component map
+- `docs/architecture/evidence-flow.mmd` — evidence flow sequence diagram
+
 ## Security Architecture
 
 See `docs/security-boundaries.md` for detailed security architecture.

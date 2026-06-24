@@ -91,6 +91,31 @@ await page.goto('http://192.168.1.52:5678/home/workflows');
 
 **Last verified:** 2026-06-24T15:30:00Z — during Node 5 credential fix + label dataflow fix live test
 
+**⚠️ Known Issue: storageState Expiry (2026-06-24)**
+The storageState file at `C:\Users\xxammaxx\.n8n-automation\playwright\n8n-storage-state.json` **expired** during the 2026-06-24 session. By approximately 22:00Z, Playwright was redirecting to the n8n sign-in page instead of the workflow editor.
+
+**Root cause:** n8n authentication cookies have a finite lifetime. The storageState file was created around 15:00Z (7 hours earlier). The cookies stored in the file are no longer accepted by the n8n server.
+
+**Fix:** Manually log into n8n UI once, then regenerate the storageState:
+```javascript
+const context = await browser.newContext({
+  storageState: 'C:/Users/xxammaxx/.n8n-automation/playwright/n8n-storage-state.json'
+});
+const page = await context.newPage();
+await page.goto('http://192.168.1.52:5678');
+// If on /signin → login manually
+// If on /home/workflows → session is valid
+// Save refreshed state:
+await context.storageState({
+  path: 'C:/Users/xxammaxx/.n8n-automation/playwright/n8n-storage-state.json'
+});
+```
+
+**Lesson:** storageState is NOT permanent. Plan for expiry by:
+- Documenting when the state was created (timestamp in this doc)
+- Setting up a reminder to refresh weekly
+- Alternatively, use Option A (API Key) for non-UI operations which doesn't expire as long as the key is valid
+
 ---
 
 ### Option C — Temporarily Disable n8n Login (RED_HOLD)

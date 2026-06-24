@@ -1,5 +1,44 @@
 # CHANGELOG
 
+## 2026-06-24 — GitHub Ready Issue Dispatcher + Mermaid Diagrams
+
+### Completed
+- **GitHub Ready Issue Dispatcher workflow:** ✅ IMPORTED — 15 nodes, ID `k1c2d3FfWHee6Jr0e`, `active: false`, imported via CLI
+- **Trigger strategy decision:** Polling (Schedule Trigger + GitHub Search API) selected over GitHub Trigger because the n8n instance is on an internal network without public URL for GitHub webhooks
+- **Guardrails implemented:** Dual-start protection — issue must be open, `agent:ready` present, `agent:running`/`agent:blocked`/`agent:done` absent
+- **Double-start protection:** Label state machine prevents concurrent runs; `agent:ready` → `agent:running` transition is atomic
+- **Label State Machine:** Documented in Mermaid — `agent:queued → agent:ready → agent:running → agent:needs-review | agent:blocked → agent:done`
+- **Mermaid diagrams created:** `docs/architecture/github-source-of-truth-flow.md` — full dispatch flow + label state machine + trigger decision + component map
+- **System map (standalone):** `docs/architecture/system-map.mmd` — component architecture
+- **Evidence flow (standalone):** `docs/architecture/evidence-flow.mmd` — sequence diagram
+- **Smoke test issue #2:** ✅ CREATED with `agent:ready` label, pending execution
+
+### Key Findings
+- **GitHub Trigger not viable:** n8n instance (192.168.1.52) is on internal network — GitHub cannot send webhooks to a private IP. Polling is the correct strategy.
+- **storageState expired:** The Playwright persistent session at `C:\Users\xxammaxx\.n8n-automation\playwright\n8n-storage-state.json` expired during this session — n8n UI login required again
+- **Dispatcher workflow has 15 nodes** — 3 more than the 12-node intake workflow (adds guardrails, label remove/add, schedule trigger placeholder)
+- **Dispatcher is not yet active** — blocked by storageState expiry; needs UI activation after re-login
+
+### Documentation Created/Updated
+- `STATUS.md` — dispatcher row, trigger strategy, smoke test issue #2, storageState expiry
+- `CHANGELOG.md` — this entry
+- `README.md` — added Mermaid overview diagram + dispatcher reference
+- `docs/github-source-of-truth.md` — dispatcher reference + polling strategy
+- `docs/github-issue-intake-runbook.md` — dispatcher section with guardrails + label transitions
+- `docs/architecture.md` — dispatcher in architecture overview
+- `docs/troubleshooting.md` — storageState expiry, dispatcher not found, GitHub Trigger diagnosis
+- `docs/n8n-auth-automation.md` — storageState expiry note
+- `docs/security-boundaries.md` — dispatcher workflow security boundaries
+- `evidence-index/latest.md` — new session entry
+- `evidence-index/known-evidence-paths.md` — dispatcher paths + Mermaid diagrams + issue #2
+- `docs/architecture/system-map.mmd` — NEW system component map
+- `docs/architecture/evidence-flow.mmd` — NEW evidence flow sequence diagram
+
+### Status
+**GREEN_PARTIAL_PLUS** — Dispatcher workflow imported, trigger strategy decided, Mermaid diagrams created, smoke test issue ready. Blocked on storageState expiry for UI activation.
+
+---
+
 ## 2026-06-24 — Label Dataflow Fix: 12/12 GREEN
 
 ### Discovery

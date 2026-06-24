@@ -15,6 +15,21 @@ Agentenaufträge werden als GitHub Issues erstellt. n8n liest das Issue, startet
 
 Siehe: `docs/github-source-of-truth.md`, `docs/github-issue-intake-runbook.md`
 
+### System Overview
+
+```mermaid
+flowchart TD
+    GH[GitHub Issues + Labels] --> N8N[n8n Orchestrator]
+    N8N -->|SSH| R[Runner LXC 102]
+    R --> E[Local Evidence]
+    N8N -->|SSH Read| E
+    N8N -->|GitHub API| GH
+```
+
+**Dispatcher workflow:** `workflows/github-ready-issue-dispatch.export.json` (15 nodes, ID: `k1c2d3FfWHee6Jr0e`)
+**Smoke test:** Issue #2 created with `agent:ready` label — pending execution via dispatcher
+**Trigger strategy:** Polling (Schedule + GitHub Search API) — internal network has no public URL for GitHub webhooks
+
 ## Repo Structure
 
 ```
@@ -33,7 +48,8 @@ Siehe: `docs/github-source-of-truth.md`, `docs/github-issue-intake-runbook.md`
 │   ├── blueprint-old-broken.export.json        ← Broken V1 (historical)
 │   ├── blueprint-v2.clean.export.json          ← Reconstructed V2
 │   ├── speckit-smoke-workflow.json             ← Smoke-test workflow
-│   └── github-issue-intake.export.json         ← GitHub Issue → Runner Intake
+│   ├── github-issue-intake.export.json         ← GitHub Issue → Runner Intake
+│   └── github-ready-issue-dispatch.export.json ← GitHub Ready Issue → Runner Agent Dispatch
 ├── scripts/               ← Runner shell scripts
 │   ├── start_blueprint_bootstrap.sh
 │   ├── start_github_issue_run.sh
@@ -50,7 +66,11 @@ Siehe: `docs/github-source-of-truth.md`, `docs/github-issue-intake-runbook.md`
 │   ├── evidence-index.md
 │   ├── github-source-of-truth.md              ← GitHub SoT architecture
 │   ├── github-issue-intake-runbook.md         ← Intake operating runbook
-│   └── run-input-schema.md                    ← RUN_INPUT contract
+│   ├── run-input-schema.md                    ← RUN_INPUT contract
+│   └── architecture/
+│       ├── github-source-of-truth-flow.md     ← Mermaid diagrams (dispatch flow, state machine)
+│       ├── system-map.mmd                     ← Standalone system component map
+│       └── evidence-flow.mmd                  ← Standalone evidence sequence diagram
 ├── templates/             ← Prompt templates
 │   └── INITIALISIERUNG_PROMPT_BLUEPRINT.md
 ├── evidence-index/        ← Evidence trail

@@ -1,8 +1,8 @@
 # STATUS: GREEN_PARTIAL_PLUS
 
-**Last Updated:** 2026-06-24T17:30:00Z
-**Session:** label-dataflow-fix-20260624
-**Previous Session:** node5-credential-live-test-20260624
+**Last Updated:** 2026-06-24T22:00:00Z
+**Session:** github-ready-dispatcher-20260624
+**Previous Session:** label-dataflow-fix-20260624
 
 ## Current State
 
@@ -36,6 +36,9 @@
 | **GitHub Agent Labels** | ✅ CREATED | 14 labels (agent:*, mode:*, risk:*, evidence:*, human-approval-required) |
 | **Issue Template** | ✅ CREATED | `.github/ISSUE_TEMPLATE/agent-task.yml` |
 | **n8n GitHub Intake Workflow (Live)** | ✅ VALIDATED | Workflow ID `h78eENwLGwr2QUmU` — 9 nodes, all green |
+| **GitHub Ready Issue Dispatcher (ID: k1c2d3FfWHee6Jr0e)** | 🔶 IMPORTED | 15 nodes, imported via CLI, `active: false` |
+| **Trigger Strategy** | 🔶 Polling Selected | Schedule Trigger + GitHub Search API — internal network has no public URL for GitHub webhooks |
+| **Smoke Test Issue #2** | ✅ CREATED | `agent:ready` label set, pending execution via dispatcher |
 | **Runner GitHub Run Script** | ✅ PREPARED | `start_github_issue_run.sh` — requires `--input-json` flag |
 | **GitHub Issue #1** | ✅ CREATED | Feat-Issue für GitHub SoT: `agent:queued` + Alle Labels |
 | **Evidence Comment Format** | ✅ DEFINED | Standardisierte Issue-Kommentar-Struktur |
@@ -44,7 +47,7 @@
 | **Expression Mode** | ✅ **APPLIED** | Nodes 4,5,7 switched to Expression mode with cross-node references to Node 3 |
 | **Cross-Node Data Reference Pattern** | ✅ **DOCUMENTED** | `$('Prepare RUN_INPUT.json').first().json.owner` — stable after GitHub API calls; `$json.owner` is UNSTABLE after API nodes |
 | **Node 5 Credential** | ✅ dev-runner-ssh CONFIRMED | Credential was already set — root cause was Expression Mode, not missing credential |
-| **storageState** | ✅ Playwright persistent session works | No login needed for UI automation |
+| **storageState** | ❌ EXPIRED | Expired during 2026-06-24 session — n8n UI login required again |
 | **Playwright Automation** | ✅ Working | UI tests with persistent session — bypasses n8n login |
 | **n8n GitHub Credential** | ✅ **LIVE VERIFIED** | Comment #4790885907 posted successfully to Issue #1 — credential `GitHub account` works |
 | **n8n Auth Strategy** | ✅ DOCUMENTED | `docs/n8n-auth-automation.md` — API Key (Option A), storageState (Option B), Login-Disable (Option C RED_HOLD) |
@@ -224,6 +227,9 @@ The Wait node was initially configured with `"unit": "hours"` which caused the n
 - ~~Validate Issue Contract blocks without labels~~ ✅ RESOLVED — labels array requirement documented
 - ~~GitHub auto-comment/label nodes missing~~ ✅ RESOLVED — 3 HTTP Request nodes added to workflow JSON
 - ~~Node 11 data flow fix needed (Add Labels node receives comment response instead of issue identifiers — blocks auto-labeling)~~ ✅ RESOLVED — cross-node references to Prepare node
+- **storageState expired** — n8n UI login required; Playwright persistent session at `C:\Users\xxammaxx\.n8n-automation\playwright\n8n-storage-state.json` expired during 2026-06-24 session (blocks UI automation)
+- Dispatcher workflow `k1c2d3FfWHee6Jr0e` imported but not active — needs storageState fix for UI activation
+- GitHub webhooks unavailable — internal network has no public URL; Polling (Schedule + GitHub Search API) selected as trigger strategy
 - OpenCode provider/API-key not yet configured (blocks autonomous agent runs)
 - OpenCode interactive provider prompt blocks non-interactive execution
 - n8n MCP production workflow exposure: NOT ENABLED (only smoke test exposed — by design)

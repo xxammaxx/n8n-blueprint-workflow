@@ -1,0 +1,12 @@
+sequenceDiagram
+    participant GH as GitHub Issue
+    participant N8N as n8n Dispatcher
+    participant R as Runner LXC 102
+    GH->>N8N: agent:ready label
+    N8N->>GH: remove agent:ready, add agent:running
+    N8N->>R: SSH Write RUN_INPUT.json
+    N8N->>R: SSH Start runner script
+    R->>R: Generate evidence files
+    N8N->>R: SSH Read status.json
+    N8N->>GH: Post evidence comment
+    N8N->>GH: Set agent:needs-review + evidence:attached

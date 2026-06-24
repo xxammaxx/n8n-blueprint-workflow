@@ -267,6 +267,84 @@ Log into n8n UI → Credentials → look for `github-n8n-blueprint`.
 ### If credential exists but nodes fail:
 Check that the HTTP Request nodes reference the correct credential type (`githubApi`) and name (`github-n8n-blueprint`). Verify the token has not expired and has `repo` scope.
 
+## Symptom: storageState expired — n8n login required
+
+### Root cause: Playwright storageState file expired
+The persistent Playwright session at `C:\Users\xxammaxx\.n8n-automation\playwright\n8n-storage-state.json` stores n8n authentication cookies. These cookies have an expiry time. When expired, Playwright redirects to the n8n sign-in page instead of the workflow editor.
+
+**Diagnosis:**
+1. Run a Playwright test or open the n8n UI in a browser context using the storageState
+2. If redirected to `/signin` → storageState has expired
+3. Check the file modification date: if older than the n8n session cookie lifetime, it's expired
+
+**Fix:**
+1. Manually open `http://192.168.1.52:5678` in a browser
+2. Log in with n8n credentials
+3. Export the new storageState via Playwright:
+   ```javascript
+   const context = await browser.newContext({ storageState: 'C:/Users/xxammaxx/.n8n-automation/playwright/n8n-storage-state.json' });
+   await page.goto('http://192.168.1.52:5678');
+   // If already on /home/workflows or similar → login worked, state is valid
+   // If redirected to /signin → login first, then:
+   await context.storageState({ path: 'C:/Users/xxammaxx/.n8n-automation/playwright/n8n-storage-state.json' });
+   ```
+4. The refreshed storageState file is now valid for future sessions
+
+**Known occurrence:** storageState expired during the 2026-06-24 session (github-ready-dispatcher). The file was created on 2026-06-24T15:00:00Z and expired by 2026-06-24T22:00:00Z.
+
+**Security:** The storageState file contains authentication cookies — NEVER commit to repo, NEVER share, NEVER log.
+
+## Symptom: Dispatcher workflow not found in n8n UI
+
+### Root cause: Workflow may be in wrong project
+The GitHub Ready Issue Dispatcher workflow (ID: `k1c2d3FfWHee6Jr0e`) was imported via CLI using:
+```
+n8n import:workflow --projectId=fLfBCnB9rifW9Cu2 --input=workflows/github-ready-issue-dispatch.export.json
+```
+
+**Check:**
+1. Log into n8n UI
+2. Navigate to **Workflows** in the left sidebar
+3. Check the correct project is selected (project switcher at top of workflow list)
+4. Look for "GitHub Ready Issue -> Runner Agent Dispatch"
+5. If not visible, try switching the project filter
+
+**Alternative:** List workflows via n8n MCP (if MCP is enabled):
+```bash
+curl -s -X POST http://192.168.1.52:5678/mcp-server/http \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -H "Authorization: Bearer $N8N_MCP_TOKEN" \
+  -d '{"jsonrpc":"2.0","method":"tools/call","params":{"name":"search_workflows","arguments":{"query":"dispatch"}},"id":1}'
+```
+
+**Fix:** If workflow is not visible, re-import with the correct project ID:
+```bash
+n8n import:workflow --projectId=fLfBCnB9rifW9Cu2 --input=workflows/github-ready-issue-dispatch.export.json
+```
+
+## Symptom: GitHub Trigger not receiving webhooks
+
+### Root cause: Internal network — no public URL for GitHub webhooks
+The n8n instance at `http://192.168.1.52:5678` is on an internal LAN (192.168.1.0/24). GitHub cannot send webhook payloads to a private IP address. GitHub webhooks require a publicly accessible URL.
+
+**Diagnosis:**
+1. Check if n8n has a public-facing URL or tunnel (e.g., ngrok, Cloudflare Tunnel)
+2. If n8n is only accessible at `192.168.1.52:5678`, GitHub Trigger will never fire
+3. Check n8n logs for webhook registration: `journalctl -u n8n --no-pager | grep -i webhook`
+4. No webhook registration errors are expected — the node simply never fires
+
+**Fix: Use Polling instead of GitHub Trigger**
+The dispatcher workflow uses **Polling (Schedule Trigger + GitHub Search API)** as the trigger strategy instead:
+1. Schedule Trigger runs periodically (configurable interval)
+2. Queries GitHub Search API: `is:issue is:open repo:xxammaxx/n8n-blueprint-workflow label:"agent:ready"`
+3. If matching issues found, starts the dispatch flow
+4. No public URL needed — all traffic is outbound from n8n to `api.github.com`
+
+**Workflow JSON:** The dispatcher uses a Schedule Trigger node instead of a GitHub Trigger node. The schedule is configured in the node parameters.
+
+**Alternative (not recommended):** Set up a tunnel service (ngrok, Cloudflare Tunnel) that exposes n8n to the internet. This requires separate approval and security review.
+
 ## Symptom: BrowserMCP evaluation needed
 
 BrowserMCP is NOT installed. It was evaluated as a potential auth-session fallback but carries profile access risk. See `docs/browser-automation-strategy.md` for the tiered approach. Do not install BrowserMCP without separate approval.

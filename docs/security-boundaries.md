@@ -210,6 +210,58 @@ Template: `templates/mcp-client-config.example.json`
 
 See `evidence-index/` for known evidence paths and `evidence-index/latest.md` for current session report.
 
+## Dispatcher Workflow Security
+
+### Trigger Security (Polling vs Webhook)
+
+| Aspect | GitHub Trigger (Webhook) | Polling (Schedule + Search API) |
+|--------|------------------------|---------------------------------|
+| Network exposure | Requires public URL | ✅ Internal-only — outbound only |
+| Webhook secret | Needs HMAC validation | ✅ Not applicable — no incoming payload |
+| Authentication | Webhook secret + IP allowlist | ✅ GitHub API token authentication |
+| Spam protection | GitHub validates HMAC | ✅ Polling query is read-only |
+| **Selected** | ❌ Not viable (internal network) | ✅ **Selected** for dispatcher |
+
+The dispatcher workflow (`k1c2d3FfWHee6Jr0e`) uses Polling (Schedule Trigger + GitHub Search API) because the n8n instance has no public URL. This is **more secure** than webhooks — no incoming connections, no payload validation needed.
+
+### Guardrail Security
+
+The dispatcher validates these checks before any runner execution:
+
+| Guardrail | Security Purpose |
+|-----------|-----------------|
+| Issue MUST be open | Prevents execution on closed/resolved issues |
+| `agent:ready` MUST be present | Only dispatches explicitly marked tasks |
+| `agent:running` MUST NOT be present | Anti-double-start — prevents concurrent runs on same issue |
+| `agent:blocked` MUST NOT be present | Respects block state — prevents overriding manual blocks |
+| `agent:done` MUST NOT be present | Respects completion state |
+| Repository check | Scope-limited to `xxammaxx/n8n-blueprint-workflow` |
+
+### Label Transition Security
+
+Label changes follow strict ordering to prevent race conditions:
+
+1. Remove `agent:ready` FIRST (prevents double-pickup on next poll)
+2. Add `agent:running` SECOND (declares active run)
+3. On completion: remove `agent:running`, add result labels
+
+If label API calls fail mid-transition, the workflow enters a partial state. The next poll cycle will detect `agent:running` and skip (anti-double-start protection acts as circuit breaker).
+
+### Run ID Idempotency
+
+Each run has a unique Run ID (`gh-issue-<number>-<timestamp>`). Evidence paths are unique per run. This prevents:
+- Evidence overwrite from concurrent or re-runs
+- Run ID collision between dispatcher and manual intake workflows
+- Ambiguous evidence ownership
+
+### Polling Credential Safety
+
+The Polling approach uses the existing `githubApi` credential in n8n:
+- Read-only operations: GitHub Search API, Issue GET, Label GET
+- Write operations: Label updates, Issue comments (same as manual workflow)
+- No additional credentials needed
+- Credential stored in n8n encrypted store only
+
 ## Network Isolation
 
 - n8n (192.168.1.52:5678) — internal only

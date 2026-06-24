@@ -479,3 +479,88 @@ $('Prepare RUN_INPUT.json').first().json.issue_number
 
 ### Known Issue: Node 11 (Add Labels) — RESOLVED
 Node 11 previously received GitHub comment response data (`url`, `html_url`, `id`) instead of issue identifiers (`owner`, `repo`, `issue_number`). Fixed by changing URL expressions to reference `$('Prepare RUN_INPUT.json').first().json.*`.
+
+---
+
+## Automated Dispatcher Workflow (New)
+
+A new **GitHub Ready Issue → Runner Agent Dispatch** workflow (ID: `k1c2d3FfWHee6Jr0e`, 15 nodes) provides automated dispatching. This runs alongside the existing 12-node manual intake workflow.
+
+### Trigger Strategy
+
+| Aspect | Detail |
+|--------|--------|
+| **Trigger** | Polling (Schedule Trigger + GitHub Search API) |
+| **Why not GitHub Trigger?** | n8n instance on internal network (192.168.1.52) — no public URL for webhooks |
+| **Polling Query** | `is:issue is:open repo:xxammaxx/n8n-blueprint-workflow label:"agent:ready"` |
+| **Interval** | Configurable (recommended: every 5 minutes) |
+| **Dispatcher ID** | `k1c2d3FfWHee6Jr0e` |
+| **Nodes** | 15 |
+| **Status** | Imported via CLI, `active: false` (needs UI activation) |
+
+### Dispatcher Workflow Nodes (15)
+
+```
+Schedule Trigger (Polling) → Fetch Issue from GitHub → Guardrails & Validate →
+Remove agent:ready Label → Add agent:running Label → Prepare RUN_INPUT.json →
+SSH Write → SSH Start → Wait (5s) → SSH Read → Format Evidence Comment →
+Create GitHub Comment → Add Labels (agent:needs-review, evidence:attached) →
+Remove agent:running Label (404-tolerant) → Format Final Result
+```
+
+### Guardrails & Dual-Start Protection
+
+The dispatcher enforces these rules **before** any runner execution:
+
+1. Issue MUST be open (not closed)
+2. Label `agent:ready` MUST be present
+3. Label `agent:running` MUST NOT be present (prevents double-start)
+4. Label `agent:blocked` MUST NOT be present
+5. Label `agent:done` MUST NOT be present
+6. Repository MUST be `xxammaxx/n8n-blueprint-workflow`
+
+If any guardrail fails, the dispatcher skips execution and optionally comments with `BLOCKED_WITH_DIAGNOSIS`.
+
+### Label Transition Logic
+
+The dispatcher manages labels throughout the run lifecycle:
+
+| Phase | Action | Guard |
+|-------|--------|-------|
+| **Start** | Remove `agent:ready`, Add `agent:running` | Must pass guardrails first |
+| **Success** | Remove `agent:running`, Add `agent:needs-review` + `evidence:attached` | Evidence must be produced |
+| **Failure** | Remove `agent:running`, Add `agent:blocked` + `evidence:attached` | Runner error detected |
+| **Re-run** | User re-adds `agent:ready` | Guardrails re-validate |
+
+### Label State Machine
+
+```
+agent:queued → agent:ready → agent:running → agent:needs-review → agent:done
+                                              → agent:blocked
+```
+
+- `agent:done` is NEVER set automatically — requires human approval
+- `evidence:attached` is set alongside `agent:needs-review` or `agent:blocked`
+- Removing `agent:ready` before adding `agent:running` prevents race conditions
+- If `agent:running` is already present, the dispatcher skips (anti-double-start)
+
+### Run ID and Idempotency
+
+Each run receives a unique Run ID:
+```
+gh-issue-<issue_number>-<YYYYMMDDTHHMMSSZ>
+```
+
+Evidence path:
+```
+/opt/dev-fabric/evidence/github-agent-runs/xxammaxx/n8n-blueprint-workflow/issue-<number>/<run_id>/
+```
+
+### Smoke Test
+
+Issue #2 has been created with the `agent:ready` label for testing the dispatcher. To execute:
+1. Resolve storageState expiry (re-login to n8n UI)
+2. Activate the dispatcher workflow in n8n UI
+3. Ensure `dev-runner-ssh` and GitHub credentials are valid
+4. The Schedule Trigger will pick up Issue #2 on next poll cycle
+5. Or use the Manual Trigger (Smoke Test) node for immediate execution

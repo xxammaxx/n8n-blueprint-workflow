@@ -1,6 +1,27 @@
 ﻿# Known Evidence Paths
 
-## Latest Entry (2026-06-24) — Label Dataflow Fix: 12/12 GREEN
+## Latest Entry (2026-06-24) — GitHub Ready Issue Dispatcher + Mermaid Diagrams
+
+| Property | Value |
+|----------|-------|
+| **Session** | `github-ready-dispatcher-20260624` |
+| **Workflow ID** | `k1c2d3FfWHee6Jr0e` |
+| **Workflow Name** | GitHub Ready Issue -> Runner Agent Dispatch |
+| **Workflow Nodes** | 15 |
+| **Workflow Active** | `false` (imported, not yet activated) |
+| **Workflow JSON Path** | `workflows/github-ready-issue-dispatch.export.json` |
+| **Trigger Strategy** | Polling (Schedule + GitHub Search API) — selected because internal network |
+| **Mermaid Diagrams** | `docs/architecture/github-source-of-truth-flow.md` (full dispatch flow + state machine + component map) |
+| **System Map (standalone)** | `docs/architecture/system-map.mmd` |
+| **Evidence Flow (standalone)** | `docs/architecture/evidence-flow.mmd` |
+| **Smoke Test Issue** | #2 — created with `agent:ready` label, pending execution |
+| **storageState** | ❌ Expired at `C:\Users\xxammaxx\.n8n-automation\playwright\n8n-storage-state.json` |
+
+**Guardrails documented:** Dual-start protection, label state machine, run ID idempotency.
+
+---
+
+## Previous Entry (2026-06-24) — Label Dataflow Fix: 12/12 GREEN
 
 | Property | Value |
 |----------|-------|
