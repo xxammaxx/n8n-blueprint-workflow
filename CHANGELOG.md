@@ -1,5 +1,40 @@
 # CHANGELOG
 
+## 2026-06-24 — Label Dataflow Fix: 12/12 GREEN
+
+### Discovery
+- **Node 11/12 data flow issue identified:** URL expressions used `$json.owner`, `$json.repo`, `$json.issue_number` but `$json` from upstream Node 10 (GitHub Comment API) contained the comment response, NOT the original issue data.
+
+### Fixes Applied
+- **Node 11 (GitHub Add Labels):** URL changed from `{{ $json.owner }}/{{ $json.repo }}/issues/{{ $json.issue_number }}/labels` to `{{ $('Prepare RUN_INPUT.json').first().json.owner }}/{{ $('Prepare RUN_INPUT.json').first().json.repo }}/issues/{{ $('Prepare RUN_INPUT.json').first().json.issue_number }}/labels`
+- **Node 12 (GitHub Remove Label):** Same URL pattern fix, plus "On Error: Continue" set to tolerate 404 when `agent:running` label doesn't exist
+- **Cross-Node Data Reference Pattern documented:** Use `$('Prepare RUN_INPUT.json').first().json.*` for stable access to issue identifiers after GitHub API calls
+
+### Live Test Results
+- **Nodes 1-12:** ✅ **ALL GREEN** — Full pipeline operational
+- **Node 10 (GitHub Comment):** ✅ Comment #4790885907 posted to Issue #1
+- **Node 11 (Add Labels):** ✅ HTTP 200 — `agent:needs-review` and `evidence:attached` added
+- **Node 12 (Remove Label):** ✅ HTTP 404 tolerated (label not present — expected)
+- **Labels verified on GitHub Issue #1:** Labels correctly applied
+- **Runner Evidence:** Produced and verified
+
+### Key Findings
+- **`$json` is UNSTABLE after GitHub API nodes:** The GitHub Comment API returns comment response data (url, html_url, id), NOT issue identifiers. Downstream nodes cannot rely on `$json.owner`, `$json.repo`, `$json.issue_number`.
+- **`$('Prepare RUN_INPUT.json').first().json.*` is the stable pattern:** Always reference the Prepare node (Node 3) for issue context data that must survive GitHub API calls.
+- **This pattern applies to ALL API calls:** Any n8n HTTP Request node that calls an external API will overwrite `$json` with the API response. Cross-node references are required to preserve upstream data.
+
+### Documentation Updated
+- STATUS.md → GREEN_PARTIAL_PLUS, 12/12 green, label fix documented
+- CHANGELOG.md — this entry
+- docs/github-issue-intake-runbook.md — stable data source pattern
+- docs/troubleshooting.md — Node 11/12 404 diagnosis
+- docs/security-boundaries.md — cross-node data reference security note
+- docs/architecture.md — data flow with Prepare node as stable context source
+- docs/run-input-schema.md — confirmed owner/repo/issue_number fields
+- docs/n8n-auth-automation.md — storageState verification note
+- evidence-index/latest.md — updated with latest run
+- evidence-index/known-evidence-paths.md — added latest path
+
 ## 2026-06-24 — Node 5 Credential Fix + 12-Node Live Test
 
 ### Discovery

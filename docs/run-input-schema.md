@@ -123,6 +123,29 @@ Wenn source_of_truth=github:
 Bei Widerspruch: GitHub gewinnt.
 ```
 
+## Downstream Use of owner/repo/issue_number
+
+The `github.owner`, `github.repo`, and `github.issue_number` fields are consumed by downstream n8n nodes in the GitHub Issue Intake workflow:
+
+| Downstream Node | Fields Used | Access Pattern |
+|-----------------|-------------|----------------|
+| Node 9 (Format Evidence Comment) | `owner`, `repo`, `issue_number` | `$json.github.owner` (before API calls) |
+| Node 10 (GitHub Comment API URL) | `owner`, `repo`, `issue_number` | `$json.github.owner` (URL path parameter) |
+| Node 11 (Add Labels API URL) | `owner`, `repo`, `issue_number` | `$('Prepare RUN_INPUT.json').first().json.owner` (cross-node ref — FIXED) |
+| Node 12 (Remove Label API URL) | `owner`, `repo`, `issue_number` | `$('Prepare RUN_INPUT.json').first().json.owner` (cross-node ref — FIXED) |
+
+**⚠️ Important:** After Node 10 executes the GitHub Comment API, `$json` is overwritten with the API response. Nodes 11 and 12 **must** use cross-node references (`$('Prepare RUN_INPUT.json').first().json.owner`) instead of `$json.owner`.
+
+The Prepare RUN_INPUT.json node (Node 3) always produces these fields as accessible JSON:
+```json
+{
+  "owner": "xxammaxx",
+  "repo": "n8n-blueprint-workflow",
+  "issue_number": 1
+}
+```
+These fields are the stable source of truth for all downstream label and comment API calls.
+
 ## Extension: Blueprint Bootstrap Mode
 
 The existing blueprint bootstrap RUN_INPUT schema remains unchanged for non-GitHub-triggered runs. The GitHub Source-of-Truth extension adds parallel fields and does not break backward compatibility.

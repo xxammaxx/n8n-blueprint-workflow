@@ -1,3 +1,136 @@
+# Evidence Report — label-dataflow-fix-20260624T173000Z
+
+## Status: GREEN_PARTIAL_PLUS
+
+**Session ID:** label-dataflow-fix-20260624
+**Completed:** 2026-06-24T17:30:00Z
+**Orchestrator:** documentation-agent (deepseek-v4-flash)
+**Previous Session:** node5-credential-live-test-20260624
+
+---
+
+## 1. Label Dataflow Fix — Live Test Results
+
+| Phase | Test | Result | Detail |
+|-------|------|--------|--------|
+| **Data Flow Diagnosis** | Node 11/12 URL expressions | ✅ IDENTIFIED | `$json.owner` was getting comment response, not issue data |
+| **Node 11 URL Fix** | Changed to cross-node ref to Prepare node | ✅ APPLIED | URL now uses `$('Prepare RUN_INPUT.json').first().json.*` |
+| **Node 12 URL Fix** | Same pattern + continueOnFail | ✅ APPLIED | 404-tolerant for missing `agent:running` label |
+| **Workflow Execution** | All 12 nodes | ✅ **12/12 GREEN** | Full pipeline operational |
+| **GitHub Comment** | Auto-post to Issue #1 | ✅ LIVE VERIFIED | Comment posted successfully |
+| **GitHub Add Labels** | `agent:needs-review` + `evidence:attached` | ✅ **HTTP 200** | Labels added to Issue #1 |
+| **GitHub Remove Label** | Remove `agent:running` | ✅ **HTTP 404 tolerated** | Label not present (expected) |
+| **Labels Verified** | On GitHub Issue #1 | ✅ CONFIRMED | Labels visible on issue page |
+| **Runner Evidence** | 8 files on LXC 102 | ✅ PRODUCED | status.json: GREEN_PARTIAL |
+| **storageState** | Playwright persistent session | ✅ VERIFIED | Works — no manual login needed |
+| **Secret Scan** | Tokens, keys, passwords in repo | ✅ CLEAN | No secrets detected |
+
+### Node-by-Node Status
+
+| # | Node Name | Status | Detail |
+|---|-----------|--------|--------|
+| 1 | Manual Trigger (Fallback) | ✅ Success | Started with owner/repo/issue_number |
+| 2 | Validate Issue Contract | ✅ Success | Labels validated correctly |
+| 3 | Prepare RUN_INPUT.json | ✅ Success | Produced run_input_b64, run_input_remote, evidence_dir |
+| 4 | SSH Write RUN_INPUT to Runner | ✅ Success | Expression mode — `{{ }}` resolved correctly |
+| 5 | SSH Start Runner Script | ✅ Success | Expression mode + cross-node ref |
+| 6 | Wait (5s) | ✅ Success | Correctly configured (not Hours) |
+| 7 | SSH Read status.json | ✅ Success | Expression mode + cross-node ref |
+| 8 | Format Evidence Comment | ✅ Success | Standardized comment format |
+| 9 | Format Final Result | ✅ Success | Final output formatted |
+| 10 | Create GitHub Comment on Issue | ✅ **Success** | Comment posted to Issue #1 |
+| 11 | Add Labels | ✅ **Success** | HTTP 200 — labels `agent:needs-review`, `evidence:attached` added |
+| 12 | Remove agent:running Label | ✅ **Success** | HTTP 404 tolerated — `continueOnFail: true` |
+
+### Stable Data Source Pattern (CRITICAL FINDING)
+
+The key discovery was that `$json` is **overwritten** after a GitHub API call. The URL expressions in Nodes 11 and 12 used `$json.owner`, `$json.repo`, `$json.issue_number` but after Node 10 (GitHub Comment API) executed, `$json` contained the comment response, not the issue data.
+
+**Fix applied:**
+```javascript
+// Before (broken):
+https://api.github.com/repos/{{ $json.owner }}/...
+
+// After (fixed):
+https://api.github.com/repos/{{ $('Prepare RUN_INPUT.json').first().json.owner }}/...
+```
+
+**Rule for all future nodes:** After any HTTP Request/API call, use `$('Node Name').first().json.field` instead of `$json.field`.
+
+---
+
+## 2. Workflow Export Status
+
+| Check | Result |
+|-------|--------|
+| Workflow ID | `jb7BgKeWGee5Iq9d` |
+| Nodes count | 12 |
+| All nodes green | ✅ **12/12 VERIFIED** |
+| Cross-node references on Label nodes | ✅ FIXED — references Prepare node |
+| Expression mode on SSH nodes | ✅ CONFIRMED on Nodes 4, 5, 7 |
+| Credential (SSH) | `dev-runner-ssh` |
+| Credential (GitHub) | `GitHub account` |
+| Node 11 URL | `$('Prepare RUN_INPUT.json').first().json.*` |
+| Node 12 URL | `$('Prepare RUN_INPUT.json').first().json.*` + continueOnFail |
+| Secret scan | ✅ CLEAN |
+| storageState in repo | ❌ NO |
+| .github/workflows | ❌ ABSENT |
+
+---
+
+## 3. Runner Evidence (Latest)
+
+| Property | Value |
+|----------|-------|
+| **Run ID** | `gh-issue-1-20260624T173000Z` |
+| **Path** | `/opt/dev-fabric/evidence/github-agent-runs/xxammaxx/n8n-blueprint-workflow/issue-1/gh-issue-1-20260624T173000Z/` |
+| **Status** | `GREEN_PARTIAL` |
+| **Files (8)** | RUN_INPUT.json, RUN_INPUT.redacted.json, status.json, run-report.md, commands.log, agent.log, github-context.md, operator-commands.md |
+
+---
+
+## 4. Security Scope
+
+| Check | Status |
+|-------|--------|
+| SSH credential in n8n store only | ✅ VERIFIED |
+| GitHub token visible | ❌ NO |
+| Private key visible | ❌ NO |
+| Credentials exported | ❌ NO |
+| storageState in repo | ❌ NO |
+| Secret scan | ✅ CLEAN |
+| n8n MCP expanded | ❌ NO |
+| Production workflows MCP-exposed | ❌ NO |
+| .github/workflows | ❌ ABSENT |
+
+---
+
+## 5. Known Issues
+
+| Issue | Detail | Action Needed |
+|-------|--------|---------------|
+| **Locale warning** | `bash: warning: setlocale: LC_ALL: cannot change locale (en_US.UTF-8)` on Proxmox SSH | Documented — NOT a build failure |
+| **OpenCode Provider** | No LLM provider configured | Needs separate approval |
+| **n8n API Key** | Not yet created | Would enable REST API automation |
+
+---
+
+## 6. Bewertung
+
+**GREEN_PARTIAL_PLUS** — Complete 12-node workflow fully operational:
+
+- ✅ Label data flow root cause identified and fixed
+- ✅ All 12 nodes green in live test
+- ✅ GitHub Comment auto-posts to Issue #1
+- ✅ Labels `agent:needs-review` + `evidence:attached` auto-applied
+- ✅ `agent:running` removal 404-tolerant
+- ✅ Runner evidence produced
+- ✅ Stable data source pattern documented
+
+**Nächster Schritt:** OpenCode Provider konfigurieren oder n8n API Key erstellen.
+
+---
+
 # Evidence Report — node5-credential-live-test-20260624T153000Z
 
 ## Status: GREEN_PARTIAL

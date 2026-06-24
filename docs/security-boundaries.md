@@ -58,12 +58,33 @@ All SSH nodes in the GitHub Issue Intake workflow **MUST** use **Expression Mode
 - Node configurations use `{{ }}` expressions to reference node outputs, not hardcoded values
 - SSH commands use `$json.run_input_remote` and `$json.run_input_b64` — no hardcoded paths in node config
 
+### Cross-Node Data Reference Security
+
+**`$json` is overwritten by API calls — use explicit references instead.**
+
+When an HTTP Request node executes an API call, its output replaces `$json` with the API response. This has security implications:
+
+| Aspect | `$json.field` (UNSAFE after API) | `$('Node').first().json.field` (SAFE) |
+|--------|----------------------------------|---------------------------------------|
+| Data provenance | Implicit — depends on last node executed | Explicit — always references the named node |
+| After API calls | Contains API response, NOT upstream data | ✅ Stable — always returns the requested node's output |
+| Debugging | Hard to trace where data comes from | ✅ Clear audit trail |
+| Risk | Silent data corruption — wrong paths/URLs | ✅ Predictable behavior |
+
+**Rule:** Any node after an HTTP Request (API call) MUST use explicit cross-node references to access upstream data. Do NOT rely on `$json` — it will contain the API response.
+
+**Affected nodes in the workflow:**
+- Node 11 (Add Labels): Uses `$('Prepare RUN_INPUT.json').first().json.*` (FIXED)
+- Node 12 (Remove Label): Uses `$('Prepare RUN_INPUT.json').first().json.*` (FIXED)
+- Node 5/7 (SSH nodes): Use `$('Prepare RUN_INPUT.json').first().json.*` (FIXED in previous session)
+
 ### Best Practices
 1. Always use Expression Mode for SSH node commands (fx toggle in n8n UI)
 2. Never hardcode file paths or IP addresses in SSH commands — use node references
 3. Never store private keys, passwords, or tokens in workflow JSON
 4. Verify SSH credential references are correct in n8n credential store before export
 5. Use `set +e` in commands to handle errors gracefully without leaking stack traces
+6. After any API call, use `$('Node Name').first().json.field` instead of `$json.field`
 
 ## Input Validation Boundaries
 

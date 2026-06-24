@@ -1,6 +1,27 @@
 ﻿# Known Evidence Paths
 
-## Latest Entry (2026-06-24) — Node 5 Credential Fix + 12-Node Live Test
+## Latest Entry (2026-06-24) — Label Dataflow Fix: 12/12 GREEN
+
+| Property | Value |
+|----------|-------|
+| **Session** | `label-dataflow-fix-20260624` |
+| **Run ID** | `gh-issue-1-20260624T173000Z` |
+| **Workflow ID** | `jb7BgKeWGee5Iq9d` |
+| **Status** | `GREEN_PARTIAL_PLUS` |
+| **Evidence Path** | `/opt/dev-fabric/evidence/github-agent-runs/xxammaxx/n8n-blueprint-workflow/issue-1/gh-issue-1-20260624T173000Z/` |
+| **Files** | `RUN_INPUT.json`, `RUN_INPUT.redacted.json`, `status.json`, `run-report.md`, `commands.log`, `agent.log`, `github-context.md`, `operator-commands.md` |
+| **Total Files** | 8 |
+| **Workflow Nodes** | 12 (**12/12 GREEN**) |
+| **GitHub Comment** | ✅ LIVE VERIFIED — posted to Issue #1 |
+| **GitHub Add Labels** | ✅ HTTP 200 — `agent:needs-review`, `evidence:attached` added |
+| **GitHub Remove Label** | ✅ HTTP 404 tolerated (`continueOnFail: true`) |
+| **Cross-Node Reference Pattern** | ✅ FIXED — Nodes 11/12 use `$('Prepare RUN_INPUT.json').first().json.*` |
+| **Expression Mode** | ✅ APPLIED on Nodes 4, 5, 7 |
+| **storageState** | ✅ Playwright persistent session works — no login needed |
+
+---
+
+## Previous Entry (2026-06-24) — Node 5 Credential Fix + 12-Node Live Test
 
 | Property | Value |
 |----------|-------|

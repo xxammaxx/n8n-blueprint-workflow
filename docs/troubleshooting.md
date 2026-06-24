@@ -453,10 +453,37 @@ Check the SSH node's execution output for the exact command that ran. If it cont
 
 **Verification:** The command should show the Expression radio button active, and `{{...}}` parts highlighted.
 
-## Symptom: Node Receives Wrong Data (comment response instead of issue IDs)
+## Symptom: Node 11/12 GitHub API gets 404 — "resource not found"
 
-**Symptom:** GitHub API node returns 404 "resource not found" even though the resource exists.
+**Symptom:** GitHub Add Labels or Remove Label node returns HTTP 404 "Not Found" even though the issue exists. Labels are not applied.
 
-**Root Cause:** Node receives data from a previous GitHub API node (comment response: `url`, `html_url`, `id`) instead of the original issue data (`owner`, `repo`, `issue_number`).
+**Root Cause (data flow):** The URL expression uses `$json.owner`, `$json.repo`, `$json.issue_number`. After Node 10 (GitHub Comment API) executes, `$json` contains the GitHub API comment response (`url`, `html_url`, `id`, `body`, etc.), NOT the original issue identifiers. The URL resolves to something like `api.github.com/repos/undefined/undefined/undefined/labels` instead of the correct issue URL.
 
-**Fix:** Reference the original data source directly: `$('Format Evidence Comment').first().json.owner`
+**Diagnosis:**
+1. Open the failing node's execution output
+2. Check the "Request URL" field — if it contains `undefined` or the comment response URL, the data flow is wrong
+3. Check the "Input" section — if `owner`, `repo`, `issue_number` are missing, the node is receiving wrong data
+
+**Fix — Use a stable data source:**
+Replace `$json.owner` / `$json.repo` / `$json.issue_number` with explicit cross-node references to the Prepare node:
+
+```javascript
+// CORRECT - references Prepare node directly:
+$('Prepare RUN_INPUT.json').first().json.owner
+$('Prepare RUN_INPUT.json').first().json.repo
+$('Prepare RUN_INPUT.json').first().json.issue_number
+
+// WRONG - unstable after GitHub API calls:
+// $json.owner
+// $json.repo
+// $json.issue_number
+```
+
+**Why:** The Prepare RUN_INPUT.json node (Node 3) produces the issue data BEFORE any API calls. Its output is stable and always contains `owner`, `repo`, `issue_number`. Cross-node references (`$('Node Name').first().json.field`) bypass the `$json` overwrite problem.
+
+**Prevention:** Any node that calls an external API will overwrite `$json`. Always use `$('Prepare RUN_INPUT.json').first().json.*` for issue context data in nodes after GitHub API calls.
+
+**Also check:**
+- If using GitHub API nodes: `$json` is overwritten by each API response
+- The Remove Label node should have "On Error: Continue" set (`continueOnFail: true`) to tolerate 404 when `agent:running` label doesn't exist
+- If the label name contains special characters (like `:`), URL-encode it: `agent%3Arunning`

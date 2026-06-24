@@ -1,8 +1,8 @@
-# STATUS: GREEN_PARTIAL
+# STATUS: GREEN_PARTIAL_PLUS
 
-**Last Updated:** 2026-06-24T15:30:00Z
-**Session:** node5-credential-live-test-20260624
-**Previous Session:** n8n-github-comment-label-automation
+**Last Updated:** 2026-06-24T17:30:00Z
+**Session:** label-dataflow-fix-20260624
+**Previous Session:** node5-credential-live-test-20260624
 
 ## Current State
 
@@ -16,7 +16,7 @@
 | Form Submission (Browser) | ✅ SUCCESS | Browser-based form submit works |
 | `dev-runner-ssh` Credential | ✅ VERIFIED | Host=192.168.1.53, Port=22, User=runner, Auth=PrivateKey |
 | **SSH Nodes (Write/Start/Read)** | ✅ ALL VALIDATED | Command mode + Expression mode + retry loop — all 3 nodes verified |
-| **GitHub Issue Intake Workflow (ID: jb7BgKeWGee5Iq9d)** | ✅ END-TO-END VALIDATED | All 12 nodes present: 10/12 green in live test |
+| **GitHub Issue Intake Workflow (ID: jb7BgKeWGee5Iq9d)** | ✅ **12/12 GREEN** | Label dataflow fix applied — all nodes green in live test |
 | **SSH Write** | ✅ PASS | Command mode, `mkdir -p` + `base64 -d` + `jq`, 779 bytes ✅ |
 | **SSH Start** | ✅ PASS | `--input-json` flag required, exit_code 0 ✅ |
 | **SSH Read** | ✅ PASS | Retry loop (30x2s), `status.json` found with `GREEN_PARTIAL` ✅ |
@@ -40,8 +40,9 @@
 | **GitHub Issue #1** | ✅ CREATED | Feat-Issue für GitHub SoT: `agent:queued` + Alle Labels |
 | **Evidence Comment Format** | ✅ DEFINED | Standardisierte Issue-Kommentar-Struktur |
 | **GitHub Comment Node** | ✅ **LIVE VERIFIED** | Comment #4790885907 posted to Issue #1 — credential `GitHub account` works |
-| **GitHub Label Nodes (11-12)** | ⚠️ PARTIAL | Comment works; Node 11 (Add Labels) has data flow issue — receives comment response instead of issue IDs |
+| **GitHub Label Nodes (11-12)** | ✅ **FIXED** | Cross-node references to Prepare node resolve correctly — Node 11 HTTP 200, Node 12 HTTP 404 tolerated |
 | **Expression Mode** | ✅ **APPLIED** | Nodes 4,5,7 switched to Expression mode with cross-node references to Node 3 |
+| **Cross-Node Data Reference Pattern** | ✅ **DOCUMENTED** | `$('Prepare RUN_INPUT.json').first().json.owner` — stable after GitHub API calls; `$json.owner` is UNSTABLE after API nodes |
 | **Node 5 Credential** | ✅ dev-runner-ssh CONFIRMED | Credential was already set — root cause was Expression Mode, not missing credential |
 | **storageState** | ✅ Playwright persistent session works | No login needed for UI automation |
 | **Playwright Automation** | ✅ Working | UI tests with persistent session — bypasses n8n login |
@@ -50,7 +51,7 @@
 | **n8n UI Login** | ✅ **BYPASSED via storageState** | Playwright persistent session works — no manual login needed |
 | **RUN_INPUT Schema** | ✅ EXTENDED | GitHub SoT-Felder (issue_url, issue_number, approval_policy) |
 | Git Repo (local) | ACTIVE | `C:\n8n-blueprint-workflow` |
-| Git Repo (GitHub) | LIVE | `https://github.com/xxammaxx/n8n-blueprint-workflow` — commit `01f1c67` |
+| Git Repo (GitHub) | LIVE | `https://github.com/xxammaxx/n8n-blueprint-workflow` — commit `89d896b` |
 
 ## UUID-Based Production URL
 
@@ -205,8 +206,8 @@ The Wait node was initially configured with `"unit": "hours"` which caused the n
 - [x] ~~GitHub Comment + Label Live-Test~~ ✅ PARTIAL (Comment works, Labels need fix)
 - [x] ~~GitHub Issue #1 auf automatischen Kommentar und Labels prüfen~~ ✅ Comment #4790885907 posted, Labels not updated
 - [x] ~~n8n UI Login durchführen und GitHub Credential prüfen~~ ✅ DONE — storageState bypassed login, GitHub credential working for comments
-- [ ] Fix Node 11 data flow (receives comment response → needs owner/repo/issue_number instead)
-- [ ] Re-test full 12-node workflow with label fix
+- [x] ~~Fix Node 11 data flow (receives comment response → needs owner/repo/issue_number instead)~~ ✅ DONE — cross-node references to Prepare node
+- [x] ~~Re-test full 12-node workflow with label fix~~ ✅ DONE — 12/12 GREEN
 - [ ] Configure LLM provider for OpenCode (needs separate API-key approval)
 - [ ] First real `opencode-run` execution with provider configured
 - [ ] Chrome DevTools MCP live test against n8n UI
@@ -222,7 +223,7 @@ The Wait node was initially configured with `"unit": "hours"` which caused the n
 - ~~--input-json flag missing~~ ✅ RESOLVED — flag is required by runner script
 - ~~Validate Issue Contract blocks without labels~~ ✅ RESOLVED — labels array requirement documented
 - ~~GitHub auto-comment/label nodes missing~~ ✅ RESOLVED — 3 HTTP Request nodes added to workflow JSON
-- Node 11 data flow fix needed (Add Labels node receives comment response instead of issue identifiers — blocks auto-labeling)
+- ~~Node 11 data flow fix needed (Add Labels node receives comment response instead of issue identifiers — blocks auto-labeling)~~ ✅ RESOLVED — cross-node references to Prepare node
 - OpenCode provider/API-key not yet configured (blocks autonomous agent runs)
 - OpenCode interactive provider prompt blocks non-interactive execution
 - n8n MCP production workflow exposure: NOT ENABLED (only smoke test exposed — by design)
@@ -237,8 +238,8 @@ The Wait node was initially configured with `"unit": "hours"` which caused the n
 6. ~~User logs into n8n UI~~ ✅ DONE — storageState bypassed login
 7. ~~Verify GitHub credential~~ ✅ DONE — Comment posted successfully via `GitHub account` credential
 8. ~~Run live test~~ ✅ PARTIAL — Comment works, Labels need fix
-9. **Fix Node 11 data flow** — Add Labels node must reference original issue identifiers, not comment response
-10. **Re-test full 12-node workflow** — verify all 12 nodes green including Labels
+9. ~~Fix Node 11 data flow~~ ✅ DONE — Add Labels node now references Prepare node directly
+10. ~~Re-test full 12-node workflow~~ ✅ DONE — 12/12 GREEN, labels verified on GitHub Issue #1
 11. Create n8n API Key for future automation (optional but recommended)
 12. Run Chrome DevTools MCP test against n8n UI (dedicated session)
 13. Run Playwright CLI regression tests (`npx playwright test tests/ui/`)

@@ -150,7 +150,31 @@ n8n Form → RUN_INPUT.json → start_blueprint_bootstrap.sh
 3. **Ready:** Label `agent:queued` → `agent:ready` (NUR mit explizitem Nutzer-Start)
 4. **Execute:** n8n liest Issue → Runner führt aus → Evidence wird geschrieben
 5. **Report:** n8n kommentiert Issue mit Evidence-Zusammenfassung
-6. **Done:** Labels `agent:done` + `evidence:attached` setzen
+6. **Labels:** n8n setzt `agent:needs-review` + `evidence:attached`, entfernt `agent:running`
+7. **Done:** Labels `agent:done` + `evidence:attached` setzen
+
+### Data Flow: Prepare Node as Stable Context Source
+
+**Critical Pattern:** The `Prepare RUN_INPUT.json` node (Node 3) is the **stable data source** for issue context. It produces `owner`, `repo`, `issue_number`, `run_input_remote`, `run_input_b64`, and `evidence_dir` BEFORE any API calls. All downstream nodes that need this data MUST reference Node 3 directly.
+
+```
+Node 3: Prepare RUN_INPUT.json  ← produces stable context (owner, repo, issue_number)
+  │
+  ├──▶ Node 4/5/7 (SSH nodes)  → use $('Prepare RUN_INPUT.json').first().json.*
+  │
+  ├──▶ Node 8 (Format Comment)  → $json still has Prepare data at this point
+  │
+  ├──▶ Node 10 (GitHub Comment) → HTTP Request → $json is OVERWRITTEN with API response
+  │
+  └──▶ Node 11/12 (Labels)      → MUST use $('Prepare RUN_INPUT.json').first().json.*
+                                  → $json now contains comment API response, NOT issue data
+```
+
+**Why This Matters:**
+- After Node 10 (GitHub Comment API), `$json` contains the comment response — NOT the original issue identifiers
+- Nodes 11 and 12 need `owner`, `repo`, `issue_number` — these are ONLY available from Node 3
+- Using `$json.owner` after an API call causes HTTP 404 because the value is `undefined`
+- Cross-node references (`$('Node Name').first().json.field`) bypass this problem
 
 ### Labelmodell
 

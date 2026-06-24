@@ -84,7 +84,12 @@ await page.goto('http://192.168.1.52:5678/home/workflows');
 - NEVER output in logs
 - Rotate or delete after each session if needed
 
-**Status:** ⚠️ NOT YET CREATED — manual login required first
+**Status:** ✅ **LIVE VERIFIED** — storageState was created during manual login session on 2026-06-24 and successfully used for Playwright automation. No n8n login prompt appeared during UI automation. Works for:
+- Opening n8n workflow editor
+- Navigating to workflows
+- Running manual triggers
+
+**Last verified:** 2026-06-24T15:30:00Z — during Node 5 credential fix + label dataflow fix live test
 
 ---
 

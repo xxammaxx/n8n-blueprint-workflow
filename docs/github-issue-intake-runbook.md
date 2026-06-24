@@ -436,20 +436,46 @@ cat /opt/dev-fabric/evidence/github-agent-runs/xxammaxx/n8n-blueprint-workflow/i
 
 3. **Wait Node Units:** Always verify the Wait unit is "Seconds", not "Hours" or "Minutes".
 
-### Verified Workflow Chain (10/12 nodes working)
+### Verified Workflow Chain (12/12 nodes working)
 
 ```
-Manual Trigger → Validate → Prepare RUN_INPUT.json → SSH Write → SSH Start → Wait (5s) → SSH Read → Format Evidence Comment → GitHub Comment → [Labels: needs fix]
+Manual Trigger → Validate → Prepare RUN_INPUT.json → SSH Write → SSH Start → Wait (5s) → SSH Read → Format Evidence Comment → GitHub Comment → Add Labels → Remove Label → Format Result
 ```
 
-### Live Test Results
+### Live Test Results (2026-06-24 — Label Dataflow Fix)
 
 | Node | Name | Result |
 |------|------|--------|
-| 1-10 | Core Pipeline | ✅ ALL GREEN |
-| 10 | GitHub Comment | ✅ Comment #4790885907 posted |
-| 11 | Add Labels | ❌ 404 — data flow issue |
-| 12 | Remove Label | ⛔ Not reached |
+| 1-12 | Full Pipeline | ✅ **ALL 12 GREEN** |
+| 10 | GitHub Comment | ✅ Comment posted to Issue #1 |
+| 11 | Add Labels | ✅ HTTP 200 — `agent:needs-review` + `evidence:attached` added |
+| 12 | Remove Label | ✅ HTTP 404 tolerated (label not present) |
 
-### Known Issue: Node 11 (Add Labels)
-Node 11 receives GitHub comment response data (`url`, `html_url`, `id`) instead of issue identifiers (`owner`, `repo`, `issue_number`). Workaround: manually add labels or fix data flow to reference `$('Format Evidence Comment').first().json.owner` etc.```
+### Stable Data Source Pattern (CRITICAL)
+
+**Problem:** Nodes 11 and 12 originally used `$json.owner`, `$json.repo`, `$json.issue_number` in their URL expressions. After Node 10 (GitHub Comment API) executes, `$json` contains the GitHub API comment response (`url`, `html_url`, `id`, etc.), NOT the original issue identifiers. This causes HTTP 404 because the URL resolves to invalid data.
+
+**Solution:** Always reference the **Prepare RUN_INPUT.json** node (Node 3) for issue context data that must survive GitHub API calls:
+
+```javascript
+// STABLE — references Prepare node directly:
+$('Prepare RUN_INPUT.json').first().json.owner
+$('Prepare RUN_INPUT.json').first().json.repo
+$('Prepare RUN_INPUT.json').first().json.issue_number
+
+// UNSTABLE after GitHub API calls — $json is overwritten:
+// $json.owner
+// $json.repo
+// $json.issue_number
+```
+
+**Rule:** Any n8n HTTP Request node that calls an external API will overwrite `$json` with the API response. If downstream nodes need data from before the API call, use explicit cross-node references (`$('Node Name').first().json.field`).
+
+**This applies to:**
+- Node 11 (Add Labels) — URL references Prepare node
+- Node 12 (Remove Label) — URL references Prepare node
+- Any future nodes that need issue identifiers after API calls
+- SSH nodes that need `run_input_remote`, `run_input_b64`, `evidence_dir` (already fixed in previous session)
+
+### Known Issue: Node 11 (Add Labels) — RESOLVED
+Node 11 previously received GitHub comment response data (`url`, `html_url`, `id`) instead of issue identifiers (`owner`, `repo`, `issue_number`). Fixed by changing URL expressions to reference `$('Prepare RUN_INPUT.json').first().json.*`.
