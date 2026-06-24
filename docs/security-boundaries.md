@@ -41,6 +41,17 @@ All SSH nodes in the GitHub Issue Intake workflow **MUST** use **Expression Mode
 | Audit trail | Opaque — no way to verify what was executed | ✅ n8n logs the resolved expression |
 | Credential exposure | Higher risk if node config is exported | ✅ Credentials stay in n8n encrypted store |
 
+### storageState Security (2026-06-24)
+- storageState stored OUTSIDE repo: `C:\Users\xxammaxx\.n8n-automation\playwright\n8n-storage-state.json`
+- storageState NEVER in repo, logs, evidence, or screenshots
+- `.gitignore` includes: `n8n-api-key*`, `.n8n-automation/`
+- storageState contains authentication cookies — treat as sensitive credential
+
+### Expression Mode Security
+- Expression mode is REQUIRED for SSH nodes with template variables
+- In Fixed mode, template literals pass through to bash unexpanded — NOT a security issue but a correctness issue
+- However, Fixed mode can cause subtle failures (silent data corruption, wrong paths) that appear as green nodes
+
 ### Credential References via n8n Store Only
 - SSH credentials (`dev-runner-ssh`) are stored exclusively in n8n's encrypted credential store
 - Workflow JSON files reference credentials **by ID only** — never by private key content

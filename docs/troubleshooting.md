@@ -439,3 +439,24 @@ When an SSH node is in **Fixed Mode** (not Expression Mode), n8n does not resolv
 
 ### Diagnosis
 Check the SSH node's execution output for the exact command that ran. If it contains literal `{{ }}` characters, the node was in Fixed Mode.
+
+## Symptom: SSH Node Expression Mode — "node green but command fails"
+
+**Symptom:** SSH node shows green/success but the command didn't work (template variables not resolved, empty paths, usage errors).
+
+**Root Cause:** SSH command field is in **Fixed mode** (default in n8n). In Fixed mode, `{{$json.field}}` expressions are passed literally to bash.
+
+**Fix:**
+1. Open the SSH node
+2. Click the "fx" toggle next to the Command field to switch to **Expression mode**
+3. Template expressions will now be highlighted (blue/purple) and resolved before sending to SSH
+
+**Verification:** The command should show the Expression radio button active, and `{{...}}` parts highlighted.
+
+## Symptom: Node Receives Wrong Data (comment response instead of issue IDs)
+
+**Symptom:** GitHub API node returns 404 "resource not found" even though the resource exists.
+
+**Root Cause:** Node receives data from a previous GitHub API node (comment response: `url`, `html_url`, `id`) instead of the original issue data (`owner`, `repo`, `issue_number`).
+
+**Fix:** Reference the original data source directly: `$('Format Evidence Comment').first().json.owner`

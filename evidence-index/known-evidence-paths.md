@@ -1,6 +1,25 @@
 ﻿# Known Evidence Paths
 
-## Latest Entry (2026-06-24) — GitHub Comment & Label Automation
+## Latest Entry (2026-06-24) — Node 5 Credential Fix + 12-Node Live Test
+
+| Property | Value |
+|----------|-------|
+| **Session** | `node5-credential-live-test-20260624` |
+| **Run ID** | `gh-issue-1-20260624T152337Z` |
+| **Workflow ID** | `jb7BgKeWGee5Iq9d` |
+| **Status** | `GREEN_PARTIAL` |
+| **Evidence Path** | `/opt/dev-fabric/evidence/github-agent-runs/xxammaxx/n8n-blueprint-workflow/issue-1/gh-issue-1-20260624T152337Z/` |
+| **Files** | `RUN_INPUT.json`, `RUN_INPUT.redacted.json`, `status.json`, `run-report.md`, `commands.log`, `agent.log`, `github-context.md`, `operator-commands.md` |
+| **Total Files** | 8 |
+| **Workflow Nodes** | 12 (10/12 green) |
+| **GitHub Comment** | ✅ LIVE VERIFIED — Comment #4790885907 posted |
+| **GitHub Labels** | ❌ FAILED — Node 11 data flow issue |
+| **Expression Mode** | ✅ APPLIED on Nodes 4, 5, 7 |
+| **storageState** | ✅ Playwright persistent session works — no login needed |
+
+---
+
+## Historical Entry (2026-06-24) — GitHub Comment & Label Automation
 
 | Property | Value |
 |----------|-------|

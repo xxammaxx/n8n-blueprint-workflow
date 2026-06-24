@@ -1,5 +1,36 @@
 # CHANGELOG
 
+## 2026-06-24 — Node 5 Credential Fix + 12-Node Live Test
+
+### Discovery
+- **Node 5 Credential already set:** `dev-runner-ssh` was correctly assigned — previous "No credentials set" was misleading
+- **Root cause was Expression Mode:** All 3 SSH nodes were in Fixed mode, causing `{{ }}` expressions to pass literally
+
+### Fixes Applied
+- **Node 4 (SSH Write):** Fixed mode → Expression mode — `run_input_remote` and `run_input_b64` now resolve correctly
+- **Node 5 (SSH Start):** Fixed mode → Expression mode + cross-node reference to Node 3 (`$('Prepare RUN_INPUT.json').first().json.run_input_remote`)
+- **Node 6 (Wait):** Unit changed from Hours → Seconds (was 5 hours, now 5 seconds)
+- **Node 7 (SSH Read):** Expression mode + cross-node reference to Node 3 (`$('Prepare RUN_INPUT.json').first().json.evidence_dir`)
+
+### Live Test Results
+- **Nodes 1-10:** ✅ ALL GREEN — Core pipeline fully operational
+- **Node 10 (GitHub Comment):** ✅ LIVE VERIFIED — Comment #4790885907 posted to Issue #1
+- **Node 11 (Add Labels):** ❌ FAILED — Receives comment response data, not issue identifiers (owner/repo/issue_number missing)
+- **Node 12 (Remove Label):** ⛔ NOT REACHED — Workflow halted at Node 11
+
+### Runner Evidence
+- Run ID: `gh-issue-1-20260624T152337Z`
+- All 8 evidence files produced (status: GREEN_PARTIAL)
+
+### Key Findings
+- **Expression Mode is the hidden gotcha:** SSH nodes in Fixed mode appear green but pass template literals to bash
+- **Cross-node references work:** `$('Node Name').first().json.field` syntax resolves from specific nodes
+- **storageState works for automation:** Playwright persistent session bypasses n8n login
+- **Credential Anzeigename:** GitHub credential shows as "GitHub account" in UI
+
+### Documentation Updated
+- STATUS.md, CHANGELOG.md, docs/*, evidence-index/*
+
 ## 2026-06-24 — GitHub Comment & Label Automation + n8n Auth Strategy
 
 ### Completed

@@ -1,3 +1,116 @@
+# Evidence Report — node5-credential-live-test-20260624T153000Z
+
+## Status: GREEN_PARTIAL
+
+**Session ID:** node5-credential-live-test-20260624
+**Completed:** 2026-06-24T15:30:00Z
+**Orchestrator:** issue-orchestrator (deepseek-v4-pro)
+**Previous Session:** n8n-github-comment-label-automation
+
+---
+
+## 1. 12-Node Live Test Results
+
+| Phase | Test | Result | Detail |
+|-------|------|--------|--------|
+| **Node 5 Credential** | dev-runner-ssh assignment | ✅ ALREADY SET | Was correctly assigned — root cause was Expression Mode |
+| **Expression Mode Fix** | Nodes 4,5,7 to Expression | ✅ APPLIED | Cross-node refs: Node 5/7 → Node 3 (`$('Prepare RUN_INPUT.json')`) |
+| **Wait Node Fix** | 5 Hours → 5 Seconds | ✅ APPLIED | Unit corrected so workflow doesn't hang |
+| **Workflow Execution** | All 12 nodes | ⚠️ 10/12 GREEN | Nodes 1-10: ✅, Node 11: ❌ 404, Node 12: ⛔ |
+| **GitHub Comment** | Auto-post to Issue #1 | ✅ **LIVE VERIFIED** | Comment #4790885907 posted at 2026-06-24T15:24:59Z |
+| **GitHub Labels** | Auto-add labels to Issue #1 | ❌ FAILED | 404 — Node 11 receives comment response, not issue IDs |
+| **Runner Evidence** | 8 files on LXC 102 | ✅ PRODUCED | status.json: GREEN_PARTIAL, source_of_truth: github, issue_number: 1 |
+| **storageState** | Playwright persistent session | ✅ WORKS | No n8n login needed for UI automation |
+| **Secret Scan** | Tokens, keys, passwords in repo | ✅ CLEAN | No secrets detected |
+| **Workflow Export** | Export to workflows/ | ✅ DONE | 12 nodes, Expression mode confirmed, cross-node references verified |
+
+### Node-by-Node Status
+
+| # | Node Name | Status | Detail |
+|---|-----------|--------|--------|
+| 1 | Manual Trigger (Fallback) | ✅ Success | Started with owner/repo/issue_number |
+| 2 | Validate Issue Contract | ✅ Success | Labels validated correctly |
+| 3 | Prepare RUN_INPUT.json | ✅ Success | Produced run_input_b64, run_input_remote, evidence_dir |
+| 4 | SSH Write RUN_INPUT to Runner | ✅ Success | Expression mode — `{{ }}` resolved correctly |
+| 5 | SSH Start Runner Script | ✅ Success | Expression mode + cross-node ref |
+| 6 | Wait (5s) | ✅ Success | Correctly configured (not Hours) |
+| 7 | SSH Read status.json | ✅ Success | Expression mode + cross-node ref |
+| 8 | Format Evidence Comment | ✅ Success | Standardized comment format |
+| 9 | Format Final Result | ✅ Success | Final output formatted |
+| 10 | Create GitHub Comment on Issue | ✅ **Success** | Comment #4790885907 posted |
+| 11 | Add Labels | ❌ **Failed** | 404 — receives comment response, not issue IDs |
+| 12 | Remove agent:running Label | ⛔ NOT REACHED | Halted at Node 11 |
+
+---
+
+## 2. Workflow Export Status
+
+| Check | Result |
+|-------|--------|
+| Workflow ID | `jb7BgKeWGee5Iq9d` (updated) |
+| Nodes count | 12 |
+| Expression mode on SSH nodes | ✅ CONFIRMED on Nodes 4, 5, 7 |
+| Cross-node references | ✅ Node 5 → Node 3, Node 7 → Node 3 |
+| Credential (SSH) | `dev-runner-ssh` (ID: 42a60f05-16eb-493f-8257-3eeb5aef531a) |
+| Credential (GitHub) | `GitHub account` (ID: M5hvZu2nCwFcHBYX) |
+| Secret scan | ✅ CLEAN |
+| storageState in repo | ❌ NO |
+| .github/workflows | ❌ ABSENT |
+
+---
+
+## 3. Runner Evidence (Latest)
+
+| Property | Value |
+|----------|-------|
+| **Run ID** | `gh-issue-1-20260624T152337Z` |
+| **Path** | `/opt/dev-fabric/evidence/github-agent-runs/xxammaxx/n8n-blueprint-workflow/issue-1/gh-issue-1-20260624T152337Z/` |
+| **Status** | `GREEN_PARTIAL` |
+| **Files (8)** | RUN_INPUT.json, RUN_INPUT.redacted.json, status.json, run-report.md, commands.log, agent.log, github-context.md, operator-commands.md |
+
+---
+
+## 4. Security Scope
+
+| Check | Status |
+|-------|--------|
+| SSH credential in n8n store only | ✅ VERIFIED |
+| GitHub token visible | ❌ NO |
+| Private key visible | ❌ NO |
+| Credentials exported | ❌ NO |
+| storageState in repo | ❌ NO |
+| Secret scan | ✅ CLEAN |
+| n8n MCP expanded | ❌ NO |
+| Production workflows MCP-exposed | ❌ NO |
+| .github/workflows | ❌ ABSENT |
+
+---
+
+## 5. Known Issues
+
+| Issue | Detail | Action Needed |
+|-------|--------|---------------|
+| **Node 11 data flow** | Receives comment response (url, html_url, id) instead of issue identifiers (owner, repo, issue_number) | Fix cross-node reference to point to Node 8 (Format Evidence Comment) |
+| **Locale warning** | `bash: warning: setlocale: LC_ALL: cannot change locale (en_US.UTF-8)` on Proxmox SSH | Documented — NOT a build failure |
+| **Node 12 not reached** | Workflow halted at Node 11 — Remove Label never executed | Will resolve after Node 11 fix |
+
+---
+
+## 6. Bewertung
+
+**GREEN_PARTIAL** — Core pipeline (Nodes 1-10) fully operational:
+
+- ✅ Alle 3 Fixes applied (Expression Mode, Wait unit, cross-node refs)
+- ✅ GitHub Comment live verified — auto-posts to Issue
+- ✅ Runner evidence produced for latest run
+- ✅ storageState working — no manual login needed
+- ❌ Node 11 data flow issue (Add Labels)
+- ⛔ Node 12 not reached
+
+**Nächster Schritt:** Fix Node 11 data flow (reference original issue identifiers), then re-test full 12-node workflow.
+
+---
+
 # Evidence Report — github-comment-label-automation-20260624T130000Z
 
 ## Status: GREEN_PARTIAL_PLUS

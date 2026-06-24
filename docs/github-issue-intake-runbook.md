@@ -425,3 +425,31 @@ ssh runner@192.168.1.53
 cat /opt/dev-fabric/evidence/github-agent-runs/xxammaxx/n8n-blueprint-workflow/issue-1/*/status.json
 cat /opt/dev-fabric/evidence/github-agent-runs/xxammaxx/n8n-blueprint-workflow/issue-1/*/run-report.md
 ```
+
+## 2026-06-24: Expression Mode Fix + Live Validation
+
+### Key Fixes Applied
+
+1. **Expression Mode on SSH Nodes:** Commands MUST use Expression mode (fx toggle). In Fixed mode, `{{ }}` expressions are passed literally to bash. This was the hidden root cause of "node green but command fails" symptoms.
+
+2. **Cross-Node References:** When referencing data from upstream nodes, SSH nodes must use explicit node references: `$('Prepare RUN_INPUT.json').first().json.run_input_remote`. Simple `$json.field` does not work through SSH nodes.
+
+3. **Wait Node Units:** Always verify the Wait unit is "Seconds", not "Hours" or "Minutes".
+
+### Verified Workflow Chain (10/12 nodes working)
+
+```
+Manual Trigger → Validate → Prepare RUN_INPUT.json → SSH Write → SSH Start → Wait (5s) → SSH Read → Format Evidence Comment → GitHub Comment → [Labels: needs fix]
+```
+
+### Live Test Results
+
+| Node | Name | Result |
+|------|------|--------|
+| 1-10 | Core Pipeline | ✅ ALL GREEN |
+| 10 | GitHub Comment | ✅ Comment #4790885907 posted |
+| 11 | Add Labels | ❌ 404 — data flow issue |
+| 12 | Remove Label | ⛔ Not reached |
+
+### Known Issue: Node 11 (Add Labels)
+Node 11 receives GitHub comment response data (`url`, `html_url`, `id`) instead of issue identifiers (`owner`, `repo`, `issue_number`). Workaround: manually add labels or fix data flow to reference `$('Format Evidence Comment').first().json.owner` etc.```
