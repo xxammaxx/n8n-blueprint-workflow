@@ -1,0 +1,43 @@
+{
+    "name": "MCP Smoke Test",
+    "nodes": [
+        {
+            "parameters": {},
+            "id": "mcp-smoke-manual-trigger",
+            "name": "When called by MCP",
+            "type": "n8n-nodes-base.manualTrigger",
+            "typeVersion": 1,
+            "position": [0, 0]
+        },
+        {
+            "parameters": {
+                "jsCode": "// MCP Smoke Test — Harmless static response only\n// NO access to: credentials, keys, tokens, DB, SSH, GitHub API\n// This workflow is safe for MCP client tool testing.\n\nreturn {\n  ok: true,\n  system: 'n8n-blueprint-workflow',\n  runner_expected: '192.168.1.53',\n  no_secrets: true,\n  mcp_test_timestamp: new Date().toISOString(),\n  n8n_version: '2.26.8',\n  note: 'This is a safe smoke-test workflow for MCP integration testing.'\n};\n"
+            },
+            "id": "mcp-smoke-response",
+            "name": "Smoke Test Response",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [250, 0]
+        }
+    ],
+    "connections": {
+        "When called by MCP": {
+            "main": [
+                [
+                    {
+                        "node": "Smoke Test Response",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "callerPolicy": "workflowsFromSameOwner",
+        "availableInMCP": true,
+        "mcpToolName": "mcp_smoke_test",
+        "mcpToolDescription": "Runs a harmless MCP smoke test. Returns static status JSON with no secrets. Safe for MCP client testing."
+    },
+    "_comment": "MCP Smoke Test — Safe for MCP client testing. No credentials, no SSH, no tokens."
+}

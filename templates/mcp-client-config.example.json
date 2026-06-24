@@ -1,14 +1,33 @@
 {
-  "_comment": "MCP Client Configuration Template for n8n MCP Integration",
-  "_warning": "DO NOT store this file with real tokens. Use placeholder only.",
-  "_usage": "Copy to your MCP client config location and replace <N8N_MCP_TOKEN> with a real token generated in n8n UI.",
+  "_comment": "MCP Client Configuration Template — Browser Automation Stack",
+  "_warning": "DO NOT store this file with real tokens. Use PLACEHOLDERS only.",
+  "_usage": "Copy to your MCP client config location. Replace <PLACEHOLDER> values with real tokens generated in the respective service UI.",
+  "_security": "Never commit real tokens. This file uses safe placeholders.",
   "mcpServers": {
-    "n8n-mcp": {
+    "n8n": {
+      "_description": "n8n official Instance-level MCP — Primary for n8n workflow operations",
+      "_status": "DISABLED (requires user to enable in n8n Settings > Instance-level MCP)",
+      "_docs": "https://docs.n8n.io/advanced-ai/mcp/mcp_tools_reference",
       "type": "http",
       "url": "http://192.168.1.52:5678/mcp-server/http",
       "headers": {
         "Authorization": "Bearer <N8N_MCP_TOKEN_NOT_IN_REPO>"
       }
+    },
+    "chrome-devtools": {
+      "_description": "Chrome DevTools MCP — Primary for browser UI debugging",
+      "_status": "verified installable (npx chrome-devtools-mcp@latest)",
+      "command": "npx",
+      "args": ["-y", "chrome-devtools-mcp@latest", "--slim"],
+      "env": {
+        "CHROME_EXECUTABLE": "<PATH_TO_CHROME_OR_EDGE>"
+      }
+    },
+    "playwright": {
+      "_description": "Playwright MCP — Fallback browser automation",
+      "_status": "working (current fallback)",
+      "command": "npx",
+      "args": ["@anthropic-ai/mcp-server-playwright"]
     }
   }
 }

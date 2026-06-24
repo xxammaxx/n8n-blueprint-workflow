@@ -1,8 +1,8 @@
 # STATUS: GREEN_PARTIAL
 
-**Last Updated:** 2026-06-23T12:00:00Z
-**Session:** github-source-of-truth-intake
-**Previous Session:** opencode-runner-integration
+**Last Updated:** 2026-06-24T12:00:00Z
+**Session:** browser-automation-strategy
+**Previous Session:** github-issue-intake-ssh-write-fix
 
 ## Current State
 
@@ -109,25 +109,73 @@ The old `blueprint-speckit-opencode-bootstrap` workflow has a persistent webhook
 - [x] Secret scan passed
 - [x] Pushed to GitHub
 
+## SSH Node Mode Fix (2026-06-24)
+
+| Issue | Root Cause | Fix Applied |
+|---|---|---|
+| SSH Start & Read nodes not executing commands | Missing `"mode": "command"` parameter in exported workflow JSON | Added `"mode": "command"` to both nodes |
+| SSH Start using `--input-json` flag | Flag not supported by runner script | Removed `--input-json`, script takes positional arg |
+| SSH Write not creating parent dirs | SFTP mode doesn't create parent directories | Already in command mode with `mkdir -p` + `base64 -d` |
+
+**Export file patched:** `workflows/github-issue-intake.export.json`
+- SSH Start: mode=command, command simplified
+- SSH Read: mode=command, retry loop preserved
+
+**Verification pending:** n8n live database must be checked via Playwright (n8n login required).
+**Runner evidence check pending:** No SSH access from Windows host to LXC 102.
+
+## Browser Automation Stack (2026-06-24)
+
+| Tier | Tool | Role | Status |
+|------|------|------|--------|
+| 1 | **n8n official MCP** | Workflow discovery/test | DISABLED (visible, awaiting enable) |
+| 2 | **Chrome DevTools MCP** | Browser UI debugging | INSTALLABLE (npx verified) |
+| 3 | **Playwright CLI** | Regression tests | SPEC CREATED |
+| 4 | **Playwright MCP** | Fallback browser control | WORKING |
+| 5 | **BrowserMCP** | Optional auth fallback | EVALUATED, NOT INSTALLED |
+
+### n8n MCP Discovery
+- **Visible:** YES — Settings → Instance-level MCP (Preview)
+- **Enabled:** NO (toggle off, no tokens generated)
+- **Test Workflow:** `workflows/mcp-smoke-test.export.json` ready
+- **Config Template:** `templates/mcp-client-config.example.json` (placeholders only)
+
+### Chrome DevTools MCP
+- **Installable:** YES — `npx chrome-devtools-mcp@latest` works
+- **Chrome Version:** 149.0.7827.158 (supports DevTools MCP)
+- **Flags:** `--slim`, `--isolated`, `--headless` supported
+
+### Playwright CLI Regression
+- **Spec:** `tests/ui/n8n-github-issue-intake-smoke.spec.ts`
+- **Not MCP-coupled:** Uses Playwright Test Runner directly
+- **Login handling:** Aborts with `LOGIN_REQUIRED` if needed
+
 ## What's Pending
 
+- [ ] User approval to enable n8n Instance-level MCP
 - [ ] Configure n8n GitHub API credential (`github-n8n-blueprint`) for automated trigger
 - [ ] Configure LLM provider for OpenCode (needs separate API-key approval)
 - [ ] First real `opencode-run` execution with provider configured
 - [ ] Smoke-test the GitHub Issue → Runner intake end-to-end
+- [ ] Chrome DevTools MCP live test against n8n UI
+- [ ] Run Playwright CLI regression tests
 - [ ] Optional: Hermes as secondary reviewer/agent (future run)
 - [ ] Optional: Investigate `field-N` form field naming for curl compatibility
 
 ## Blockers
 
+- n8n MCP disabled — user must enable (artifacts prepared)
 - n8n GitHub API credential not yet configured (blocks automated GitHub Trigger — Manual Trigger works)
 - OpenCode provider/API-key not yet configured (blocks autonomous agent runs)
 - OpenCode interactive provider prompt blocks non-interactive execution
 
 ## Next Steps
 
-1. Configure n8n GitHub API credential for automated Issue→Runner trigger
-2. Obtain approval for LLM provider API key configuration
-3. Configure provider via `opencode providers login`
-4. Run first controlled `opencode-run` execution via n8n form or GitHub issue
-5. Optional: Hermes as secondary agent (separate, approved run)
+1. User enables n8n Instance-level MCP in Settings → import smoke test workflow
+2. Configure n8n GitHub API credential for automated Issue→Runner trigger
+3. Run Chrome DevTools MCP test against n8n UI (dedicated session)
+4. Run Playwright CLI regression tests (`npx playwright test tests/ui/`)
+5. Obtain approval for LLM provider API key configuration
+6. Configure provider via `opencode providers login`
+7. Run first controlled `opencode-run` execution via n8n form or GitHub issue
+8. Optional: Hermes as secondary agent (separate, approved run)

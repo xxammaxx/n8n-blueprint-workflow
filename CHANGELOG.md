@@ -1,5 +1,83 @@
 # CHANGELOG
 
+## 2026-06-24 — Browser Automation Strategy (Tiered MCP Stack)
+
+### Completed
+- **n8n official MCP Discovery:**
+  - Instance-level MCP found in n8n v2.26.8 Settings UI (Preview feature)
+  - Currently DISABLED — toggle off, no tokens exposed
+  - Enable button available, not clicked (requires user approval)
+- **Chrome DevTools MCP verified installable:**
+  - `npx chrome-devtools-mcp@latest` succeeds on Windows host
+  - Chrome 149.0.7827.158 supports DevTools MCP protocol
+  - All required flags documented: `--slim`, `--isolated`, `--headless`
+- **Playwright CLI Regression test spec created:**
+  - `tests/ui/n8n-github-issue-intake-smoke.spec.ts`
+  - Tests: workflow navigation, node verification, secret pattern scan
+  - Not MCP-coupled — uses Playwright Test Runner directly
+  - `LOGIN_REQUIRED` abort pattern for gated environments
+- **MCP Smoke Test workflow prepared:**
+  - `workflows/mcp-smoke-test.export.json` — safe for MCP client testing
+  - No credentials, no SSH, no GitHub API access
+  - Returns only static metadata (`ok`, `system`, `no_secrets`)
+- **BrowserMCP evaluated (not installed):**
+  - Extension-based browser automation with auth session support
+  - Risk: full profile access. Recommendation: optional fallback only
+- **Documentation created/updated:**
+  - `docs/browser-automation-strategy.md` — Tiered stack architecture
+  - `docs/n8n-mcp-integration.md` — MCP discovery, config, security
+  - `templates/mcp-client-config.example.json` — Multi-server config
+  - `STATUS.md`, `CHANGELOG.md`, `evidence-index/latest.md` updated
+
+### Tiered Automation Architecture:
+```
+Tier 1: n8n official MCP → Workflow ops (DISABLED, ready)
+Tier 2: Chrome DevTools MCP → UI debugging (INSTALLABLE)
+Tier 3: Playwright CLI → Regression (SPEC CREATED)
+Tier 4: Playwright MCP → Fallback (WORKING)
+Tier 5: BrowserMCP → Optional fallback (EVALUATED)
+```
+
+### Security:
+- No MCP tokens stored in repo (placeholders only)
+- No browser profiles copied
+- No credentials exposed in test specs or workflow JSON
+- `.github/workflows` confirmed absent
+- `.gitignore` blocks all sensitive patterns
+
+### Status
+**GREEN_PARTIAL** — Tiered browser automation architecture defined and documented. n8n MCP discovered (disabled, awaiting user approval). All artifacts prepared for activation.
+
+## 2026-06-24 — SSH Node Mode Fix (GitHub Issue Intake Repair)
+
+### Root Cause Identified
+- **SSH Start Runner Script** and **SSH Read status.json** nodes had NO `"mode"` parameter set
+- Without `mode: command`, n8n SSH node defaults to SFTP/create and doesn't execute bash commands
+- Nodes reported green (SFTP connection OK) but no command executed on runner → no evidence produced
+
+### Fix Applied (Export File)
+- Added `"mode": "command"` to SSH Start Runner Script node
+- Added `"mode": "command"` to SSH Read status.json node
+- Removed unsupported `--input-json` flag from SSH Start command
+- SSH Write node was already correctly configured (mode=command, mkdir -p, base64 -d, jq validation)
+- Prepare RUN_INPUT.json confirmed: produces `run_input_b64` via Buffer.from().toString('base64')
+- BOM stripped from workflow JSON (Windows UTF-8 encoding artifact)
+
+### Documentation Updated
+- STATUS.md: added SSH Node Mode Fix section
+- CHANGELOG.md: this entry
+- docs/troubleshooting.md: added "SSH Node reports green but command doesn't execute" section
+
+### Validation Pending
+- Workflow export: JSON valid ✅ (all 9 nodes, clean JSON)
+- Secret scan: pending
+- Smoke tests: pending
+- N8n UI live verification: BLOCKED (n8n sign-in required)
+- Runner evidence check: BLOCKED (no SSH from Windows host)
+
+### Status
+**GREEN_PARTIAL** — Export file repaired. Awaiting n8n login for live UI verification + test run.
+
 ## 2026-06-23 — GitHub Source of Truth Intake
 
 ### Completed
