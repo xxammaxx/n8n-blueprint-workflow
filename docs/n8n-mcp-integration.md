@@ -153,9 +153,31 @@ This workflow:
 
 ## Current Blocker
 
-**n8n Instance-level MCP is DISABLED.** 
+~~**n8n Instance-level MCP is DISABLED.**~~ **RESOLVED** — MCP activated by user.
 
-Without explicit user activation, no MCP integration testing is possible. The UI is ready, the test workflow is prepared, and the client configuration template exists. Only the enablement step (requiring user approval) remains.
+### Known Limitation: execute_workflow requires published workflow
+
+Manual Trigger workflows cannot be published in n8n, and MCP `execute_workflow` requires the workflow to have an active (published) version. 
+
+**Workaround:** Use a Webhook trigger node instead of Manual Trigger to make the smoke test publishable.
+
+**MCP Client Config with correct headers:**
+```json
+{
+  "mcpServers": {
+    "n8n": {
+      "type": "http",
+      "url": "http://192.168.1.52:5678/mcp-server/http",
+      "headers": {
+        "Authorization": "Bearer <N8N_MCP_TOKEN>",
+        "Accept": "application/json, text/event-stream"
+      }
+    }
+  }
+}
+```
+
+Note: The `Accept` header including `text/event-stream` is REQUIRED for SSE protocol support.
 
 ## Reference
 

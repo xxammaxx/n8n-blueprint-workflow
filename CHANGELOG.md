@@ -1,5 +1,32 @@
 # CHANGELOG
 
+## 2026-06-24 — n8n MCP Client Smoke Test
+
+### Completed
+- **MCP tools/list:** ✅ PASS — JWT Bearer auth accepted with proper headers
+- **MCP search_workflows:** ✅ PASS — `mcpSmoke001` found; only workflow with `availableInMCP: true`
+- **Security verification:** 5 other workflows confirmed `availableInMCP: false`
+- **MCP execute_workflow:** ⚠️ BLOCKED — n8n requires workflow to be published; Manual Trigger workflows cannot be published. Workaround: use Webhook trigger node.
+- **Auth header discovery:** MCP server requires `Accept: application/json, text/event-stream` header (SSE support). Without it: HTTP 406 "Not Acceptable".
+- **Token security:** Token rotated after test (old token invalidated)
+- **MCP Client Config Template updated** with correct headers
+
+### Key Findings
+- n8n MCP uses JWT Bearer tokens (not opaque tokens)
+- `aud: "mcp-server-api"` claim — tokens are MCP-specific, not valid for REST API
+- `Accept` header must include `text/event-stream` for SSE protocol
+- `execute_workflow` requires published workflows with active triggers
+- Manual Trigger is not publishable → use Webhook trigger for MCP-executable smoke tests
+
+### Documentation Updated:
+- `STATUS.md`, `CHANGELOG.md`, `evidence-index/latest.md`
+- `docs/n8n-mcp-integration.md` — added header requirements + execute limitation
+- `docs/troubleshooting.md` — added MCP 406/401 diagnosis
+- `templates/mcp-client-config.example.json` — added Accept header note
+
+### Status
+**GREEN_PARTIAL_PLUS** — MCP auth, discovery, and security scoping fully validated. execute_workflow blocked by n8n trigger type limitation (documented with workaround). Token rotated.
+
 ## 2026-06-24 — n8n MCP Activated & Smoke Test Imported
 
 ### Completed

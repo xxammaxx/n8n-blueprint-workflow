@@ -227,3 +227,49 @@ test.skip(loginVisible, 'LOGIN_REQUIRED — n8n sign-in page detected.');
 ## Symptom: BrowserMCP evaluation needed
 
 BrowserMCP is NOT installed. It was evaluated as a potential auth-session fallback but carries profile access risk. See `docs/browser-automation-strategy.md` for the tiered approach. Do not install BrowserMCP without separate approval.
+
+## Symptom: MCP tools/list returns HTTP 401
+
+### Check: Token format
+n8n MCP uses JWT Bearer tokens. Verify the token was copied correctly from the Access Token tab (not the OAuth config JSON).
+
+### Check: Authorization header
+```
+Authorization: Bearer <token>
+```
+Ensure there is exactly one space after "Bearer".
+
+### Check: Token not expired
+The JWT has an `iat` (issued at) claim. If the token was generated and then the MCP was disabled/re-enabled, the old token becomes invalid. Generate a new token in Settings → MCP → Connection Details → Access Token.
+
+## Symptom: MCP returns HTTP 406 "Not Acceptable"
+
+### Root cause: Missing SSE Accept header
+n8n MCP uses Server-Sent Events (SSE) for streaming responses. The client must accept both JSON and event-stream content types.
+
+### Fix: Add Accept header
+```
+Accept: application/json, text/event-stream
+```
+
+Without this header, all MCP requests return HTTP 406.
+
+### Full working curl example:
+```bash
+curl -s -X POST http://192.168.1.52:5678/mcp-server/http \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -H "Authorization: Bearer $N8N_MCP_TOKEN" \
+  -d '{"jsonrpc":"2.0","method":"tools/list","id":1}'
+```
+
+## Symptom: MCP execute_workflow fails with "no published version"
+
+### Root cause: Manual Trigger workflow cannot be published
+n8n requires workflows to be published (active) for MCP execution. Manual Trigger nodes are not publishable triggers. n8n considers only webhooks, cron schedules, and polling nodes as valid triggers.
+
+### Fix: Use Webhook trigger
+Replace Manual Trigger with a Webhook node to make the workflow publishable. The webhook endpoint is internal-only (192.168.1.52) and harmless for smoke testing.
+
+### Alternative: Test via n8n UI
+Even without MCP execution, the workflow can be manually executed in the n8n editor UI to verify it works.

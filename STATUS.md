@@ -1,8 +1,8 @@
 # STATUS: GREEN_PARTIAL_PLUS
 
-**Last Updated:** 2026-06-24T13:00:00Z
-**Session:** n8n-mcp-activated-and-verified
-**Previous Session:** browser-automation-strategy
+**Last Updated:** 2026-06-24T13:30:00Z
+**Session:** n8n-mcp-client-smoke-test
+**Previous Session:** n8n-mcp-activated-and-verified
 
 ## Current State
 
@@ -138,11 +138,16 @@ The old `blueprint-speckit-opencode-bootstrap` workflow has a persistent webhook
 - **Visible:** YES — Settings → Instance-level MCP (Preview)
 - **Enabled:** ✅ YES (user-activated, toggle ON)
 - **Server URL:** `http://192.168.1.52:5678/mcp-server/http`
-- **Auth Methods:** OAuth (default) + Access Token (Bearer)
+- **Auth Methods:** OAuth (default) + Access Token (JWT Bearer)
+- **Required Headers:** `Authorization: Bearer <token>` + `Accept: application/json, text/event-stream`
 - **Test Workflow:** ✅ IMPORTED — `mcpSmoke001` (MCP Smoke Test)
 - **MCP-Enabled Workflows:** ONLY `MCP Smoke Test` (1 workflow)
-- **Production Workflows Exposed:** NONE (verified)
+- **Production Workflows Exposed:** NONE (verified via search_workflows)
 - **Connected Clients:** 0
+- **MCP tools/list:** ✅ PASS
+- **MCP search_workflows:** ✅ PASS
+- **MCP execute_workflow:** ⚠️ BLOCKED — Manual Trigger workflow can't be published
+- **Token rotated:** ✅ YES (old token invalidated)
 - **Config Template:** `templates/mcp-client-config.example.json` (placeholders only)
 
 ### Chrome DevTools MCP

@@ -1,132 +1,86 @@
-# Evidence Report — n8n-mcp-activated-20260624T130000Z
+# Evidence Report — n8n-mcp-client-smoke-20260624T133000Z
 
 ## Status: GREEN_PARTIAL_PLUS
 
-**Session ID:** n8n-mcp-activated-and-verified
-**Completed:** 2026-06-24T13:00:00Z
+**Session ID:** n8n-mcp-client-smoke-test
+**Completed:** 2026-06-24T13:30:00Z
 **Orchestrator:** issue-orchestrator (opencode)
-**Previous Session:** browser-automation-strategy
+**Previous Session:** n8n-mcp-activated-and-verified
 
 ---
 
-## 1. n8n MCP Activation
+## 1. MCP Client Test Results
 
-| Check | Result |
-|-------|--------|
-| MCP toggle ON | ✅ YES |
-| Server URL | `http://192.168.1.52:5678/mcp-server/http` |
-| Auth methods | OAuth + Access Token (Bearer) |
-| Token extracted/logged | ❌ NO — never read, displayed, or stored |
-| Token masked in UI | ✅ YES (`******bz5Q`) |
-| Connected clients | 0 |
+| Test | Result | Detail |
+|------|--------|--------|
+| **tools/list** | ✅ PASS | All MCP tools discovered via JWT Bearer auth |
+| **search_workflows** | ✅ PASS | `mcpSmoke001` found; only workflow with `availableInMCP: true` |
+| **execute_workflow** | ⚠️ BLOCKED | Manual Trigger not publishable by n8n design |
+| **Auth mechanism** | ✅ JWT Bearer | `aud: "mcp-server-api"`, requires `Accept: text/event-stream` |
+| **Token security** | ✅ Rotated | Old token invalidated after test |
 
-## 2. MCP Workflow Scoping
+## 2. Security Scope Verification (via search_workflows)
 
-| Check | Result |
-|-------|--------|
-| Workflows enabled for MCP | **1** — ONLY "MCP Smoke Test" |
-| MCP Smoke Test ID | `mcpSmoke001` |
-| Production workflows exposed | **NONE** (verified) |
-| Blueprint workflow exposed? | ❌ NO |
-| GitHub Issue Intake exposed? | ❌ NO |
-| Other workflows exposed? | ❌ NO |
+| Workflow | availableInMCP |
+|----------|---------------|
+| MCP Smoke Test (`mcpSmoke001`) | ✅ **true** |
+| GitHub Issue → Runner Agent Intake | ❌ false |
+| Blueprint → SpecKit/OpenCode Bootstrap V2 | ❌ false |
+| Blueprint → SpecKit/OpenCode Bootstrap | ❌ false |
+| My workflow 2 | ❌ false |
+| My workflow | ❌ false |
 
-## 3. MCP Smoke Test Workflow
+**Only 1 of 6 workflows exposed to MCP.** Production workflows confirmed locked down.
 
-| Field | Value |
-|-------|-------|
-| Name | MCP Smoke Test |
-| ID | `mcpSmoke001` |
-| Nodes | 2 (Manual Trigger + Code Node) |
-| Returns | `{ok, system, runner_expected, no_secrets, ...}` |
-| Credentials | NONE |
-| SSH access | NONE |
-| GitHub API | NONE |
-| `availableInMCP` | `true` |
-| Project | Personal (`fLfBCnB9rifW9Cu2`) |
+## 3. execute_workflow Diagnosis
 
-## 4. Connection Details
+n8n `execute_workflow` MCP tool requires the workflow to have an active (published) version. The MCP Smoke Test uses a Manual Trigger node, which n8n does not consider a valid trigger for publishing. 
 
-| Tab | Visible | Content |
-|-----|---------|---------|
-| OAuth | ✅ YES | Server URL + instructions |
-| Access Token | ✅ YES | Masked token display |
-| Workflows | ✅ YES | 1 workflow: MCP Smoke Test |
-| Connected Clients | ✅ YES | 0 clients |
+**Root cause:** n8n design — Manual Trigger workflows are interactive-only.
+**Workaround:** Replace Manual Trigger with Webhook trigger node.
+**Impact:** MCP execution not testable with current trigger type. Search and listing fully functional.
 
-## 5. Security Verification
+## 4. MCP Protocol Discovery
+
+| Finding | Detail |
+|---------|--------|
+| Transport | Streamable HTTP (not SSE-only) |
+| Auth token type | JWT (not opaque) |
+| Required headers | `Authorization: Bearer <jwt>` + `Accept: application/json, text/event-stream` |
+| Without Accept header | HTTP 406 "Not Acceptable" |
+| Without auth | HTTP 401 "Authorization header not sent" |
+| MCP token vs REST API | Separate — MCP JWT (`aud: mcp-server-api`) not valid for REST API |
+
+## 5. Token Security
 
 | Check | Status |
 |-------|--------|
-| Token never read | ✅ VERIFIED |
-| Token never logged | ✅ VERIFIED |
-| Token never stored in repo | ✅ VERIFIED |
-| No production workflows in MCP | ✅ VERIFIED |
-| `.github/workflows` absent | ✅ VERIFIED |
-| No credentials exposed | ✅ VERIFIED |
-| No secrets in screenshots | ✅ VERIFIED |
+| Token exposed in chat | ⚠️ YES (during test setup) |
+| Token rotated after test | ✅ YES |
+| Old token now invalid | ✅ YES |
+| Token stored in repo | ❌ NO |
+| Token in logs | ❌ NO |
+| Token in evidence files | ❌ NO |
 
-## 6. MCP Client Test (Pending — User to Execute)
-
-Local test command (token NOT in repo):
-
-```bash
-# User fills in token locally:
-export N8N_MCP_TOKEN='<PASTE_TOKEN_FROM_N8N_UI>'
-
-# Test 1: List MCP tools
-curl -s -H "Authorization: Bearer $N8N_MCP_TOKEN" \
-  -H "Content-Type: application/json" \
-  http://192.168.1.52:5678/mcp-server/http \
-  -d '{"jsonrpc":"2.0","method":"tools/list","id":1}' | jq .
-
-# Test 2: Search for the smoke test workflow
-curl -s -H "Authorization: Bearer $N8N_MCP_TOKEN" \
-  -H "Content-Type: application/json" \
-  http://192.168.1.52:5678/mcp-server/http \
-  -d '{"jsonrpc":"2.0","method":"tools/call","params":{"name":"search_workflows","arguments":{"search":"Smoke"}},"id":2}' | jq .
-
-# Test 3: Execute the MCP Smoke Test
-curl -s -H "Authorization: Bearer $N8N_MCP_TOKEN" \
-  -H "Content-Type: application/json" \
-  http://192.168.1.52:5678/mcp-server/http \
-  -d '{"jsonrpc":"2.0","method":"tools/call","params":{"name":"execute_workflow","arguments":{"workflowId":"mcpSmoke001"}},"id":3}' | jq .
-
-# Clean up
-unset N8N_MCP_TOKEN
-```
-
-Expected results to report back:
-```
-MCP tools/list: PASS/FAIL
-MCP Smoke Test sichtbar: PASS/FAIL
-Produktivworkflows nicht freigegeben: PASS/FAIL
-Token nicht geloggt: PASS/FAIL
-```
-
-## 7. What Changed Since Last Session
+## 6. What Changed Since Last Session
 
 | Capability | Previous | Current |
 |------------|----------|---------|
-| n8n MCP status | DISABLED | **ACTIVATED** |
-| MCP test workflow | Export file only | **IMPORTED** (`mcpSmoke001`) |
-| MCP workflow scoping | Not configured | **VERIFIED** — only smoke test |
-| Production workflows in MCP | Unknown | **CONFIRMED NONE** |
-| MCP client test | Not possible | **Ready** (user to execute locally) |
+| MCP tools/list | Untested | ✅ **PASS** |
+| MCP search_workflows | Untested | ✅ **PASS** |
+| Security scoping verified | UI-only | ✅ **API-VERIFIED** |
+| Auth protocol documented | Incomplete | ✅ **COMPLETE** (JWT + SSE headers) |
+| execute_workflow | Untested | ⚠️ **DIAGNOSED** (trigger limitation) |
+| Token security | Not generated | ✅ **ROTATED** after test |
 
-## 8. Files Changed
+## 7. Files Changed
 
-### New:
-- `workflows/mcp-smoke-test-v3.import.json` 
-- `workflows/mcp-smoke-test-v4.import.json`
-
-### Modified:
-- `STATUS.md` — MCP activation + workflow import
+- `STATUS.md` — MCP test results added
 - `CHANGELOG.md` — new entry
+- `docs/n8n-mcp-integration.md` — headers + execute limitation
+- `docs/troubleshooting.md` — MCP 401/406/execute diagnosis
 - `evidence-index/latest.md` — this report
 
-## 9. Bewertung
+## 8. Bewertung
 
-**GREEN_PARTIAL_PLUS** — n8n MCP ist aktiviert. Der MCP Smoke Test Workflow wurde erfolgreich importiert und ist als EINZIGER Workflow für MCP freigegeben. Keine Produktivworkflows sind exponiert. Der Access Token wurde zu keinem Zeitpunkt gelesen, geloggt oder gespeichert. Die MCP-Client-Konnektivitätsprüfung steht noch aus und wird lokal durch den Nutzer mit dem bereitgestellten Befehl durchgeführt.
-
-**Vorher:** MCP deaktiviert, nur dokumentiert → **Jetzt:** MCP aktiviert, Smoke Test importiert und gescoped, bereit für Client-Test.
+**GREEN_PARTIAL_PLUS** — MCP ist vollständig funktionsfähig mit JWT Bearer Auth. tools/list und search_workflows erfolgreich getestet. Security-Scoping API-verifiziert: nur ein Workflow exponiert. execute_workflow durch n8n-Design limitiert (Manual Trigger nicht publishable) — dokumentiert mit Workaround. Token nach Test rotiert.
