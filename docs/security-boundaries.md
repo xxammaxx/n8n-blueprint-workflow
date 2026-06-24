@@ -92,6 +92,22 @@ All SSH nodes in the GitHub Issue Intake workflow **MUST** use **Expression Mode
 - **Scopes needed:** `repo` (Issues read/write, Contents read), `read:org` (optional)
 - **Scopes NOT needed:** `workflow`, `admin:*`, `secrets`, `packages`
 - **Credential:** Stored in n8n credential store (encrypted), referenced by name
+- **Credential Name:** `github-n8n-blueprint`
+- **Token Storage:** NEVER in repo, logs, evidence, or screenshots
+
+### Credential Verification Rules
+- Check credential EXISTS in n8n credential store: ✅ Allowed
+- Check Connection Test result: ✅ Allowed
+- View token value: ❌ PROHIBITED
+- Copy/Export token: ❌ PROHIBITED
+- Log token anywhere: ❌ PROHIBITED
+- Include in screenshots: ❌ PROHIBITED
+
+### Node-Level Security
+- HTTP Request Nodes use **Predefined Credential Type** → `githubApi`
+- NEVER hardcode tokens in URL, headers, or body
+- NEVER use `Authorization: token ...` header manually
+- Always reference credential by n8n credential store
 
 ### Operations Allowed via GitHub API
 | Operation | Allowed | Gate |

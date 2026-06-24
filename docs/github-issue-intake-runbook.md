@@ -40,20 +40,25 @@
 - Runner erzeugt Evidence unter:
   `/opt/dev-fabric/evidence/github-agent-runs/<owner>/<repo>/issue-<number>/<run_id>/`
 
-### 8. n8n kommentiert Issue
-- Liest status.json und run-report.md vom Runner
-- Schreibt Evidence Comment in Issue
+### 8. n8n kommentiert Issue (automatisch)
+- Liest status.json und run-report.md vom Runner (SSH Read Node)
+- Format Evidence Comment Node erstellt standardisierten Kommentar
+- Create GitHub Comment Node (HTTP Request) schreibt Kommentar via GitHub API
+- Credential: `github-n8n-blueprint` (muss in n8n konfiguriert sein)
 - Keine langen Logs — nur Zusammenfassung + Pfade
 
-### 9. Labels aktualisieren
-- `agent:ready` → `agent:running` (während Lauf)
-- Nach Abschluss: `agent:running` → `agent:done`
-- `evidence:attached` setzen, wenn Kommentar geschrieben wurde
+### 9. Labels aktualisieren (automatisch)
+- Add Labels Node (HTTP Request): setzt `agent:needs-review` + `evidence:attached`
+- Remove Label Node (HTTP Request): entfernt `agent:running` (404-tolerant via `continueOnFail`)
+- Reihenfolge: Comment → Add Labels → Remove Label → Format Final Result
+- Keine Issues schließen, kein `agent:done` setzen
 
 ### 10. Nutzer prüft Ergebnis
-- Evidence Comment im Issue lesen
+- Evidence Comment im Issue #1 lesen (automatisch gepostet)
+- Labels prüfen: `agent:needs-review`, `evidence:attached` sichtbar
+- `agent:running` nicht vorhanden
+- Issue bleibt offen
 - Lokale Evidence-Pfade bei Bedarf prüfen
-- Bei Bedarf: `agent:needs-review` setzen
 
 ## Recovery-Szenarien
 

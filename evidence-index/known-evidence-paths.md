@@ -1,6 +1,23 @@
 ﻿# Known Evidence Paths
 
-## Latest Entry (2026-06-24) — SSH Command Mode Validation
+## Latest Entry (2026-06-24) — GitHub Comment & Label Automation
+
+| Property | Value |
+|----------|-------|
+| **Session** | `n8n-github-comment-label-automation` |
+| **Run ID** | `gh-issue-1-20260624T123123Z` (latest runner evidence) |
+| **Workflow ID** | `h78eENwLGwr2QUmU` |
+| **Status** | `GREEN_PARTIAL_PLUS` |
+| **Evidence Path** | `/opt/dev-fabric/evidence/github-agent-runs/xxammaxx/n8n-blueprint-workflow/issue-1/gh-issue-1-20260624T123123Z/` |
+| **Files** | `status.json`, `run-report.md`, `commands.log`, `agent.log`, `github-context.md`, `RUN_INPUT.json`, `RUN_INPUT.redacted.json`, `operator-commands.md` |
+| **Total Files** | 8 |
+| **Workflow Nodes** | 12 (9 core + 3 GitHub API: Comment, Add Labels, Remove Label) |
+| **GitHub Credential** | `github-n8n-blueprint` (⚠️ unverified — needs n8n UI login) |
+| **n8n Auth Strategy** | Documented in `docs/n8n-auth-automation.md` |
+
+---
+
+## Historical Entry (2026-06-24) — SSH Command Mode Validation
 
 | Property | Value |
 |----------|-------|

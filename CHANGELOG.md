@@ -1,5 +1,40 @@
 # CHANGELOG
 
+## 2026-06-24 — GitHub Comment & Label Automation + n8n Auth Strategy
+
+### Completed
+- **GitHub Comment Node:** ✅ ADDED — HTTP Request Node (POST /repos/.../issues/.../comments) mit predefined GitHub credential
+- **GitHub Label Add Node:** ✅ ADDED — HTTP Request Node (POST /repos/.../issues/.../labels) setzt `agent:needs-review` + `evidence:attached`
+- **GitHub Label Remove Node:** ✅ ADDED — HTTP Request Node (DELETE /repos/.../labels/agent%3Arunning) mit `continueOnFail: true` (404-tolerant)
+- **Workflow Node Count:** 9 → 12 Nodes (3 neue GitHub API Nodes nach Format Evidence Comment)
+- **n8n Auth Strategy:** ✅ DOCUMENTED — `docs/n8n-auth-automation.md` mit 4 Optionen (API Key, storageState, Login-Disable RED_HOLD, Credential File YELLOW_REVIEW)
+- **n8n UI Login Blocker:** ✅ DIAGNOSED — Login required, Playwright-Agent kann ohne storageState nicht automatisch einloggen
+- **Runner Evidence:** ✅ VERIFIED — 3 Runs, latest: `gh-issue-1-20260624T123123Z`, status: GREEN_PARTIAL
+
+### Key Findings
+- **Workflow JSON had GitHub nodes already:** Die 3 GitHub API Nodes waren bereits im exportierten JSON vorhanden (aus vorheriger Session), mussten nicht neu erstellt werden
+- **Credential reference:** Nodes verwenden `"GitHub account"` credential — muss in n8n UI auf `github-n8n-blueprint` geprüft/umbenannt werden
+- **n8n Login ist Bottleneck:** Ohne Login/API Key/StorageState kann die UI nicht automatisiert werden — Credential-Verifikation und Live-Test blockiert
+- **Option A (API Key) ist der empfohlene Weg:** Für API-basierte Automation ohne Browser-UI
+- **Option B (storageState) für UI-Automation:** Playwright persistente Session nach einmaligem manuellen Login
+
+### Still Missing (GREEN_PARTIAL_PLUS)
+- **n8n UI Login:** Manual login required (blockiert Credential-Verifikation + Live-Test)
+- **GitHub Credential Verifikation:** `github-n8n-blueprint` muss in n8n UI geprüft werden
+- **Live-Test Comment + Labels:** Manual Trigger mit Issue #1 noch nicht ausgeführt (Login-Blocker)
+- **OpenCode Provider config:** NOT configured (needs separate approval)
+
+### Documentation Updated:
+- `STATUS.md` — GREEN_PARTIAL_PLUS, 12-node workflow, auth strategy, updated pending/blockers
+- `CHANGELOG.md` — this entry
+- `docs/n8n-auth-automation.md` — NEW: n8n Login-/Automation-Strategie (Option A-D)
+- `docs/github-issue-intake-runbook.md` — updated to 12-node workflow
+- `docs/troubleshooting.md` — added n8n login/auth entries
+- `docs/security-boundaries.md` — added GitHub API credential security notes
+- `docs/architecture.md` — updated workflow diagram to 12 nodes
+- `evidence-index/latest.md` — updated for this session
+- `evidence-index/known-evidence-paths.md` — added latest run path
+
 ## 2026-06-24 — SSH Command Mode Validation: GitHub Issue Intake End-to-End
 
 ### Completed

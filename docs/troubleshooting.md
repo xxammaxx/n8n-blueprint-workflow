@@ -224,6 +224,49 @@ test.skip(loginVisible, 'LOGIN_REQUIRED — n8n sign-in page detected.');
 
 **Workaround:** Log into n8n manually in a browser first, then run tests (session reuse). Or configure Playwright with a dedicated auth state file (not stored in repo).
 
+## Symptom: n8n UI Login required for automation
+
+### Root cause: n8n Webinterface is auth-protected
+The n8n instance at `http://192.168.1.52:5678` requires email/password authentication. Fresh browser contexts (Playwright, Chrome DevTools MCP) cannot share the existing session.
+
+### Solutions (in priority order):
+
+#### Option A: n8n API Key (RECOMMENDED)
+Create an API Key in n8n UI (Settings → API Keys) and use it for API calls instead of browser UI. Store the key in `%USERPROFILE%\.n8n-automation\n8n-api-key.txt` (Windows) or `/home/runner/.config/n8n-automation/n8n-api-key` (Linux). Never store in repo.
+
+```bash
+# Example usage pattern (placeholder — never include real key):
+export N8N_API_KEY="$(cat /home/runner/.config/n8n-automation/n8n-api-key)"
+curl -H "X-N8N-API-KEY: $N8N_API_KEY" http://192.168.1.52:5678/api/v1/workflows
+```
+
+#### Option B: Playwright persistent storageState (for UI automation)
+Open a visible browser, log in manually once, save `storageState` to `%USERPROFILE%\.n8n-automation\playwright\n8n-storage-state.json`. Future Playwright sessions load this to skip login. File is a SECRET — never commit to repo.
+
+#### Option C: Temporarily disable n8n login (RED_HOLD)
+Requires separate explicit approval. See `docs/n8n-auth-automation.md`. Only for emergencies, max 15 minutes, must re-enable immediately.
+
+#### Option D: Login credentials in file (YELLOW_REVIEW — LAST RESORT)
+Not recommended. Only if Options A/B/C are impossible. Requires separate approval.
+
+### Reference: `docs/n8n-auth-automation.md`
+
+## Symptom: GitHub Credential not found in n8n
+
+### Check credential exists:
+Log into n8n UI → Credentials → look for `github-n8n-blueprint`.
+
+### If credential missing:
+1. n8n UI → Credentials → Add Credential
+2. Type: **GitHub API**
+3. Name: `github-n8n-blueprint`
+4. Authentication: **Access Token**
+5. Token: Personal Access Token (classic) with `repo` scope
+6. Save and run Connection Test
+
+### If credential exists but nodes fail:
+Check that the HTTP Request nodes reference the correct credential type (`githubApi`) and name (`github-n8n-blueprint`). Verify the token has not expired and has `repo` scope.
+
 ## Symptom: BrowserMCP evaluation needed
 
 BrowserMCP is NOT installed. It was evaluated as a potential auth-session fallback but carries profile access risk. See `docs/browser-automation-strategy.md` for the tiered approach. Do not install BrowserMCP without separate approval.

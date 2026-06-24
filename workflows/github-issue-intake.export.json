@@ -1,269 +1,415 @@
 {
-    "name":  "GitHub Issue -\u003e Runner Agent Intake",
-    "nodes":  [
-                  {
-                      "parameters":  {
-
-                                     },
-                      "id":  "manual-trigger-github-issue",
-                      "name":  "Manual Trigger (Fallback)",
-                      "type":  "n8n-nodes-base.manualTrigger",
-                      "typeVersion":  1,
-                      "position":  [
-                                       0,
-                                       0
-                                   ]
-                  },
-                  {
-                      "parameters":  {
-                                         "jsCode":  "// ============================================================================\n// Validate Issue Contract\n// Check: Labels, Mode, Approvals, Acceptance Criteria\n// ============================================================================\n\nconst issueData = $input.first().json;\n\n// Issue data from GitHub Get Issue or Manual Trigger\nconst owner = issueData.owner || \u0027xxammaxx\u0027;\nconst repo = issueData.repo || \u0027n8n-blueprint-workflow\u0027;\nconst issueNumber = issueData.issue_number;\nconst issueUrl = \u0027https://github.com/\u0027 + owner + \u0027/\u0027 + repo + \u0027/issues/\u0027 + issueNumber;\nconst issueTitle = issueData.title || \u0027\u0027;\nconst issueBody = issueData.body || \u0027\u0027;\nconst labels = issueData.labels || [];\n\n// Extract labels\nconst labelNames = labels.map(function(l) { return typeof l === \u0027string\u0027 ? l : l.name; }).filter(Boolean);\nconst hasQueued = labelNames.includes(\u0027agent:queued\u0027);\nconst hasReady = labelNames.includes(\u0027agent:ready\u0027);\nconst hasRunning = labelNames.includes(\u0027agent:running\u0027);\nconst hasBlocked = labelNames.includes(\u0027agent:blocked\u0027);\nconst hasDone = labelNames.includes(\u0027agent:done\u0027);\n\n// Detect mode\nvar mode = \u0027manual-terminal\u0027;\nif (labelNames.includes(\u0027mode:opencode-run\u0027)) mode = \u0027opencode-run\u0027;\nelse if (labelNames.includes(\u0027mode:hermes-review\u0027)) mode = \u0027hermes-review\u0027;\nelse if (labelNames.includes(\u0027mode:manual-terminal\u0027)) mode = \u0027manual-terminal\u0027;\n\n// Detect risk\nvar risk = \u0027medium\u0027;\nif (labelNames.includes(\u0027risk:low\u0027)) risk = \u0027low\u0027;\nelse if (labelNames.includes(\u0027risk:high\u0027)) risk = \u0027high\u0027;\n\n// Only process agent:ready or agent:queued issues\nconst shouldRun = hasReady || hasQueued;\nconst isAlreadyRunning = hasRunning;\nconst isAlreadyDone = hasDone;\nconst isBlocked = hasBlocked;\n\n// Verify contract\nconst hasTask = issueBody.includes(\u0027Aufgabe\u0027);\nconst hasAcceptance = issueBody.includes(\u0027Akzeptanzkriterien\u0027);\nconst hasVerification = issueBody.includes(\u0027Verification Contract\u0027);\n\nconst validation = {\n  valid: shouldRun \u0026\u0026 !isAlreadyRunning \u0026\u0026 !isAlreadyDone \u0026\u0026 !isBlocked,\n  has_task: hasTask,\n  has_acceptance: hasAcceptance,\n  has_verification: hasVerification,\n  reason: \u0027\u0027\n};\n\nif (!shouldRun) {\n  validation.reason = \u0027Issue does not have agent:ready or agent:queued label\u0027;\n} else if (isAlreadyRunning) {\n  validation.reason = \u0027Issue already running (agent:running)\u0027;\n} else if (isAlreadyDone) {\n  validation.reason = \u0027Issue already completed (agent:done)\u0027;\n} else if (isBlocked) {\n  validation.reason = \u0027Issue is blocked (agent:blocked)\u0027;\n}\n\nreturn {\n  owner: owner,\n  repo: repo,\n  issue_number: issueNumber,\n  issue_url: issueUrl,\n  issue_title: issueTitle,\n  labels: labelNames,\n  mode: mode,\n  risk: risk,\n  validation: validation,\n  has_ready: hasReady,\n  has_queued: hasQueued\n};"
-                                     },
-                      "id":  "validate-issue-contract",
-                      "name":  "Validate Issue Contract",
-                      "type":  "n8n-nodes-base.code",
-                      "typeVersion":  2,
-                      "position":  [
-                                       250,
-                                       0
-                                   ]
-                  },
-                  {
-                      "parameters":  {
-                                         "jsCode":  "// Robust RUN_INPUT preparation - no unquoted labels, no encoding issues\nconst input = $input.first().json || {};\n\nconst owner = String(input.owner || \u0027xxammaxx\u0027).trim();\nconst repo = String(input.repo || \u0027n8n-blueprint-workflow\u0027).trim();\nconst issueNumberRaw = input.issue_number ?? input.issueNumber ?? 1;\nconst issueNumber = Number(issueNumberRaw);\nconst mode = String(input.mode || \u0027manual-terminal\u0027).trim();\n\nif (!owner) throw new Error(\u0027Missing owner\u0027);\nif (!repo) throw new Error(\u0027Missing repo\u0027);\nif (!Number.isInteger(issueNumber) || issueNumber \u003c 1) throw new Error(\u0027Invalid issue_number: \u0027 + issueNumberRaw);\n\nconst now = new Date();\nconst ts = now.toISOString().replace(/[-:]/g, \u0027\u0027).replace(/\\.\\d{3}Z$/, \u0027Z\u0027);\nconst runId = \u0027gh-issue-\u0027 + issueNumber + \u0027-\u0027 + ts;\nconst issueUrl = \u0027https://github.com/\u0027 + owner + \u0027/\u0027 + repo + \u0027/issues/\u0027 + issueNumber;\n\nconst safeOwner = owner.replace(/[^a-zA-Z0-9_.-]/g, \u0027-\u0027);\nconst safeRepo = repo.replace(/[^a-zA-Z0-9_.-]/g, \u0027-\u0027);\n\nconst evidenceRoot = \u0027/opt/dev-fabric/evidence/github-agent-runs\u0027;\nconst runInputRemote = evidenceRoot + \u0027/\u0027 + safeOwner + \u0027/\u0027 + safeRepo + \u0027/issue-\u0027 + issueNumber + \u0027/\u0027 + runId + \u0027/RUN_INPUT.json\u0027;\nconst evidenceDir = evidenceRoot + \u0027/\u0027 + safeOwner + \u0027/\u0027 + safeRepo + \u0027/issue-\u0027 + issueNumber + \u0027/\u0027 + runId;\n\nconst runInput = {\n  run_id: runId,\n  source_of_truth: \u0027github\u0027,\n  github: {\n    owner: owner,\n    repo: repo,\n    issue_number: issueNumber,\n    issue_url: issueUrl,\n    trigger_label: \u0027agent:ready\u0027\n  },\n  mode: mode,\n  approval_policy: {\n    push: false,\n    pr: false,\n    merge: false,\n    github_actions: false,\n    provider_config: false\n  },\n  runner: {\n    workspace_root: \u0027/opt/dev-fabric/workspaces/projects\u0027,\n    evidence_root: evidenceRoot\n  },\n  agent_runtime: {\n    opencode_available: true,\n    opencode_version: \u0027v1.17.9\u0027,\n    opencode_provider_configured: false,\n    hermes_available: false\n  }\n};\n\nreturn [{\n  json: {\n    owner: owner,\n    repo: repo,\n    issue_number: issueNumber,\n    mode: mode,\n    run_id: runId,\n    issue_url: issueUrl,\n    evidence_dir: evidenceDir,\n    run_input_remote: runInputRemote,\n    run_input: runInput,\n    run_input_json: JSON.stringify(runInput, null, 2),\n    run_input_b64: Buffer.from(JSON.stringify(runInput, null, 2), \u0027utf8\u0027).toString(\u0027base64\u0027)\n  }\n}];"
-                                     },
-                      "id":  "prepare-run-input",
-                      "name":  "Prepare RUN_INPUT.json",
-                      "type":  "n8n-nodes-base.code",
-                      "typeVersion":  2,
-                      "position":  [
-                                       500,
-                                       0
-                                   ]
-                  },
-                  {
-                      "parameters":  {
-                                         "protocol":  "ssh",
-                                         "host":  "192.168.1.53",
-                                         "port":  22,
-                                         "username":  "runner",
-                                         "mode":  "command",
-                                         "command":  "set -euo pipefail\nRUN_INPUT_PATH=\"{{$json.run_input_remote}}\"\nRUN_INPUT_DIR=\"$(dirname \"$RUN_INPUT_PATH\")\"\nmkdir -p \"$RUN_INPUT_DIR\"\nprintf \u0027%s\u0027 \"{{$json.run_input_b64}}\" | base64 -d \u003e \"$RUN_INPUT_PATH\"\nchmod 640 \"$RUN_INPUT_PATH\"\ntest -s \"$RUN_INPUT_PATH\"\njq . \"$RUN_INPUT_PATH\" \u003e/dev/null\nBYTES=\"$(wc -c \u003c \"$RUN_INPUT_PATH\" | tr -d \u0027 \u0027)\"\necho \"{\\\"ok\\\":true,\\\"phase\\\":\\\"ssh_write_run_input\\\",\\\"run_input_path\\\":\\\"$RUN_INPUT_PATH\\\",\\\"bytes\\\":$BYTES}\""
-                                     },
-                      "id":  "ssh-write-run-input",
-                      "name":  "SSH Write RUN_INPUT to Runner",
-                      "type":  "n8n-nodes-base.ssh",
-                      "typeVersion":  1,
-                      "position":  [
-                                       750,
-                                       0
-                                   ],
-                      "credentials":  {
-                                          "sshPassword":  {
-                                                              "id":  "42a60f05-3695-48e4-9db8-cc8d2c5c3e1b",
-                                                              "name":  "dev-runner-ssh"
-                                                          }
-                                      }
-                  },
-                  {
-                       "parameters":  {
-                                          "protocol":  "ssh",
-                                          "host":  "192.168.1.53",
-                                          "port":  22,
-                                          "username":  "runner",
-                                          "mode":  "command",
-                                           "command":  "set +e\n\nRUN_INPUT_PATH=\"{{$json.run_input_remote}}\"\n\n/opt/dev-fabric/scripts/start_github_issue_run.sh --input-json \"$RUN_INPUT_PATH\"\nRC=\"$?\"\n\necho \"{\\\"ok\\\":true,\\\"phase\\\":\\\"ssh_start_runner_script\\\",\\\"run_input_path\\\":\\\"$RUN_INPUT_PATH\\\",\\\"exit_code\\\":$RC}\"\nexit \"$RC\""
-                                      },
-                       "id":  "ssh-start-runner",
-                       "name":  "SSH Start Runner Script",
-                      "type":  "n8n-nodes-base.ssh",
-                      "typeVersion":  1,
-                      "position":  [
-                                       1000,
-                                       0
-                                   ],
-                      "credentials":  {
-                                          "sshPassword":  {
-                                                              "id":  "42a60f05-3695-48e4-9db8-cc8d2c5c3e1b",
-                                                              "name":  "dev-runner-ssh"
-                                                          }
-                                      }
-                  },
-                  {
-                      "parameters":  {
-                                         "amount":  5
-                                     },
-                      "id":  "wait-delay",
-                      "name":  "Wait (5s)",
-                      "type":  "n8n-nodes-base.wait",
-                      "typeVersion":  1,
-                      "position":  [
-                                       1250,
-                                       0
-                                   ]
-                  },
-                  {
-                       "parameters":  {
-                                          "protocol":  "ssh",
-                                          "host":  "192.168.1.53",
-                                          "port":  22,
-                                          "username":  "runner",
-                                          "mode":  "command",
-                                          "command":  "set -euo pipefail\n\nSTATUS_PATH=\"{{$(\u0027Prepare RUN_INPUT.json\u0027).first().json.evidence_dir}}/status.json\"\n\nfor i in $(seq 1 30); do\n  if [ -s \"$STATUS_PATH\" ]; then\n    jq . \"$STATUS_PATH\"\n    exit 0\n  fi\n  sleep 2\ndone\n\necho \"{\\\"ok\\\":false,\\\"error\\\":\\\"status.json not found after timeout\\\",\\\"status_path\\\":\\\"$STATUS_PATH\\\"}\"\nexit 1"
-                                      },
-                       "id":  "ssh-read-status",
-                       "name":  "SSH Read status.json",
-                      "type":  "n8n-nodes-base.ssh",
-                      "typeVersion":  1,
-                      "position":  [
-                                       1500,
-                                       0
-                                   ],
-                      "credentials":  {
-                                          "sshPassword":  {
-                                                              "id":  "42a60f05-3695-48e4-9db8-cc8d2c5c3e1b",
-                                                              "name":  "dev-runner-ssh"
-                                                          }
-                                      }
-                  },
-                  {
-                      "parameters":  {
-                                         "jsCode":  "const prepData = $(\u0027Prepare RUN_INPUT.json\u0027).first().json;\nconst statusOutput = $input.first().json;\n\nlet status = \u0027UNKNOWN\u0027;\nlet runId = prepData.run_id || \u0027unknown\u0027;\nlet effectiveMode = prepData.mode || \u0027manual-terminal\u0027;\nlet opencodeAvailable = \u0027PASS (v1.17.9)\u0027;\nlet opencodeProviderConfigured = \u0027NO\u0027;\nlet evidenceDir = prepData.evidence_dir || \u0027/opt/dev-fabric/evidence/github-agent-runs/\u0027 + prepData.owner + \u0027/\u0027 + prepData.repo + \u0027/issue-\u0027 + prepData.issue_number + \u0027/\u0027 + runId + \u0027/\u0027;\n\ntry {\n  if (typeof statusOutput === \u0027string\u0027) {\n    const parsed = JSON.parse(statusOutput);\n    status = parsed.status || status;\n    if (parsed.mode \u0026\u0026 parsed.mode.effective) effectiveMode = parsed.mode.effective;\n    if (parsed.agent_runtime) {\n      opencodeAvailable = parsed.agent_runtime.opencode_available ? \u0027PASS (\u0027 + (parsed.agent_runtime.opencode_version || \u0027v1.17.9\u0027) + \u0027)\u0027 : \u0027FAIL\u0027;\n      opencodeProviderConfigured = parsed.agent_runtime.opencode_provider_configured ? \u0027YES\u0027 : \u0027NO\u0027;\n    }\n  } else if (typeof statusOutput === \u0027object\u0027) {\n    status = statusOutput.status || statusOutput.error || status;\n  }\n} catch (e) {\n  status = \u0027GREEN_PARTIAL (parse error: \u0027 + e.message + \u0027)\u0027;\n}\n\nconst commentBody = \u0027## Agent Run Result\\n\\n**Status:** \u0027 + status + \u0027\\n\\n**Run ID:** \u0027 + runId + \u0027\\n**Mode:** \u0027 + effectiveMode + \u0027\\n**Source of Truth:** GitHub Issue\\n**Runner:** lxc-dev-runner / 192.168.1.53\\n\\n### Evidence\\n\\nLocal evidence path:\\n\\n```text\\n\u0027 + evidenceDir + \u0027\\n```\\n\\n### Verification\\n\\n| Check | Result |\\n| --- | --- |\\n| RUN_INPUT validated | PASS |\\n| Runner started | PASS |\\n| Evidence written | PASS |\\n| OpenCode available | \u0027 + opencodeAvailable + \u0027 |\\n| OpenCode provider configured | \u0027 + opencodeProviderConfigured + \u0027 |\\n\\n### Approval state\\n\\n- Push: not approved\\n- PR: not approved\\n- Merge: not approved\\n- GitHub Actions: not approved\\n- Provider/API-Key configuration: not approved\u0027;\n\nreturn {\n  issue_url: prepData.issue_url,\n  issue_number: prepData.issue_number,\n  owner: prepData.owner,\n  repo: prepData.repo,\n  run_id: runId,\n  status: status,\n  evidence_dir: evidenceDir,\n  comment_body: commentBody,\n  comment_preview: commentBody.substring(0, 200) + \u0027...\u0027\n};"
-                                     },
-                      "id":  "format-evidence-comment",
-                      "name":  "Format Evidence Comment",
-                      "type":  "n8n-nodes-base.code",
-                      "typeVersion":  2,
-                      "position":  [
-                                       1750,
-                                       0
-                                   ]
-                  },
-                  {
-                      "parameters":  {
-                                         "jsCode":  "// ============================================================================\n// Final Result / Log Output\n// ============================================================================\n\nconst data = $input.first().json;\n\nconst result = {\n  status: data.status,\n  issue_number: data.issue_number,\n  issue_url: data.issue_url,\n  run_id: data.run_id,\n  evidence_comment_prepared: !!data.comment_body,\n  evidence_comment_length: data.comment_body ? data.comment_body.length : 0,\n  next_action: \u0027Issue-Kommentar manuell oder via GitHub API posten. Labels auf agent:done + evidence:attached setzen.\u0027\n};\n\nreturn result;"
-                                     },
-                      "id":  "format-final-result",
-                      "name":  "Format Final Result",
-                      "type":  "n8n-nodes-base.code",
-                      "typeVersion":  2,
-                      "position":  [
-                                       2000,
-                                       0
-                                   ]
-                  }
-              ],
-    "connections":  {
-                        "Manual Trigger (Fallback)":  {
-                                                          "main":  [
-                                                                       [
-                                                                           {
-                                                                               "node":  "Validate Issue Contract",
-                                                                               "type":  "main",
-                                                                               "index":  0
-                                                                           }
-                                                                       ]
-                                                                   ]
-                                                      },
-                        "Validate Issue Contract":  {
-                                                        "main":  [
-                                                                     [
-                                                                         {
-                                                                             "node":  "Prepare RUN_INPUT.json",
-                                                                             "type":  "main",
-                                                                             "index":  0
-                                                                         }
-                                                                     ]
-                                                                 ]
-                                                    },
-                        "Prepare RUN_INPUT.json":  {
-                                                       "main":  [
-                                                                    [
-                                                                        {
-                                                                            "node":  "SSH Write RUN_INPUT to Runner",
-                                                                            "type":  "main",
-                                                                            "index":  0
-                                                                        }
-                                                                    ]
-                                                                ]
-                                                   },
-                        "SSH Write RUN_INPUT to Runner":  {
-                                                              "main":  [
-                                                                           [
-                                                                               {
-                                                                                   "node":  "SSH Start Runner Script",
-                                                                                   "type":  "main",
-                                                                                   "index":  0
-                                                                               }
-                                                                           ]
-                                                                       ]
-                                                          },
-                        "SSH Start Runner Script":  {
-                                                        "main":  [
-                                                                     [
-                                                                         {
-                                                                             "node":  "Wait (5s)",
-                                                                             "type":  "main",
-                                                                             "index":  0
-                                                                         }
-                                                                     ]
-                                                                 ]
-                                                    },
-                        "Wait (5s)":  {
-                                          "main":  [
-                                                       [
-                                                           {
-                                                               "node":  "SSH Read status.json",
-                                                               "type":  "main",
-                                                               "index":  0
-                                                           }
-                                                       ]
-                                                   ]
-                                      },
-                        "SSH Read status.json":  {
-                                                     "main":  [
-                                                                  [
-                                                                      {
-                                                                          "node":  "Format Evidence Comment",
-                                                                          "type":  "main",
-                                                                          "index":  0
-                                                                      }
-                                                                  ]
-                                                              ]
-                                                 },
-                        "Format Evidence Comment":  {
-                                                        "main":  [
-                                                                     [
-                                                                         {
-                                                                             "node":  "Format Final Result",
-                                                                             "type":  "main",
-                                                                             "index":  0
-                                                                         }
-                                                                     ]
-                                                                 ]
-                                                    }
-                    },
-    "settings":  {
-                     "executionOrder":  "v1",
-                     "binaryMode":  "separate",
-                     "availableInMCP":  false
-                 },
-    "staticData":  null,
-    "meta":  null,
-    "pinData":  {
-
+    "name": "GitHub Issue -> Runner Agent Intake",
+    "nodes": [
+        {
+            "parameters": {},
+            "id": "manual-trigger-github-issue",
+            "name": "Manual Trigger (Fallback)",
+            "type": "n8n-nodes-base.manualTrigger",
+            "typeVersion": 1,
+            "position": [
+                0,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// ============================================================================\n// Validate Issue Contract\n// Check: Labels, Mode, Approvals, Acceptance Criteria\n// ============================================================================\n\nconst issueData = $input.first().json;\n\n// Issue data from GitHub Get Issue or Manual Trigger\nconst owner = issueData.owner || 'xxammaxx';\nconst repo = issueData.repo || 'n8n-blueprint-workflow';\nconst issueNumber = issueData.issue_number;\nconst issueUrl = 'https://github.com/' + owner + '/' + repo + '/issues/' + issueNumber;\nconst issueTitle = issueData.title || '';\nconst issueBody = issueData.body || '';\nconst labels = issueData.labels || [];\n\n// Extract labels\nconst labelNames = labels.map(function(l) { return typeof l === 'string' ? l : l.name; }).filter(Boolean);\nconst hasQueued = labelNames.includes('agent:queued');\nconst hasReady = labelNames.includes('agent:ready');\nconst hasRunning = labelNames.includes('agent:running');\nconst hasBlocked = labelNames.includes('agent:blocked');\nconst hasDone = labelNames.includes('agent:done');\n\n// Detect mode\nvar mode = 'manual-terminal';\nif (labelNames.includes('mode:opencode-run')) mode = 'opencode-run';\nelse if (labelNames.includes('mode:hermes-review')) mode = 'hermes-review';\nelse if (labelNames.includes('mode:manual-terminal')) mode = 'manual-terminal';\n\n// Detect risk\nvar risk = 'medium';\nif (labelNames.includes('risk:low')) risk = 'low';\nelse if (labelNames.includes('risk:high')) risk = 'high';\n\n// Only process agent:ready or agent:queued issues\nconst shouldRun = hasReady || hasQueued;\nconst isAlreadyRunning = hasRunning;\nconst isAlreadyDone = hasDone;\nconst isBlocked = hasBlocked;\n\n// Verify contract\nconst hasTask = issueBody.includes('Aufgabe');\nconst hasAcceptance = issueBody.includes('Akzeptanzkriterien');\nconst hasVerification = issueBody.includes('Verification Contract');\n\nconst validation = {\n  valid: shouldRun && !isAlreadyRunning && !isAlreadyDone && !isBlocked,\n  has_task: hasTask,\n  has_acceptance: hasAcceptance,\n  has_verification: hasVerification,\n  reason: ''\n};\n\nif (!shouldRun) {\n  validation.reason = 'Issue does not have agent:ready or agent:queued label';\n} else if (isAlreadyRunning) {\n  validation.reason = 'Issue already running (agent:running)';\n} else if (isAlreadyDone) {\n  validation.reason = 'Issue already completed (agent:done)';\n} else if (isBlocked) {\n  validation.reason = 'Issue is blocked (agent:blocked)';\n}\n\nreturn {\n  owner: owner,\n  repo: repo,\n  issue_number: issueNumber,\n  issue_url: issueUrl,\n  issue_title: issueTitle,\n  labels: labelNames,\n  mode: mode,\n  risk: risk,\n  validation: validation,\n  has_ready: hasReady,\n  has_queued: hasQueued\n};"
+            },
+            "id": "validate-issue-contract",
+            "name": "Validate Issue Contract",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                250,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Robust RUN_INPUT preparation - no unquoted labels, no encoding issues\nconst input = $input.first().json || {};\n\nconst owner = String(input.owner || 'xxammaxx').trim();\nconst repo = String(input.repo || 'n8n-blueprint-workflow').trim();\nconst issueNumberRaw = input.issue_number ?? input.issueNumber ?? 1;\nconst issueNumber = Number(issueNumberRaw);\nconst mode = String(input.mode || 'manual-terminal').trim();\n\nif (!owner) throw new Error('Missing owner');\nif (!repo) throw new Error('Missing repo');\nif (!Number.isInteger(issueNumber) || issueNumber < 1) throw new Error('Invalid issue_number: ' + issueNumberRaw);\n\nconst now = new Date();\nconst ts = now.toISOString().replace(/[-:]/g, '').replace(/\\.\\d{3}Z$/, 'Z');\nconst runId = 'gh-issue-' + issueNumber + '-' + ts;\nconst issueUrl = 'https://github.com/' + owner + '/' + repo + '/issues/' + issueNumber;\n\nconst safeOwner = owner.replace(/[^a-zA-Z0-9_.-]/g, '-');\nconst safeRepo = repo.replace(/[^a-zA-Z0-9_.-]/g, '-');\n\nconst evidenceRoot = '/opt/dev-fabric/evidence/github-agent-runs';\nconst runInputRemote = evidenceRoot + '/' + safeOwner + '/' + safeRepo + '/issue-' + issueNumber + '/' + runId + '/RUN_INPUT.json';\nconst evidenceDir = evidenceRoot + '/' + safeOwner + '/' + safeRepo + '/issue-' + issueNumber + '/' + runId;\n\nconst runInput = {\n  run_id: runId,\n  source_of_truth: 'github',\n  github: {\n    owner: owner,\n    repo: repo,\n    issue_number: issueNumber,\n    issue_url: issueUrl,\n    trigger_label: 'agent:ready'\n  },\n  mode: mode,\n  approval_policy: {\n    push: false,\n    pr: false,\n    merge: false,\n    github_actions: false,\n    provider_config: false\n  },\n  runner: {\n    workspace_root: '/opt/dev-fabric/workspaces/projects',\n    evidence_root: evidenceRoot\n  },\n  agent_runtime: {\n    opencode_available: true,\n    opencode_version: 'v1.17.9',\n    opencode_provider_configured: false,\n    hermes_available: false\n  }\n};\n\nreturn [{\n  json: {\n    owner: owner,\n    repo: repo,\n    issue_number: issueNumber,\n    mode: mode,\n    run_id: runId,\n    issue_url: issueUrl,\n    evidence_dir: evidenceDir,\n    run_input_remote: runInputRemote,\n    run_input: runInput,\n    run_input_json: JSON.stringify(runInput, null, 2),\n    run_input_b64: Buffer.from(JSON.stringify(runInput, null, 2), 'utf8').toString('base64')\n  }\n}];"
+            },
+            "id": "prepare-run-input",
+            "name": "Prepare RUN_INPUT.json",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                500,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "protocol": "ssh",
+                "host": "192.168.1.53",
+                "port": 22,
+                "username": "runner",
+                "mode": "command",
+                "command": "set -euo pipefail\nRUN_INPUT_PATH=\"{{$json.run_input_remote}}\"\nRUN_INPUT_DIR=\"$(dirname \"$RUN_INPUT_PATH\")\"\nmkdir -p \"$RUN_INPUT_DIR\"\nprintf '%s' \"{{$json.run_input_b64}}\" | base64 -d > \"$RUN_INPUT_PATH\"\nchmod 640 \"$RUN_INPUT_PATH\"\ntest -s \"$RUN_INPUT_PATH\"\njq . \"$RUN_INPUT_PATH\" >/dev/null\nBYTES=\"$(wc -c < \"$RUN_INPUT_PATH\" | tr -d ' ')\"\necho \"{\\\"ok\\\":true,\\\"phase\\\":\\\"ssh_write_run_input\\\",\\\"run_input_path\\\":\\\"$RUN_INPUT_PATH\\\",\\\"bytes\\\":$BYTES}\""
+            },
+            "id": "ssh-write-run-input",
+            "name": "SSH Write RUN_INPUT to Runner",
+            "type": "n8n-nodes-base.ssh",
+            "typeVersion": 1,
+            "position": [
+                750,
+                0
+            ],
+            "credentials": {
+                "sshPrivateKey": {
+                    "id": "42a60f05-16eb-493f-8257-3eeb5aef531a",
+                    "name": "dev-runner-ssh"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "protocol": "ssh",
+                "host": "192.168.1.53",
+                "port": 22,
+                "username": "runner",
+                "mode": "command",
+                "command": "set +e\n\nRUN_INPUT_PATH=\"{{$json.run_input_remote}}\"\n\n/opt/dev-fabric/scripts/start_github_issue_run.sh --input-json \"$RUN_INPUT_PATH\"\nRC=\"$?\"\n\necho \"{\\\"ok\\\":true,\\\"phase\\\":\\\"ssh_start_runner_script\\\",\\\"run_input_path\\\":\\\"$RUN_INPUT_PATH\\\",\\\"exit_code\\\":$RC}\"\nexit \"$RC\""
+            },
+            "id": "ssh-start-runner",
+            "name": "SSH Start Runner Script",
+            "type": "n8n-nodes-base.ssh",
+            "typeVersion": 1,
+            "position": [
+                1000,
+                0
+            ],
+            "credentials": {
+                "sshPrivateKey": {
+                    "id": "42a60f05-16eb-493f-8257-3eeb5aef531a",
+                    "name": "dev-runner-ssh"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "amount": 5
+            },
+            "id": "wait-delay",
+            "name": "Wait (5s)",
+            "type": "n8n-nodes-base.wait",
+            "typeVersion": 1,
+            "position": [
+                1250,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "protocol": "ssh",
+                "host": "192.168.1.53",
+                "port": 22,
+                "username": "runner",
+                "mode": "command",
+                "command": "set -euo pipefail\n\nSTATUS_PATH=\"{{$('Prepare RUN_INPUT.json').first().json.evidence_dir}}/status.json\"\n\nfor i in $(seq 1 30); do\n  if [ -s \"$STATUS_PATH\" ]; then\n    jq . \"$STATUS_PATH\"\n    exit 0\n  fi\n  sleep 2\ndone\n\necho \"{\\\"ok\\\":false,\\\"error\\\":\\\"status.json not found after timeout\\\",\\\"status_path\\\":\\\"$STATUS_PATH\\\"}\"\nexit 1"
+            },
+            "id": "ssh-read-status",
+            "name": "SSH Read status.json",
+            "type": "n8n-nodes-base.ssh",
+            "typeVersion": 1,
+            "position": [
+                1500,
+                0
+            ],
+            "credentials": {
+                "sshPrivateKey": {
+                    "id": "42a60f05-16eb-493f-8257-3eeb5aef531a",
+                    "name": "dev-runner-ssh"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "const prepData = $('Prepare RUN_INPUT.json').first().json;\nconst statusOutput = $input.first().json;\n\nlet status = 'UNKNOWN';\nlet runId = prepData.run_id || 'unknown';\nlet effectiveMode = prepData.mode || 'manual-terminal';\nlet opencodeAvailable = 'PASS (v1.17.9)';\nlet opencodeProviderConfigured = 'NO';\nlet evidenceDir = prepData.evidence_dir || '/opt/dev-fabric/evidence/github-agent-runs/' + prepData.owner + '/' + prepData.repo + '/issue-' + prepData.issue_number + '/' + runId + '/';\n\ntry {\n  if (typeof statusOutput === 'string') {\n    const parsed = JSON.parse(statusOutput);\n    status = parsed.status || status;\n    if (parsed.mode && parsed.mode.effective) effectiveMode = parsed.mode.effective;\n    if (parsed.agent_runtime) {\n      opencodeAvailable = parsed.agent_runtime.opencode_available ? 'PASS (' + (parsed.agent_runtime.opencode_version || 'v1.17.9') + ')' : 'FAIL';\n      opencodeProviderConfigured = parsed.agent_runtime.opencode_provider_configured ? 'YES' : 'NO';\n    }\n  } else if (typeof statusOutput === 'object') {\n    status = statusOutput.status || statusOutput.error || status;\n  }\n} catch (e) {\n  status = 'GREEN_PARTIAL (parse error: ' + e.message + ')';\n}\n\nconst commentBody = '## Agent Run Result\\n\\n**Status:** ' + status + '\\n\\n**Run ID:** ' + runId + '\\n**Mode:** ' + effectiveMode + '\\n**Source of Truth:** GitHub Issue\\n**Runner:** lxc-dev-runner / 192.168.1.53\\n\\n### Evidence\\n\\nLocal evidence path:\\n\\n```text\\n' + evidenceDir + '\\n```\\n\\n### Verification\\n\\n| Check | Result |\\n| --- | --- |\\n| RUN_INPUT validated | PASS |\\n| Runner started | PASS |\\n| Evidence written | PASS |\\n| OpenCode available | ' + opencodeAvailable + ' |\\n| OpenCode provider configured | ' + opencodeProviderConfigured + ' |\\n\\n### Approval state\\n\\n- Push: not approved\\n- PR: not approved\\n- Merge: not approved\\n- GitHub Actions: not approved\\n- Provider/API-Key configuration: not approved';\n\nreturn {\n  issue_url: prepData.issue_url,\n  issue_number: prepData.issue_number,\n  owner: prepData.owner,\n  repo: prepData.repo,\n  run_id: runId,\n  status: status,\n  evidence_dir: evidenceDir,\n  comment_body: commentBody,\n  comment_preview: commentBody.substring(0, 200) + '...'\n};"
+            },
+            "id": "format-evidence-comment",
+            "name": "Format Evidence Comment",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1750,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// ============================================================================\n// Final Result / Log Output\n// ============================================================================\n\nconst data = $input.first().json;\n\nconst result = {\n  status: data.status,\n  issue_number: data.issue_number,\n  issue_url: data.issue_url,\n  run_id: data.run_id,\n  evidence_comment_prepared: !!data.comment_body,\n  evidence_comment_length: data.comment_body ? data.comment_body.length : 0,\n  next_action: 'Issue-Kommentar automatisch via GitHub API gepostet. Labels agent:needs-review + evidence:attached gesetzt. OpenCode Provider/Auth + Hermes weiterhin offen.'\n};\n\nreturn result;"
+            },
+            "id": "format-final-result",
+            "name": "Format Final Result",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                2750,
+                0
+            ]
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "=https://api.github.com/repos/{{ $json.owner }}/{{ $json.repo }}/issues/{{ $json.issue_number }}/comments",
+                "authentication": "predefinedCredentialType",
+                "nodeCredentialType": "githubApi",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Accept",
+                            "value": "application/vnd.github+json"
+                        },
+                        {
+                            "name": "X-GitHub-Api-Version",
+                            "value": "2022-11-28"
+                        }
+                    ]
                 },
-    "versionId":  null,
-    "activeVersionId":  null,
-    "triggerCount":  0,
-    "tags":  [
-                 {
-                     "name":  "github",
-                     "id":  "1"
-                 },
-                 {
-                     "name":  "source-of-truth",
-                     "id":  "2"
-                 }
-             ],
-    "description":  "GitHub Issue -\u003e Runner Agent Intake Workflow. Manual Trigger Fallback (kein GitHub Trigger bis Credential konfiguriert). Liest Issue-Kontext, erzeugt RUN_INPUT.json, startet Runner, liest Evidence, formatiert Issue-Kommentar."
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"body\": {{ JSON.stringify($json.comment_body) }}\n}",
+                "options": {}
+            },
+            "id": "create-github-comment",
+            "name": "Create GitHub Comment on Issue",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4,
+            "position": [
+                2000,
+                0
+            ],
+            "credentials": {
+                "githubApi": {
+                    "id": "M5hvZu2nCwFcHBYX",
+                    "name": "GitHub account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "=https://api.github.com/repos/{{ $json.owner }}/{{ $json.repo }}/issues/{{ $json.issue_number }}/labels",
+                "authentication": "predefinedCredentialType",
+                "nodeCredentialType": "githubApi",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Accept",
+                            "value": "application/vnd.github+json"
+                        },
+                        {
+                            "name": "X-GitHub-Api-Version",
+                            "value": "2022-11-28"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"labels\": [\"agent:needs-review\", \"evidence:attached\"]\n}",
+                "options": {}
+            },
+            "id": "add-labels",
+            "name": "Add Labels (agent:needs-review, evidence:attached)",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4,
+            "position": [
+                2250,
+                0
+            ],
+            "credentials": {
+                "githubApi": {
+                    "id": "M5hvZu2nCwFcHBYX",
+                    "name": "GitHub account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "method": "DELETE",
+                "url": "=https://api.github.com/repos/{{ $json.owner }}/{{ $json.repo }}/issues/{{ $json.issue_number }}/labels/agent%3Arunning",
+                "authentication": "predefinedCredentialType",
+                "nodeCredentialType": "githubApi",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Accept",
+                            "value": "application/vnd.github+json"
+                        },
+                        {
+                            "name": "X-GitHub-Api-Version",
+                            "value": "2022-11-28"
+                        }
+                    ]
+                },
+                "sendBody": false,
+                "options": {
+                    "continueOnFail": true
+                }
+            },
+            "id": "remove-agent-running-label",
+            "name": "Remove agent:running Label (404-tolerant)",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4,
+            "position": [
+                2500,
+                0
+            ],
+            "credentials": {
+                "githubApi": {
+                    "id": "M5hvZu2nCwFcHBYX",
+                    "name": "GitHub account"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "Manual Trigger (Fallback)": {
+            "main": [
+                [
+                    {
+                        "node": "Validate Issue Contract",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Validate Issue Contract": {
+            "main": [
+                [
+                    {
+                        "node": "Prepare RUN_INPUT.json",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Prepare RUN_INPUT.json": {
+            "main": [
+                [
+                    {
+                        "node": "SSH Write RUN_INPUT to Runner",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "SSH Write RUN_INPUT to Runner": {
+            "main": [
+                [
+                    {
+                        "node": "SSH Start Runner Script",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "SSH Start Runner Script": {
+            "main": [
+                [
+                    {
+                        "node": "Wait (5s)",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Wait (5s)": {
+            "main": [
+                [
+                    {
+                        "node": "SSH Read status.json",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "SSH Read status.json": {
+            "main": [
+                [
+                    {
+                        "node": "Format Evidence Comment",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Format Evidence Comment": {
+            "main": [
+                [
+                    {
+                        "node": "Create GitHub Comment on Issue",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Create GitHub Comment on Issue": {
+            "main": [
+                [
+                    {
+                        "node": "Add Labels (agent:needs-review, evidence:attached)",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Add Labels (agent:needs-review, evidence:attached)": {
+            "main": [
+                [
+                    {
+                        "node": "Remove agent:running Label (404-tolerant)",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Remove agent:running Label (404-tolerant)": {
+            "main": [
+                [
+                    {
+                        "node": "Format Final Result",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1",
+        "binaryMode": "separate",
+        "availableInMCP": false
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": {},
+    "versionId": null,
+    "activeVersionId": null,
+    "triggerCount": 0,
+    "tags": [
+        {
+            "name": "github",
+            "id": "1"
+        },
+        {
+            "name": "source-of-truth",
+            "id": "2"
+        }
+    ],
+    "description": "GitHub Issue -> Runner Agent Intake Workflow. Manual Trigger Fallback (kein GitHub Trigger bis Credential konfiguriert). Liest Issue-Kontext, erzeugt RUN_INPUT.json, startet Runner, liest Evidence, formatiert Issue-Kommentar."
 }

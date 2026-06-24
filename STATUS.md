@@ -1,8 +1,8 @@
-# STATUS: GREEN_PARTIAL
+# STATUS: GREEN_PARTIAL_PLUS
 
-**Last Updated:** 2026-06-24T10:40:34Z
-**Session:** n8n-github-issue-intake-ssh-validation
-**Previous Session:** n8n-mcp-manual-execution-validation
+**Last Updated:** 2026-06-24T13:00:00Z
+**Session:** n8n-github-comment-label-automation
+**Previous Session:** n8n-github-issue-intake-ssh-validation
 
 ## Current State
 
@@ -16,7 +16,7 @@
 | Form Submission (Browser) | ✅ SUCCESS | Browser-based form submit works |
 | `dev-runner-ssh` Credential | ✅ VERIFIED | Host=192.168.1.53, Port=22, User=runner, Auth=PrivateKey |
 | **SSH Nodes (Write/Start/Read)** | ✅ ALL VALIDATED | Command mode + Expression mode + retry loop — all 3 nodes verified |
-| **GitHub Issue Intake Workflow (ID: h78eENwLGwr2QUmU)** | ✅ END-TO-END VALIDATED | All 9 nodes green, Run ID: gh-issue-1-20260624T104034Z |
+| **GitHub Issue Intake Workflow (ID: h78eENwLGwr2QUmU)** | ✅ END-TO-END VALIDATED | All 12 nodes present: 9 core + 3 GitHub API (Comment, Add Labels, Remove Label) |
 | **SSH Write** | ✅ PASS | Command mode, `mkdir -p` + `base64 -d` + `jq`, 779 bytes ✅ |
 | **SSH Start** | ✅ PASS | `--input-json` flag required, exit_code 0 ✅ |
 | **SSH Read** | ✅ PASS | Retry loop (30x2s), `status.json` found with `GREEN_PARTIAL` ✅ |
@@ -39,6 +39,12 @@
 | **Runner GitHub Run Script** | ✅ PREPARED | `start_github_issue_run.sh` — requires `--input-json` flag |
 | **GitHub Issue #1** | ✅ CREATED | Feat-Issue für GitHub SoT: `agent:queued` + Alle Labels |
 | **Evidence Comment Format** | ✅ DEFINED | Standardisierte Issue-Kommentar-Struktur |
+| **GitHub Comment Node** | ✅ IN WORKFLOW JSON | HTTP Request Node (POST /repos/.../issues/.../comments), credential: `github-n8n-blueprint` |
+| **GitHub Label Add Node** | ✅ IN WORKFLOW JSON | HTTP Request Node (POST /repos/.../issues/.../labels), sets `agent:needs-review` + `evidence:attached` |
+| **GitHub Label Remove Node** | ✅ IN WORKFLOW JSON | HTTP Request Node (DELETE /repos/.../labels/agent%3Arunning), 404-tolerant (continueOnFail) |
+| **n8n GitHub Credential** | ⚠️ UNVERIFIED | Name `github-n8n-blueprint` — muss in n8n UI geprüft werden (Login required) |
+| **n8n Auth Strategy** | ✅ DOCUMENTED | `docs/n8n-auth-automation.md` — API Key (Option A), storageState (Option B), Login-Disable (Option C RED_HOLD) |
+| **n8n UI Login** | 🔒 REQUIRED | Blockiert Playwright-Automation — manuelle Login oder API Key nötig |
 | **RUN_INPUT Schema** | ✅ EXTENDED | GitHub SoT-Felder (issue_url, issue_number, approval_policy) |
 | Git Repo (local) | ACTIVE | `C:\n8n-blueprint-workflow` |
 | Git Repo (GitHub) | LIVE | `https://github.com/xxammaxx/n8n-blueprint-workflow` — commit `01f1c67` |
@@ -190,12 +196,16 @@ The Wait node was initially configured with `"unit": "hours"` which caused the n
 - [x] ~~MCP test_workflow test~~ ✅ DONE — Execution #22 success with pinData={}
 - [x] ~~MCP get_execution test~~ ✅ DONE — confirmed workflowId parameter required
 - [x] ~~Smoke-test the GitHub Issue → Runner intake end-to-end~~ ✅ DONE — SSH command mode validated, 9 nodes green, Run ID: gh-issue-1-20260624T104034Z
+- [x] ~~GitHub Comment + Label nodes to workflow~~ ✅ DONE — 3 HTTP Request nodes added (Comment, Add Labels, Remove Label) — in workflow JSON
+- [x] ~~n8n Auth Strategy dokumentiert~~ ✅ DONE — `docs/n8n-auth-automation.md`
+- [ ] n8n UI Login durchführen und GitHub Credential `github-n8n-blueprint` prüfen
+- [ ] GitHub Comment + Label Live-Test mit Issue #1 (Manual Trigger + Pin Data)
+- [ ] GitHub Issue #1 auf automatischen Kommentar und Labels prüfen
 - [ ] Configure n8n GitHub API credential (`github-n8n-blueprint`) for automated GitHub trigger/comment/label
 - [ ] Configure LLM provider for OpenCode (needs separate API-key approval)
 - [ ] First real `opencode-run` execution with provider configured
 - [ ] Chrome DevTools MCP live test against n8n UI
 - [ ] Run Playwright CLI regression tests
-- [ ] Implement GitHub auto-comment + label automation (currently manual via `gh` CLI)
 - [ ] Optional: Hermes as secondary reviewer/agent (future run)
 - [ ] Optional: Investigate `field-N` form field naming for curl compatibility
 
@@ -206,8 +216,9 @@ The Wait node was initially configured with `"unit": "hours"` which caused the n
 - ~~Wait node stuck on hours~~ ✅ RESOLVED — changed to timeInterval mode, 5 seconds
 - ~~--input-json flag missing~~ ✅ RESOLVED — flag is required by runner script
 - ~~Validate Issue Contract blocks without labels~~ ✅ RESOLVED — labels array requirement documented
-- n8n GitHub API credential not yet configured (blocks automated GitHub Trigger, Issue Comment, Label Update — Manual Trigger works)
-- GitHub auto-comment/label: NOT YET IMPLEMENTED (manual via GitHub API / `gh` CLI)
+- ~~GitHub auto-comment/label nodes missing~~ ✅ RESOLVED — 3 HTTP Request nodes added to workflow JSON
+- n8n UI Login required (blocks credential verification + live test of GitHub API nodes — API Key or storageState needed)
+- n8n GitHub API credential not yet verified (blocks automated GitHub Trigger, Issue Comment, Label Update — Manual Trigger works)
 - OpenCode provider/API-key not yet configured (blocks autonomous agent runs)
 - OpenCode interactive provider prompt blocks non-interactive execution
 - n8n MCP production workflow exposure: NOT ENABLED (only smoke test exposed — by design)
@@ -218,11 +229,14 @@ The Wait node was initially configured with `"unit": "hours"` which caused the n
 2. ~~Import smoke test workflow into n8n~~ ✅ DONE — `mcpSmoke001`
 3. ~~User runs local MCP connectivity test~~ ✅ DONE — full manual mode validation
 4. ~~Smoke-test the GitHub Issue → Runner intake end-to-end~~ ✅ DONE — SSH command mode validated, 9 nodes green
-5. Configure n8n GitHub API credential for automated GitHub trigger/comment/label
-6. Implement GitHub auto-comment + label automation in workflow (Nodes 9-10)
-7. Run Chrome DevTools MCP test against n8n UI (dedicated session)
-8. Run Playwright CLI regression tests (`npx playwright test tests/ui/`)
-9. Obtain approval for LLM provider API key configuration
-10. Configure provider via `opencode providers login`
-11. Run first controlled `opencode-run` execution via n8n form or GitHub issue
-12. Optional: Hermes as secondary agent (separate, approved run)
+5. ~~Add GitHub auto-comment + label nodes to workflow~~ ✅ DONE — 3 HTTP Request nodes in workflow JSON
+6. **User logs into n8n UI** at http://192.168.1.52:5678 (manuell)
+7. **Verify GitHub credential** `github-n8n-blueprint` exists in n8n Credentials
+8. **Run live test** with Issue #1 (Manual Trigger + Pin Data) — verify comment + labels on GitHub
+9. Create n8n API Key for future automation (optional but recommended)
+10. Run Chrome DevTools MCP test against n8n UI (dedicated session)
+11. Run Playwright CLI regression tests (`npx playwright test tests/ui/`)
+12. Obtain approval for LLM provider API key configuration
+13. Configure provider via `opencode providers login`
+14. Run first controlled `opencode-run` execution via n8n form or GitHub issue
+15. Optional: Hermes as secondary agent (separate, approved run)

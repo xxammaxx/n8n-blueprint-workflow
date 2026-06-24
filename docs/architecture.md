@@ -126,8 +126,11 @@ n8n Form → RUN_INPUT.json → start_blueprint_bootstrap.sh
 │  Validate Issue Contract                │
 │  Prepare RUN_INPUT.json                 │
 │  SSH Write/Start/Read → Runner          │
-│  Format Issue Comment                   │
-│  Update Labels                          │
+│  Format Evidence Comment                │
+│  Create GitHub Comment (API)            │
+│  Add Labels (API)                       │
+│  Remove agent:running (API, 404-tolerant)│
+│  Format Final Result                    │
 └──────────────┬──────────────────────────┘
                │ SSH (key-based auth)
                ▼
