@@ -1,5 +1,37 @@
 # CHANGELOG
 
+## 2026-06-24 — n8n MCP Activated & Smoke Test Imported
+
+### Completed
+- **n8n Instance-level MCP activated:**
+  - User enabled MCP in Settings → Instance-level MCP
+  - Server running at `http://192.168.1.52:5678/mcp-server/http`
+  - Two auth methods available: OAuth (default) + Access Token (Bearer)
+  - Token partially masked in UI (`******bz5Q`), never extracted or logged
+- **MCP Smoke Test workflow imported:**
+  - Imported via `n8n import:workflow --projectId=fLfBCnB9rifW9Cu2`
+  - Workflow ID: `mcpSmoke001`, name: "MCP Smoke Test"
+  - Returns only static metadata: `{ok, system, runner_expected, no_secrets}`
+  - No credentials, no SSH, no GitHub API access
+- **MCP workflow scoping verified:**
+  - ONLY "MCP Smoke Test" enabled for MCP (1 workflow)
+  - ZERO production workflows exposed (Blueprint, GitHub Issue Intake, etc.)
+  - Connected clients: 0 (no external MCP client has connected)
+- **All security boundaries intact:**
+  - Token never read, extracted, logged, or stored
+  - No production workflows inadvertently exposed
+  - `.github/workflows` confirmed absent
+  - Access Token tab confirmed to exist (masked display)
+
+### Documentation Updated:
+- `STATUS.md` — MCP status: DISABLED → ACTIVATED, workflow imported
+- `CHANGELOG.md` — this entry
+- `evidence-index/latest.md` — updated with verification results
+- `workflows/mcp-smoke-test-v4.import.json` — final import format
+
+### Status
+**GREEN_PARTIAL_PLUS** — n8n MCP aktiviert, Smoke Test importiert und als einziger Workflow für MCP freigegeben. Keine Produktivworkflows exponiert. MCP-Client-Konnektivitätstest wartet auf lokalen Token-Test durch den Nutzer.
+
 ## 2026-06-24 — Browser Automation Strategy (Tiered MCP Stack)
 
 ### Completed

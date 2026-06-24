@@ -1,8 +1,8 @@
-# STATUS: GREEN_PARTIAL
+# STATUS: GREEN_PARTIAL_PLUS
 
-**Last Updated:** 2026-06-24T12:00:00Z
-**Session:** browser-automation-strategy
-**Previous Session:** github-issue-intake-ssh-write-fix
+**Last Updated:** 2026-06-24T13:00:00Z
+**Session:** n8n-mcp-activated-and-verified
+**Previous Session:** browser-automation-strategy
 
 ## Current State
 
@@ -128,16 +128,21 @@ The old `blueprint-speckit-opencode-bootstrap` workflow has a persistent webhook
 
 | Tier | Tool | Role | Status |
 |------|------|------|--------|
-| 1 | **n8n official MCP** | Workflow discovery/test | DISABLED (visible, awaiting enable) |
+| 1 | **n8n official MCP** | Workflow discovery/test | ✅ **ACTIVATED** — Smoke Test enabled |
 | 2 | **Chrome DevTools MCP** | Browser UI debugging | INSTALLABLE (npx verified) |
 | 3 | **Playwright CLI** | Regression tests | SPEC CREATED |
 | 4 | **Playwright MCP** | Fallback browser control | WORKING |
 | 5 | **BrowserMCP** | Optional auth fallback | EVALUATED, NOT INSTALLED |
 
-### n8n MCP Discovery
+### n8n MCP Discovery & Activation
 - **Visible:** YES — Settings → Instance-level MCP (Preview)
-- **Enabled:** NO (toggle off, no tokens generated)
-- **Test Workflow:** `workflows/mcp-smoke-test.export.json` ready
+- **Enabled:** ✅ YES (user-activated, toggle ON)
+- **Server URL:** `http://192.168.1.52:5678/mcp-server/http`
+- **Auth Methods:** OAuth (default) + Access Token (Bearer)
+- **Test Workflow:** ✅ IMPORTED — `mcpSmoke001` (MCP Smoke Test)
+- **MCP-Enabled Workflows:** ONLY `MCP Smoke Test` (1 workflow)
+- **Production Workflows Exposed:** NONE (verified)
+- **Connected Clients:** 0
 - **Config Template:** `templates/mcp-client-config.example.json` (placeholders only)
 
 ### Chrome DevTools MCP
@@ -152,7 +157,9 @@ The old `blueprint-speckit-opencode-bootstrap` workflow has a persistent webhook
 
 ## What's Pending
 
-- [ ] User approval to enable n8n Instance-level MCP
+- [x] ~~User approval to enable n8n Instance-level MCP~~ ✅ DONE
+- [x] ~~Import MCP Smoke Test workflow~~ ✅ DONE — `mcpSmoke001`
+- [ ] MCP client connectivity test (requires local token — user to execute)
 - [ ] Configure n8n GitHub API credential (`github-n8n-blueprint`) for automated trigger
 - [ ] Configure LLM provider for OpenCode (needs separate API-key approval)
 - [ ] First real `opencode-run` execution with provider configured
@@ -164,15 +171,18 @@ The old `blueprint-speckit-opencode-bootstrap` workflow has a persistent webhook
 
 ## Blockers
 
-- n8n MCP disabled — user must enable (artifacts prepared)
+- ~~n8n MCP disabled~~ ✅ RESOLVED — user activated
+- MCP client connectivity test pending (user's local token test)
 - n8n GitHub API credential not yet configured (blocks automated GitHub Trigger — Manual Trigger works)
 - OpenCode provider/API-key not yet configured (blocks autonomous agent runs)
 - OpenCode interactive provider prompt blocks non-interactive execution
 
 ## Next Steps
 
-1. User enables n8n Instance-level MCP in Settings → import smoke test workflow
-2. Configure n8n GitHub API credential for automated Issue→Runner trigger
+1. ~~User enables n8n Instance-level MCP in Settings~~ ✅ DONE
+2. ~~Import smoke test workflow into n8n~~ ✅ DONE — `mcpSmoke001`
+3. User runs local MCP connectivity test (command provided below)
+4. Configure n8n GitHub API credential for automated Issue→Runner trigger
 3. Run Chrome DevTools MCP test against n8n UI (dedicated session)
 4. Run Playwright CLI regression tests (`npx playwright test tests/ui/`)
 5. Obtain approval for LLM provider API key configuration

@@ -1,4 +1,4 @@
-﻿{
+{
     "name":  "GitHub Issue -\u003e Runner Agent Intake",
     "nodes":  [
                   {
@@ -29,7 +29,7 @@
                   },
                   {
                       "parameters":  {
-                                         "jsCode":  "// Robust RUN_INPUT preparation - no unquoted labels, no encoding issues\nconst input = $input.first().json || {};\n\nconst owner = String(input.owner || \u0027xxammaxx\u0027).trim();\nconst repo = String(input.repo || \u0027n8n-blueprint-workflow\u0027).trim();\nconst issueNumberRaw = input.issue_number ?? input.issueNumber ?? 1;\nconst issueNumber = Number(issueNumberRaw);\nconst mode = String(input.mode || \u0027manual-terminal\u0027).trim();\n\nif (!owner) throw new Error(\u0027Missing owner\u0027);\nif (!repo) throw new Error(\u0027Missing repo\u0027);\nif (!Number.isInteger(issueNumber) || issueNumber \u003c 1) throw new Error(\u0027Invalid issue_number: \u0027 + issueNumberRaw);\n\nconst now = new Date();\nconst ts = now.toISOString().replace(/[-:]/g, \u0027\u0027).replace(/\\.\\d{3}Z$/, \u0027Z\u0027);\nconst runId = \u0027gh-issue-\u0027 + issueNumber + \u0027-\u0027 + ts;\nconst issueUrl = \u0027https://github.com/\u0027 + owner + \u0027/\u0027 + repo + \u0027/issues/\u0027 + issueNumber;\n\nconst safeOwner = owner.replace(/[^a-zA-Z0-9_.-]/g, \u0027-\u0027);\nconst safeRepo = repo.replace(/[^a-zA-Z0-9_.-]/g, \u0027-\u0027);\n\nconst evidenceRoot = \u0027/opt/dev-fabric/evidence/github-agent-runs\u0027;\nconst runInputRemote = evidenceRoot + \u0027/\u0027 + safeOwner + \u0027/\u0027 + safeRepo + \u0027/issue-\u0027 + issueNumber + \u0027/\u0027 + runId + \u0027/RUN_INPUT.json\u0027;\nconst evidenceDir = evidenceRoot + \u0027/\u0027 + safeOwner + \u0027/\u0027 + safeRepo + \u0027/issue-\u0027 + issueNumber + \u0027/\u0027 + runId;\n\nconst runInput = {\n  run_id: runId,\n  source_of_truth: \u0027github\u0027,\n  github: {\n    owner: owner,\n    repo: repo,\n    issue_number: issueNumber,\n    issue_url: issueUrl,\n    trigger_label: \u0027agent:ready\u0027\n  },\n  mode: mode,\n  approval_policy: {\n    push: false,\n    pr: false,\n    merge: false,\n    github_actions: false,\n    provider_config: false\n  },\n  runner: {\n    workspace_root: \u0027/opt/dev-fabric/workspaces/projects\u0027,\n    evidence_root: evidenceRoot\n  },\n  agent_runtime: {\n    opencode_available: true,\n    opencode_version: \u0027v1.17.9\u0027,\n    opencode_provider_configured: false,\n    hermes_available: false\n  }\n};\n\nreturn [{\n  json: {\n    owner: owner,\n    repo: repo,\n    issue_number: issueNumber,\n    mode: mode,\n    run_id: runId,\n    issue_url: issueUrl,\n    evidence_dir: evidenceDir,\n    run_input_remote: runInputRemote,\n    run_input: runInput,\n    run_input_json: JSON.stringify(runInput, null, 2)\n  }\n}];"
+                                         "jsCode":  "// Robust RUN_INPUT preparation - no unquoted labels, no encoding issues\nconst input = $input.first().json || {};\n\nconst owner = String(input.owner || \u0027xxammaxx\u0027).trim();\nconst repo = String(input.repo || \u0027n8n-blueprint-workflow\u0027).trim();\nconst issueNumberRaw = input.issue_number ?? input.issueNumber ?? 1;\nconst issueNumber = Number(issueNumberRaw);\nconst mode = String(input.mode || \u0027manual-terminal\u0027).trim();\n\nif (!owner) throw new Error(\u0027Missing owner\u0027);\nif (!repo) throw new Error(\u0027Missing repo\u0027);\nif (!Number.isInteger(issueNumber) || issueNumber \u003c 1) throw new Error(\u0027Invalid issue_number: \u0027 + issueNumberRaw);\n\nconst now = new Date();\nconst ts = now.toISOString().replace(/[-:]/g, \u0027\u0027).replace(/\\.\\d{3}Z$/, \u0027Z\u0027);\nconst runId = \u0027gh-issue-\u0027 + issueNumber + \u0027-\u0027 + ts;\nconst issueUrl = \u0027https://github.com/\u0027 + owner + \u0027/\u0027 + repo + \u0027/issues/\u0027 + issueNumber;\n\nconst safeOwner = owner.replace(/[^a-zA-Z0-9_.-]/g, \u0027-\u0027);\nconst safeRepo = repo.replace(/[^a-zA-Z0-9_.-]/g, \u0027-\u0027);\n\nconst evidenceRoot = \u0027/opt/dev-fabric/evidence/github-agent-runs\u0027;\nconst runInputRemote = evidenceRoot + \u0027/\u0027 + safeOwner + \u0027/\u0027 + safeRepo + \u0027/issue-\u0027 + issueNumber + \u0027/\u0027 + runId + \u0027/RUN_INPUT.json\u0027;\nconst evidenceDir = evidenceRoot + \u0027/\u0027 + safeOwner + \u0027/\u0027 + safeRepo + \u0027/issue-\u0027 + issueNumber + \u0027/\u0027 + runId;\n\nconst runInput = {\n  run_id: runId,\n  source_of_truth: \u0027github\u0027,\n  github: {\n    owner: owner,\n    repo: repo,\n    issue_number: issueNumber,\n    issue_url: issueUrl,\n    trigger_label: \u0027agent:ready\u0027\n  },\n  mode: mode,\n  approval_policy: {\n    push: false,\n    pr: false,\n    merge: false,\n    github_actions: false,\n    provider_config: false\n  },\n  runner: {\n    workspace_root: \u0027/opt/dev-fabric/workspaces/projects\u0027,\n    evidence_root: evidenceRoot\n  },\n  agent_runtime: {\n    opencode_available: true,\n    opencode_version: \u0027v1.17.9\u0027,\n    opencode_provider_configured: false,\n    hermes_available: false\n  }\n};\n\nreturn [{\n  json: {\n    owner: owner,\n    repo: repo,\n    issue_number: issueNumber,\n    mode: mode,\n    run_id: runId,\n    issue_url: issueUrl,\n    evidence_dir: evidenceDir,\n    run_input_remote: runInputRemote,\n    run_input: runInput,\n    run_input_json: JSON.stringify(runInput, null, 2),\n    run_input_b64: Buffer.from(JSON.stringify(runInput, null, 2), \u0027utf8\u0027).toString(\u0027base64\u0027)\n  }\n}];"
                                      },
                       "id":  "prepare-run-input",
                       "name":  "Prepare RUN_INPUT.json",
@@ -46,9 +46,8 @@
                                          "host":  "192.168.1.53",
                                          "port":  22,
                                          "username":  "runner",
-                                         "path":  "/opt/dev-fabric/evidence/github-agent-runs/{{ $json.owner }}/{{ $json.repo }}/issue-{{ $json.issue_number }}/{{ $json.run_id }}/RUN_INPUT.json",
-                                         "content":  "={{ $json.run_input_json }}",
-                                         "mode":  "create"
+                                         "mode":  "command",
+                                         "command":  "set -euo pipefail\nRUN_INPUT_PATH=\"{{$json.run_input_remote}}\"\nRUN_INPUT_DIR=\"$(dirname \"$RUN_INPUT_PATH\")\"\nmkdir -p \"$RUN_INPUT_DIR\"\nprintf \u0027%s\u0027 \"{{$json.run_input_b64}}\" | base64 -d \u003e \"$RUN_INPUT_PATH\"\nchmod 640 \"$RUN_INPUT_PATH\"\ntest -s \"$RUN_INPUT_PATH\"\njq . \"$RUN_INPUT_PATH\" \u003e/dev/null\nBYTES=\"$(wc -c \u003c \"$RUN_INPUT_PATH\" | tr -d \u0027 \u0027)\"\necho \"{\\\"ok\\\":true,\\\"phase\\\":\\\"ssh_write_run_input\\\",\\\"run_input_path\\\":\\\"$RUN_INPUT_PATH\\\",\\\"bytes\\\":$BYTES}\""
                                      },
                       "id":  "ssh-write-run-input",
                       "name":  "SSH Write RUN_INPUT to Runner",
@@ -66,15 +65,16 @@
                                       }
                   },
                   {
-                      "parameters":  {
-                                         "protocol":  "ssh",
-                                         "host":  "192.168.1.53",
-                                         "port":  22,
-                                         "username":  "runner",
-                                         "command":  "bash /opt/dev-fabric/scripts/start_github_issue_run.sh --input-json \"/opt/dev-fabric/evidence/github-agent-runs/{{ $json.owner }}/{{ $json.repo }}/issue-{{ $json.issue_number }}/{{ $json.run_id }}/RUN_INPUT.json\" 2\u003e\u00261"
-                                     },
-                      "id":  "ssh-start-runner",
-                      "name":  "SSH Start Runner Script",
+                       "parameters":  {
+                                          "protocol":  "ssh",
+                                          "host":  "192.168.1.53",
+                                          "port":  22,
+                                          "username":  "runner",
+                                          "mode":  "command",
+                                          "command":  "set +e\n\nRUN_INPUT_PATH=\"{{$json.run_input_remote}}\"\n\n/opt/dev-fabric/scripts/start_github_issue_run.sh \"$RUN_INPUT_PATH\"\nRC=\"$?\"\n\necho \"{\\\"ok\\\":true,\\\"phase\\\":\\\"ssh_start_runner_script\\\",\\\"run_input_path\\\":\\\"$RUN_INPUT_PATH\\\",\\\"exit_code\\\":$RC}\"\nexit \"$RC\""
+                                      },
+                       "id":  "ssh-start-runner",
+                       "name":  "SSH Start Runner Script",
                       "type":  "n8n-nodes-base.ssh",
                       "typeVersion":  1,
                       "position":  [
@@ -102,15 +102,16 @@
                                    ]
                   },
                   {
-                      "parameters":  {
-                                         "protocol":  "ssh",
-                                         "host":  "192.168.1.53",
-                                         "port":  22,
-                                         "username":  "runner",
-                                         "command":  "cat /opt/dev-fabric/evidence/github-agent-runs/{{ $json.owner }}/{{ $json.repo }}/issue-{{ $json.issue_number }}/{{ $json.run_id }}/status.json 2\u003e/dev/null || echo \u0027{\"status\":\"UNKNOWN\",\"error\":\"status.json not found\"}\u0027"
-                                     },
-                      "id":  "ssh-read-status",
-                      "name":  "SSH Read status.json",
+                       "parameters":  {
+                                          "protocol":  "ssh",
+                                          "host":  "192.168.1.53",
+                                          "port":  22,
+                                          "username":  "runner",
+                                          "mode":  "command",
+                                          "command":  "set -euo pipefail\n\nSTATUS_PATH=\"{{$(\u0027Prepare RUN_INPUT.json\u0027).first().json.evidence_dir}}/status.json\"\n\nfor i in $(seq 1 30); do\n  if [ -s \"$STATUS_PATH\" ]; then\n    jq . \"$STATUS_PATH\"\n    exit 0\n  fi\n  sleep 2\ndone\n\necho \"{\\\"ok\\\":false,\\\"error\\\":\\\"status.json not found after timeout\\\",\\\"status_path\\\":\\\"$STATUS_PATH\\\"}\"\nexit 1"
+                                      },
+                       "id":  "ssh-read-status",
+                       "name":  "SSH Read status.json",
                       "type":  "n8n-nodes-base.ssh",
                       "typeVersion":  1,
                       "position":  [
