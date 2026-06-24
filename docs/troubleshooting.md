@@ -300,3 +300,99 @@ Replace Manual Trigger with a Webhook node to make the workflow publishable for 
 
 ### Alternative: Test via n8n UI
 Even without MCP execution, the workflow can be manually executed in the n8n editor UI to verify it works.
+
+## Symptom: SSH expressions not resolved (`{{ $json.xxx }}` appears literally)
+
+### Root cause: SSH Node in Fixed Mode instead of Expression Mode
+n8n SSH nodes have two input modes for the `command` parameter:
+- **Fixed Mode** (default): Text is treated as a literal string. `{{ $json.run_input_b64 }}` is NOT resolved — bash sees the literal text.
+- **Expression Mode**: Text is evaluated as an n8n expression. `{{ }}` placeholders are resolved to their actual values.
+
+### Fix: Switch to Expression Mode
+1. Open the SSH node in n8n UI
+2. Click the **fx** (expression) toggle button next to the Command field — it switches from grey (Fixed) to blue/green (Expression)
+3. Ensure all `{{ }}` expressions are resolved in the node output preview
+4. Save the workflow
+
+### Verification
+After switching to Expression Mode, the SSH node output should contain resolved values, not literal `{{ }}` strings. Example of correct output:
+```json
+{"ok":true,"phase":"ssh_write_run_input","path":"/opt/dev-fabric/evidence/...","bytes":779}
+```
+
+## Symptom: Wait node stuck forever
+
+### Root cause: "At a Specific Time" mode (Hours) instead of "After Time Interval"
+The n8n Wait node has two modes:
+- **"After Time Interval"** (`timeInterval`): Waits for a relative duration (e.g., 5 seconds)
+- **"At a Specific Time"** (`hours`): Waits until an absolute date/time in the future
+
+If the Wait node is set to **"At a Specific Time"** with value `5` and unit `Hours`, it waits until 5:00 AM on some date — which could be **hours or forever**. The SSH Read node never gets to execute because the Wait node never finishes.
+
+### Fix: Use "After Time Interval" mode
+1. Open the Wait node in n8n UI
+2. Set **Resume** field to **"After Time Interval"**
+3. Set **Amount** to `5`
+4. Set **Unit** to **"Seconds"**
+5. Save the workflow
+
+### Correct configuration in exported JSON:
+```json
+{
+  "parameters": {
+    "mode": "timeInterval",
+    "amount": 5,
+    "unit": "seconds"
+  }
+}
+```
+
+## Symptom: "Validate Issue Contract" blocks workflow
+
+### Root cause: Missing `labels` array in Pin Data
+The Validate Issue Contract node (JS Code) expects `input.body.labels` to be an array. When triggering manually with Pin Data, if the `labels` field is missing or not an array, the validation throws an error.
+
+### Fix: Include labels in Pin Data
+When setting Pin Data for manual testing, ensure the `labels` array is present:
+```json
+{
+  "owner": "xxammaxx",
+  "repo": "n8n-blueprint-workflow",
+  "issue_number": 1,
+  "labels": ["agent:queued"]
+}
+```
+Valid values: `agent:queued` (waiting) or `agent:ready` (start signal).
+
+### Verification
+Check the node execution output — it should show `validation_passed: true` or similar.
+
+## Symptom: `start_github_issue_run.sh unknown argument`
+
+### Root cause: Missing `--input-json` flag
+The `start_github_issue_run.sh` script on the Runner requires the `--input-json` flag before the path argument. Without it, the script interprets the path as an unknown positional argument and fails.
+
+### Fix: Add `--input-json` flag
+In the SSH Start node command, ensure the flag is present:
+```bash
+# CORRECT:
+ssh .../start_github_issue_run.sh --input-json '/path/to/RUN_INPUT.json'
+
+# WRONG (fails):
+ssh .../start_github_issue_run.sh '/path/to/RUN_INPUT.json'
+```
+
+### Verification
+Exit code should be 0. The script outputs a JSON line confirming the run.
+
+## Symptom: `bash: json: unbound variable` in SSH node
+
+### Root cause: Expression not resolved — literal text treated as bash variable
+When an SSH node is in **Fixed Mode** (not Expression Mode), n8n does not resolve `{{ $json.run_input_remote }}`. The literal text `{{ $json.run_input_remote }}` is passed to bash. Bash interprets `$json` as an undefined variable, causing `unbound variable` error if `set -u` is active.
+
+### Fix options:
+1. **Primary fix:** Switch the SSH node to **Expression Mode** (fx toggle) — this resolves `{{ }}` expressions before sending to bash
+2. **Alternative:** Use explicit node references like `{{ $node["Prepare RUN_INPUT.json"].json.run_input_remote }}` — but this also requires Expression Mode to resolve
+
+### Diagnosis
+Check the SSH node's execution output for the exact command that ran. If it contains literal `{{ }}` characters, the node was in Fixed Mode.

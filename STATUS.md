@@ -1,8 +1,8 @@
-# STATUS: GREEN_PARTIAL_PLUS
+# STATUS: GREEN_PARTIAL
 
-**Last Updated:** 2026-06-24T15:00:00Z
-**Session:** n8n-mcp-manual-execution-validation
-**Previous Session:** n8n-mcp-client-smoke-test
+**Last Updated:** 2026-06-24T10:40:34Z
+**Session:** n8n-github-issue-intake-ssh-validation
+**Previous Session:** n8n-mcp-manual-execution-validation
 
 ## Current State
 
@@ -15,10 +15,15 @@
 | V2 Workflow (Active) | YES | Active — executing successfully |
 | Form Submission (Browser) | ✅ SUCCESS | Browser-based form submit works |
 | `dev-runner-ssh` Credential | ✅ VERIFIED | Host=192.168.1.53, Port=22, User=runner, Auth=PrivateKey |
-| **SSH Nodes (Write/Start/Read)** | ✅ ALL SUCCESS | All 3 SSH nodes execute and return data |
-| **End-to-End Execution** | ✅ SUCCESS | Executions #10 and #14: all 8 nodes ✅ |
+| **SSH Nodes (Write/Start/Read)** | ✅ ALL VALIDATED | Command mode + Expression mode + retry loop — all 3 nodes verified |
+| **GitHub Issue Intake Workflow (ID: h78eENwLGwr2QUmU)** | ✅ END-TO-END VALIDATED | All 9 nodes green, Run ID: gh-issue-1-20260624T104034Z |
+| **SSH Write** | ✅ PASS | Command mode, `mkdir -p` + `base64 -d` + `jq`, 779 bytes ✅ |
+| **SSH Start** | ✅ PASS | `--input-json` flag required, exit_code 0 ✅ |
+| **SSH Read** | ✅ PASS | Retry loop (30x2s), `status.json` found with `GREEN_PARTIAL` ✅ |
+| **Wait Node** | ✅ CONFIGURED | "After Time Interval" mode, 5 seconds (NOT Hours) |
+| **Expression Mode (SSH Nodes)** | ✅ MANDATORY | SSH nodes must use Expression mode (fx toggle), NOT Fixed mode |
+| **Runner Evidence** | ✅ PRODUCED | 8 files under `/opt/dev-fabric/evidence/github-agent-runs/` |
 | **Runner Permissions** | ✅ FIXED | `chown runner:runner` on operational subdirs |
-| **Runner Evidence** | ✅ PRODUCED | Full evidence chain operational |
 | **OpenCode v1.17.9** | ✅ INSTALLED | Standalone binary at `/opt/dev-fabric/opencode/opencode` |
 | **OpenCode Config** | ✅ DEPLOYED | Restrictive `opencode.json` template (no auto-push/PR/merge) |
 | **OpenCode Provider/Auth** | ⚠️ NOT CONFIGURED | No LLM provider configured — needs separate approval |
@@ -30,8 +35,8 @@
 | **GitHub Source of Truth** | ✅ DEPLOYED | Issues as agent tasks, labels, templates, intake workflow |
 | **GitHub Agent Labels** | ✅ CREATED | 14 labels (agent:*, mode:*, risk:*, evidence:*, human-approval-required) |
 | **Issue Template** | ✅ CREATED | `.github/ISSUE_TEMPLATE/agent-task.yml` |
-| **n8n GitHub Intake Workflow** | ✅ PREPARED | `github-issue-intake.export.json` (Manual Trigger Fallback) |
-| **Runner GitHub Run Script** | ✅ PREPARED | `start_github_issue_run.sh` validiert source_of_truth=github |
+| **n8n GitHub Intake Workflow (Live)** | ✅ VALIDATED | Workflow ID `h78eENwLGwr2QUmU` — 9 nodes, all green |
+| **Runner GitHub Run Script** | ✅ PREPARED | `start_github_issue_run.sh` — requires `--input-json` flag |
 | **GitHub Issue #1** | ✅ CREATED | Feat-Issue für GitHub SoT: `agent:queued` + Alle Labels |
 | **Evidence Comment Format** | ✅ DEFINED | Standardisierte Issue-Kommentar-Struktur |
 | **RUN_INPUT Schema** | ✅ EXTENDED | GitHub SoT-Felder (issue_url, issue_number, approval_policy) |
@@ -109,20 +114,31 @@ The old `blueprint-speckit-opencode-bootstrap` workflow has a persistent webhook
 - [x] Secret scan passed
 - [x] Pushed to GitHub
 
-## SSH Node Mode Fix (2026-06-24)
+## SSH Command Mode Validation (2026-06-24)
 
-| Issue | Root Cause | Fix Applied |
-|---|---|---|
-| SSH Start & Read nodes not executing commands | Missing `"mode": "command"` parameter in exported workflow JSON | Added `"mode": "command"` to both nodes |
-| SSH Start using `--input-json` flag | Flag not supported by runner script | Removed `--input-json`, script takes positional arg |
-| SSH Write not creating parent dirs | SFTP mode doesn't create parent directories | Already in command mode with `mkdir -p` + `base64 -d` |
+| Component | Status | Detail |
+|-----------|--------|--------|
+| SSH Write (command mode) | ✅ VALIDATED | `mkdir -p` + `base64 -d` + `jq`, 779 bytes written |
+| SSH Start (command mode) | ✅ VALIDATED | `--input-json` flag required, exit_code 0 |
+| SSH Read (command mode) | ✅ VALIDATED | Retry loop (30x2s), `status.json` found with `GREEN_PARTIAL` |
+| Wait Node | ✅ VALIDATED | "After Time Interval" mode, 5 seconds (NOT Hours) |
+| Expression Mode (all SSH nodes) | ✅ IDENTIFIED | CRITICAL: Expression mode (fx toggle) required for `{{ }}` resolution |
+| Validate Issue Contract labels | ✅ IDENTIFIED | Requires `labels` array with `agent:queued` or `agent:ready` in Pin Data |
+| Prepare Node outputs | ✅ IDENTIFIED | `run_input_b64`, `run_input_remote`, `evidence_dir` all required |
+| Workflow ID `h78eENwLGwr2QUmU` | ✅ 9/9 GREEN | End-to-end: Manual Trigger → SSH Write → SSH Start → Wait → SSH Read → Format Result |
+| Run ID | `gh-issue-1-20260624T104034Z` | Evidence produced under `/opt/dev-fabric/evidence/github-agent-runs/` |
 
-**Export file patched:** `workflows/github-issue-intake.export.json`
-- SSH Start: mode=command, command simplified
-- SSH Read: mode=command, retry loop preserved
+### Key Discovery: Expression Mode vs Fixed Mode
+The single most critical finding: **SSH nodes must use Expression Mode, not Fixed Mode.** In Fixed Mode, `{{ $json.run_input_remote }}` is passed literally to bash. The node reports green (SSH connection OK) but the variable never resolves. This was the hidden root cause of many "node green but no output" issues.
 
-**Verification pending:** n8n live database must be checked via Playwright (n8n login required).
-**Runner evidence check pending:** No SSH access from Windows host to LXC 102.
+### Wrong `--input-json` Flag Handling
+The initial assumption that `--input-json` should be removed was **incorrect**. The Runner script `start_github_issue_run.sh` actually **requires** `--input-json` before the path argument. Removing it causes `unknown argument` error. The final validated command uses `--input-json`.
+
+### Wait Node TimeUnit Fix
+The Wait node was initially configured with `"unit": "hours"` which caused the node to wait until a future date/time indefinitely. Changed to `"unit": "seconds"` with `"mode": "timeInterval"` for a 5-second relative delay.
+
+**Evidence produced:** 8 files on Runner under `gh-issue-1-20260624T104034Z/`
+- `status.json` (GREEN_PARTIAL), `run-report.md`, `commands.log`, `agent.log`, `github-context.md`, `RUN_INPUT.json`, `preflight.md`, `summary.json`
 
 ## Browser Automation Stack (2026-06-24)
 
@@ -173,32 +189,40 @@ The old `blueprint-speckit-opencode-bootstrap` workflow has a persistent webhook
 - [x] ~~MCP execute_workflow manual mode test~~ ✅ DONE — Execution #20 + #22 success
 - [x] ~~MCP test_workflow test~~ ✅ DONE — Execution #22 success with pinData={}
 - [x] ~~MCP get_execution test~~ ✅ DONE — confirmed workflowId parameter required
-- [ ] Configure n8n GitHub API credential (`github-n8n-blueprint`) for automated trigger
+- [x] ~~Smoke-test the GitHub Issue → Runner intake end-to-end~~ ✅ DONE — SSH command mode validated, 9 nodes green, Run ID: gh-issue-1-20260624T104034Z
+- [ ] Configure n8n GitHub API credential (`github-n8n-blueprint`) for automated GitHub trigger/comment/label
 - [ ] Configure LLM provider for OpenCode (needs separate API-key approval)
 - [ ] First real `opencode-run` execution with provider configured
-- [ ] Smoke-test the GitHub Issue → Runner intake end-to-end
 - [ ] Chrome DevTools MCP live test against n8n UI
 - [ ] Run Playwright CLI regression tests
+- [ ] Implement GitHub auto-comment + label automation (currently manual via `gh` CLI)
 - [ ] Optional: Hermes as secondary reviewer/agent (future run)
 - [ ] Optional: Investigate `field-N` form field naming for curl compatibility
 
 ## Blockers
 
 - ~~n8n MCP disabled~~ ✅ RESOLVED — user activated
-- MCP client connectivity test pending (user's local token test)
-- n8n GitHub API credential not yet configured (blocks automated GitHub Trigger — Manual Trigger works)
+- ~~SSH command mode not executing~~ ✅ RESOLVED — Expression mode + command mode + retry loop validated
+- ~~Wait node stuck on hours~~ ✅ RESOLVED — changed to timeInterval mode, 5 seconds
+- ~~--input-json flag missing~~ ✅ RESOLVED — flag is required by runner script
+- ~~Validate Issue Contract blocks without labels~~ ✅ RESOLVED — labels array requirement documented
+- n8n GitHub API credential not yet configured (blocks automated GitHub Trigger, Issue Comment, Label Update — Manual Trigger works)
+- GitHub auto-comment/label: NOT YET IMPLEMENTED (manual via GitHub API / `gh` CLI)
 - OpenCode provider/API-key not yet configured (blocks autonomous agent runs)
 - OpenCode interactive provider prompt blocks non-interactive execution
+- n8n MCP production workflow exposure: NOT ENABLED (only smoke test exposed — by design)
 
 ## Next Steps
 
 1. ~~User enables n8n Instance-level MCP in Settings~~ ✅ DONE
 2. ~~Import smoke test workflow into n8n~~ ✅ DONE — `mcpSmoke001`
-3. User runs local MCP connectivity test (command provided below)
-4. Configure n8n GitHub API credential for automated Issue→Runner trigger
-3. Run Chrome DevTools MCP test against n8n UI (dedicated session)
-4. Run Playwright CLI regression tests (`npx playwright test tests/ui/`)
-5. Obtain approval for LLM provider API key configuration
-6. Configure provider via `opencode providers login`
-7. Run first controlled `opencode-run` execution via n8n form or GitHub issue
-8. Optional: Hermes as secondary agent (separate, approved run)
+3. ~~User runs local MCP connectivity test~~ ✅ DONE — full manual mode validation
+4. ~~Smoke-test the GitHub Issue → Runner intake end-to-end~~ ✅ DONE — SSH command mode validated, 9 nodes green
+5. Configure n8n GitHub API credential for automated GitHub trigger/comment/label
+6. Implement GitHub auto-comment + label automation in workflow (Nodes 9-10)
+7. Run Chrome DevTools MCP test against n8n UI (dedicated session)
+8. Run Playwright CLI regression tests (`npx playwright test tests/ui/`)
+9. Obtain approval for LLM provider API key configuration
+10. Configure provider via `opencode providers login`
+11. Run first controlled `opencode-run` execution via n8n form or GitHub issue
+12. Optional: Hermes as secondary agent (separate, approved run)

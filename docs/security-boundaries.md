@@ -29,6 +29,31 @@ Zone 3: Evidence / Workspace (read-only for n8n)
 - Log SSH output containing keys
 - Expose port 22 to public internet
 
+## SSH Node Expression Mode Security
+
+### Expression Mode Prevents Secret Leakage
+All SSH nodes in the GitHub Issue Intake workflow **MUST** use **Expression Mode** (fx toggle) instead of Fixed Mode. This has security implications:
+
+| Aspect | Fixed Mode (INSECURE) | Expression Mode (SECURE) |
+|--------|----------------------|--------------------------|
+| `{{ }}` resolution | NOT resolved — literal string | ✅ Resolved at runtime |
+| Secrets in node config | Could contain hardcoded paths/keys | ✅ References n8n credential store |
+| Audit trail | Opaque — no way to verify what was executed | ✅ n8n logs the resolved expression |
+| Credential exposure | Higher risk if node config is exported | ✅ Credentials stay in n8n encrypted store |
+
+### Credential References via n8n Store Only
+- SSH credentials (`dev-runner-ssh`) are stored exclusively in n8n's encrypted credential store
+- Workflow JSON files reference credentials **by ID only** — never by private key content
+- Node configurations use `{{ }}` expressions to reference node outputs, not hardcoded values
+- SSH commands use `$json.run_input_remote` and `$json.run_input_b64` — no hardcoded paths in node config
+
+### Best Practices
+1. Always use Expression Mode for SSH node commands (fx toggle in n8n UI)
+2. Never hardcode file paths or IP addresses in SSH commands — use node references
+3. Never store private keys, passwords, or tokens in workflow JSON
+4. Verify SSH credential references are correct in n8n credential store before export
+5. Use `set +e` in commands to handle errors gracefully without leaking stack traces
+
 ## Input Validation Boundaries
 
 | Boundary | Validation |

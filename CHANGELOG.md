@@ -1,5 +1,41 @@
 # CHANGELOG
 
+## 2026-06-24 — SSH Command Mode Validation: GitHub Issue Intake End-to-End
+
+### Completed
+- **SSH Write (command mode):** ✅ PASS — `mkdir -p` + `base64 -d` + `jq` validation, 779 bytes written to Runner
+- **SSH Start (command mode):** ✅ PASS — `--input-json` flag required by `start_github_issue_run.sh`, exit_code 0
+- **SSH Read (command mode):** ✅ PASS — retry loop (30x2s), `status.json` found with `GREEN_PARTIAL` status
+- **Wait Node:** ✅ CONFIGURED — "After Time Interval" mode, 5 seconds (NOT "At a Specific Time" / Hours)
+- **Expression Mode:** ✅ IDENTIFIED — SSH nodes MUST use Expression mode (fx toggle), NOT Fixed mode, for `{{ }}` expressions to resolve
+- **Prepare Node outputs:** ✅ VERIFIED — `run_input_b64`, `run_input_remote`, `evidence_dir` all required and correctly populated
+- **All 9 nodes green:** ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ — end-to-end flow validated (Workflow ID: `h78eENwLGwr2QUmU`)
+- **Runner evidence produced:** ✅ 8 files under `/opt/dev-fabric/evidence/github-agent-runs/xxammaxx/n8n-blueprint-workflow/issue-1/gh-issue-1-20260624T104034Z/`
+  - `status.json`, `run-report.md`, `commands.log`, `agent.log`, `github-context.md`, `RUN_INPUT.json`, `preflight.md`, `summary.json`
+- **Run ID:** `gh-issue-1-20260624T104034Z`
+
+### Key Findings
+- **Expression Mode is CRITICAL:** SSH nodes in Fixed Mode pass literal `{{ }}` strings to bash, which never resolves them. The node reports green (SSH connection OK) but the command doesn't work. Expression Mode (fx toggle) is required for all SSH nodes.
+- **Wait node mode matters:** "At a Specific Time" (Hours) causes infinite wait. "After Time Interval" with 5 seconds is the correct configuration.
+- **`--input-json` flag is mandatory:** The Runner script requires this flag. Without it, `unknown argument` error.
+- **Labels array in Pin Data:** The Validate Issue Contract node requires `labels` array with `agent:queued` or `agent:ready` — without it the validation blocks.
+- **8 evidence files produced** — full evidence chain operational on Runner.
+
+### Still Missing (GREEN_PARTIAL)
+- **GitHub auto-comment/label:** NOT yet implemented (manual via GitHub API / `gh` CLI needed)
+- **n8n MCP production workflow exposure:** NOT enabled (only smoke test workflow exposed)
+- **OpenCode Provider config:** NOT configured (needs separate approval)
+- **GitHub API credential in n8n:** NOT configured (Manual Trigger used for validation)
+
+### Documentation Updated:
+- `STATUS.md` — updated to GREEN_PARTIAL with SSH command mode validation
+- `CHANGELOG.md` — this entry
+- `evidence-index/latest.md` — new entry for SSH command mode validation run
+- `evidence-index/known-evidence-paths.md` — added latest run path
+- `docs/github-issue-intake-runbook.md` — added Live Validation section with SSH config details
+- `docs/troubleshooting.md` — added 5 new entries (Expression Mode, Wait node, labels, --input-json, unbound variable)
+- `docs/security-boundaries.md` — added SSH Expression Mode security note
+
 ## 2026-06-24 — n8n MCP Manual Execution Mode Validated
 
 ### Completed

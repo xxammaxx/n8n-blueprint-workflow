@@ -71,7 +71,7 @@
                                           "port":  22,
                                           "username":  "runner",
                                           "mode":  "command",
-                                          "command":  "set +e\n\nRUN_INPUT_PATH=\"{{$json.run_input_remote}}\"\n\n/opt/dev-fabric/scripts/start_github_issue_run.sh \"$RUN_INPUT_PATH\"\nRC=\"$?\"\n\necho \"{\\\"ok\\\":true,\\\"phase\\\":\\\"ssh_start_runner_script\\\",\\\"run_input_path\\\":\\\"$RUN_INPUT_PATH\\\",\\\"exit_code\\\":$RC}\"\nexit \"$RC\""
+                                           "command":  "set +e\n\nRUN_INPUT_PATH=\"{{$json.run_input_remote}}\"\n\n/opt/dev-fabric/scripts/start_github_issue_run.sh --input-json \"$RUN_INPUT_PATH\"\nRC=\"$?\"\n\necho \"{\\\"ok\\\":true,\\\"phase\\\":\\\"ssh_start_runner_script\\\",\\\"run_input_path\\\":\\\"$RUN_INPUT_PATH\\\",\\\"exit_code\\\":$RC}\"\nexit \"$RC\""
                                       },
                        "id":  "ssh-start-runner",
                        "name":  "SSH Start Runner Script",

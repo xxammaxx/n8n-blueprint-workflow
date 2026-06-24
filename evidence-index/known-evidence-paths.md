@@ -1,4 +1,25 @@
-﻿# Final Report
+﻿# Known Evidence Paths
+
+## Latest Entry (2026-06-24) — SSH Command Mode Validation
+
+| Property | Value |
+|----------|-------|
+| **Session** | `n8n-github-issue-intake-ssh-validation` |
+| **Run ID** | `gh-issue-1-20260624T104034Z` |
+| **Workflow ID** | `h78eENwLGwr2QUmU` |
+| **Status** | `GREEN_PARTIAL` |
+| **Evidence Path** | `/opt/dev-fabric/evidence/github-agent-runs/xxammaxx/n8n-blueprint-workflow/issue-1/gh-issue-1-20260624T104034Z/` |
+| **Files** | `status.json`, `run-report.md`, `commands.log`, `agent.log`, `github-context.md`, `RUN_INPUT.json`, `preflight.md`, `summary.json` |
+| **Total Files** | 8 |
+| **SSH Write** | `mkdir -p` + `base64 -d` + `jq`, 779 bytes ✅ |
+| **SSH Start** | `--input-json` flag, exit_code 0 ✅ |
+| **SSH Read** | Retry loop (30x2s), `GREEN_PARTIAL` found ✅ |
+| **Wait Node** | "After Time Interval", 5 seconds ✅ |
+| **Expression Mode** | Required for all SSH nodes (fx toggle) ✅ |
+
+---
+
+## Historical Entry (2026-06-21) — Republish & Rematerialize
 
 1. Status: BLOCKED_WITH_DIAGNOSIS
 2. Backup-Pfad: /opt/dev-fabric/n8n/backups/republish-rematerialize-20260621T180701Z

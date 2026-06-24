@@ -1,3 +1,139 @@
+# Evidence Report — ssh-command-mode-validation-20260624T104034Z
+
+## Status: GREEN_PARTIAL
+
+**Session ID:** n8n-github-issue-intake-ssh-validation
+**Completed:** 2026-06-24T10:40:34Z
+**Orchestrator:** documentation-agent
+**Previous Session:** n8n-mcp-manual-execution-validation
+
+---
+
+## 1. SSH Command Mode Validation — Results
+
+| Phase | Test | Result | Detail |
+|-------|------|--------|--------|
+| **SSH Write** | `mkdir -p` + `base64 -d` + `jq` | ✅ PASS | 779 bytes written to Runner |
+| **SSH Start** | `start_github_issue_run.sh --input-json` | ✅ PASS | exit_code 0, Run ID: `gh-issue-1-20260624T104034Z` |
+| **SSH Read** | Retry loop (30x2s) looking for `status.json` | ✅ PASS | Found with `GREEN_PARTIAL` status |
+| **Wait Node** | "After Time Interval" mode, 5 seconds | ✅ PASS | Correctly configured (NOT hours) |
+| **Expression Mode** | SSH nodes use fx toggle | ✅ IDENTIFIED | CRITICAL — Fixed Mode causes literal `{{ }}` |
+| **Labels in Pin Data** | `labels: ["agent:queued"]` | ✅ IDENTIFIED | Required by Validate Issue Contract node |
+| **Prepare Node** | `run_input_b64`, `run_input_remote`, `evidence_dir` | ✅ VERIFIED | All 3 outputs present and correct |
+
+### All 9 Nodes Green
+
+```
+Manual Trigger → GitHub: Get Issue → Validate Issue Contract → Prepare RUN_INPUT.json →
+SSH Write RUN_INPUT → SSH Start Runner Script → Wait (5s) → SSH Read status.json → Format Result
+```
+
+Workflow ID: `h78eENwLGwr2QUmU`
+
+### Runner Evidence Produced (8 files)
+
+Path: `/opt/dev-fabric/evidence/github-agent-runs/xxammaxx/n8n-blueprint-workflow/issue-1/gh-issue-1-20260624T104034Z/`
+
+| # | File | Description |
+|---|------|-------------|
+| 1 | `status.json` | Status: `GREEN_PARTIAL`, phase, run ID |
+| 2 | `run-report.md` | Human-readable run report |
+| 3 | `commands.log` | All executed commands |
+| 4 | `agent.log` | Agent output log |
+| 5 | `github-context.md` | GitHub issue context |
+| 6 | `RUN_INPUT.json` | Validated input data (779 bytes) |
+| 7 | `preflight.md` | Pre-flight check results |
+| 8 | `summary.json` | Execution summary |
+
+---
+
+## 2. Key Findings
+
+### 2.1 Expression Mode is MANDATORY for SSH Nodes
+SSH nodes in n8n have two modes for the `command` parameter:
+- **Fixed Mode** (default): Text is literal — `{{ }}` expressions are NOT resolved
+- **Expression Mode** (fx toggle): Text is evaluated — `{{ }}` expressions ARE resolved
+
+Without Expression Mode, SSH nodes appear green but pass literal `{{ $json.run_input_remote }}` to bash, which never resolves.
+
+### 2.2 --input-json Flag Required
+The Runner script `start_github_issue_run.sh` requires the `--input-json` flag before the path argument. Initial assumption that this flag should be removed was wrong.
+
+### 2.3 Wait Node: timeInterval vs hours
+The Wait node was initially set to `unit: "hours"` → waits indefinitely for a future date. Changed to `mode: "timeInterval"`, `amount: 5`, `unit: "seconds"` for correct 5-second delay.
+
+### 2.4 Labels Array Required in Pin Data
+The Validate Issue Contract node checks `input.body.labels` and expects an array with `agent:queued` or `agent:ready`. Without labels, the validation blocks.
+
+---
+
+## 3. Security Scope
+
+| Check | Status |
+|-------|--------|
+| SSH credential via n8n store (Expression mode) | ✅ VERIFIED — no secrets in node config |
+| SSH commands use `{{ }}` expressions, no hardcoded paths | ✅ VERIFIED |
+| Evidence directory under `/opt/dev-fabric/evidence/` | ✅ VERIFIED |
+| No secrets in workflow JSON | ✅ VERIFIED |
+| No `.env` or credential files in repo | ✅ VERIFIED |
+
+---
+
+## 4. Remaining Gaps (GREEN_PARTIAL)
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| GitHub auto-comment on Issue | ❌ NOT IMPLEMENTED | Manual via GitHub API / `gh` CLI |
+| GitHub auto-label update | ❌ NOT IMPLEMENTED | Manual via GitHub API / `gh` CLI |
+| n8n GitHub API credential | ❌ NOT CONFIGURED | Blocks automated trigger/comment/label |
+| OpenCode provider config | ❌ NOT CONFIGURED | Needs separate approval |
+| n8n MCP production workflow exposure | ❌ NOT ENABLED | By design — only smoke test exposed |
+
+---
+
+## 5. Test Run Identification
+
+| Property | Value |
+|----------|-------|
+| **Workflow ID** | `h78eENwLGwr2QUmU` |
+| **Run ID** | `gh-issue-1-20260624T104034Z` |
+| **Trigger** | Manual (Pin Data) |
+| **Owner** | `xxammaxx` |
+| **Repo** | `n8n-blueprint-workflow` |
+| **Issue Number** | 1 |
+| **Evidence Base Path** | `/opt/dev-fabric/evidence/github-agent-runs/xxammaxx/n8n-blueprint-workflow/issue-1/gh-issue-1-20260624T104034Z/` |
+| **Status** | `GREEN_PARTIAL` |
+
+---
+
+## 6. Files Changed
+
+- `STATUS.md` — GREEN_PARTIAL, SSH validation results, updated pending/blockers
+- `CHANGELOG.md` — new entry for SSH command mode validation
+- `docs/github-issue-intake-runbook.md` — added Live Validation section
+- `docs/troubleshooting.md` — added 5 new entries (Expression Mode, Wait node, labels, --input-json, unbound variable)
+- `docs/security-boundaries.md` — added SSH Expression Mode security note
+- `evidence-index/latest.md` — this report
+- `evidence-index/known-evidence-paths.md` — added latest run path
+
+---
+
+## 7. Bewertung
+
+**GREEN_PARTIAL** — SSH command mode erfolgreich validiert:
+
+- ✅ SSH Write: `mkdir -p` + `base64 -d` + `jq`, 779 bytes
+- ✅ SSH Start: `--input-json` flag, exit_code 0
+- ✅ SSH Read: retry loop, `status.json` with `GREEN_PARTIAL`
+- ✅ Wait Node: timeInterval, 5 seconds
+- ✅ Expression Mode: identifiziert und dokumentiert
+- ✅ 8 Evidence-Dateien produziert
+- ✅ Run ID: `gh-issue-1-20260624T104034Z`
+
+**Nächste Schritte:** GitHub API Credential konfigurieren, Auto-Comment/Label implementieren.
+
+---
+
 # Evidence Report — n8n-mcp-manual-execution-20260624T150000Z
 
 ## Status: GREEN_PARTIAL_PLUS
