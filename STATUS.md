@@ -1,8 +1,8 @@
 # STATUS: GREEN_PARTIAL_PLUS
 
-**Last Updated:** 2026-06-24T22:00:00Z
-**Session:** github-ready-dispatcher-20260624
-**Previous Session:** label-dataflow-fix-20260624
+**Last Updated:** 2026-06-25T04:00:00Z
+**Session:** dispatcher-smoke-test-20260625
+**Previous Session:** github-ready-dispatcher-20260624
 
 ## Current State
 
@@ -36,9 +36,9 @@
 | **GitHub Agent Labels** | ✅ CREATED | 14 labels (agent:*, mode:*, risk:*, evidence:*, human-approval-required) |
 | **Issue Template** | ✅ CREATED | `.github/ISSUE_TEMPLATE/agent-task.yml` |
 | **n8n GitHub Intake Workflow (Live)** | ✅ VALIDATED | Workflow ID `h78eENwLGwr2QUmU` — 9 nodes, all green |
-| **GitHub Ready Issue Dispatcher (ID: k1c2d3FfWHee6Jr0e)** | 🔶 IMPORTED | 15 nodes, imported via CLI, `active: false` |
-| **Trigger Strategy** | 🔶 Polling Selected | Schedule Trigger + GitHub Search API — internal network has no public URL for GitHub webhooks |
-| **Smoke Test Issue #2** | ✅ CREATED | `agent:ready` label set, pending execution via dispatcher |
+| **GitHub Ready Issue Dispatcher (ID: Sv12QTo56NoPUu2D)** | ✅ LIVE TESTED | 15 nodes, all green in smoke test, `active: false` (manual only, activation pending separate approval) |
+| **Trigger Strategy** | ✅ Polling Verified | Schedule Trigger + GitHub Search API — internal network has no public URL for GitHub webhooks |
+| **Smoke Test Issue #2** | ✅ VERIFIED | `agent:ready` → `agent:running` → `agent:needs-review` + `evidence:attached` — full label transition confirmed |
 | **Runner GitHub Run Script** | ✅ PREPARED | `start_github_issue_run.sh` — requires `--input-json` flag |
 | **GitHub Issue #1** | ✅ CREATED | Feat-Issue für GitHub SoT: `agent:queued` + Alle Labels |
 | **Evidence Comment Format** | ✅ DEFINED | Standardisierte Issue-Kommentar-Struktur |
@@ -47,7 +47,8 @@
 | **Expression Mode** | ✅ **APPLIED** | Nodes 4,5,7 switched to Expression mode with cross-node references to Node 3 |
 | **Cross-Node Data Reference Pattern** | ✅ **DOCUMENTED** | `$('Prepare RUN_INPUT.json').first().json.owner` — stable after GitHub API calls; `$json.owner` is UNSTABLE after API nodes |
 | **Node 5 Credential** | ✅ dev-runner-ssh CONFIRMED | Credential was already set — root cause was Expression Mode, not missing credential |
-| **storageState** | ❌ EXPIRED | Expired during 2026-06-24 session — n8n UI login required again |
+| **storageState** | ✅ VALID | Confirmed working 2026-06-25 — Playwright persistent session functional, no renewal needed |
+| **Dispatcher workflow in n8n** | ✅ IMPORTED & VERIFIED | Workflow `Sv12QTo56NoPUu2D` live in n8n instance — previously only existed as JSON export |
 | **Playwright Automation** | ✅ Working | UI tests with persistent session — bypasses n8n login |
 | **n8n GitHub Credential** | ✅ **LIVE VERIFIED** | Comment #4790885907 posted successfully to Issue #1 — credential `GitHub account` works |
 | **n8n Auth Strategy** | ✅ DOCUMENTED | `docs/n8n-auth-automation.md` — API Key (Option A), storageState (Option B), Login-Disable (Option C RED_HOLD) |

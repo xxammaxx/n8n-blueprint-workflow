@@ -26,9 +26,10 @@ flowchart TD
     N8N -->|GitHub API| GH
 ```
 
-**Dispatcher workflow:** `workflows/github-ready-issue-dispatch.export.json` (15 nodes, ID: `k1c2d3FfWHee6Jr0e`)
-**Smoke test:** Issue #2 created with `agent:ready` label — pending execution via dispatcher
+**Dispatcher workflow:** `workflows/github-ready-issue-dispatch.export.json` (15 nodes, actual n8n ID: `Sv12QTo56NoPUu2D`)
+**Smoke test:** Issue #2 ✅ EXECUTED — `agent:ready` → `agent:running` → `agent:needs-review` + `evidence:attached` transition verified. All 15 nodes green.
 **Trigger strategy:** Polling (Schedule + GitHub Search API) — internal network has no public URL for GitHub webhooks
+**StorageState:** Valid — Playwright persistent session functional
 
 ## Repo Structure
 

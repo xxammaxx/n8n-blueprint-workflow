@@ -1,5 +1,34 @@
 # CHANGELOG
 
+## 2026-06-25 — Dispatcher Smoke Test End-to-End
+
+### Completed
+- **Dispatcher workflow imported into live n8n:** Previously only a JSON export existed. Now imported as `Sv12QTo56NoPUu2D` (n8n assigns new ID on import; `k1c2d3FfWHee6Jr0e` was the embedded ID in the export file only)
+- **Smoke test executed end-to-end:** Issue #2 triggered via manual execution in n8n UI — all 15 nodes completed green (1m 25.916s)
+- **Label transition verified:** `agent:ready` → removed, `agent:running` → set then removed, `agent:needs-review` + `evidence:attached` → set
+- **Runner evidence produced:** `status.json` with `GREEN_PARTIAL`, `source_of_truth=github`, `issue_number=2`, run ID `gh-issue-2-20260625T034738Z`
+- **GitHub comment posted:** Agent Run Result comment automatically posted to Issue #2
+- **Double-start protection validated:** `agent:ready` absent after run — dispatcher would skip Issue #2 on repeated execution
+- **storageState confirmed valid:** Playwright persistent session from Jun 24 still active — no renewal needed
+- **Credential verification:** `GitHub account` (6 nodes) and `dev-runner-ssh` (3 nodes) confirmed working
+
+### Key Findings
+- **Workflow ID change on import:** The embedded ID `k1c2d3FfWHee6Jr0e` in the export file is NOT preserved — n8n assigns `Sv12QTo56NoPUu2D` on import. All references updated.
+- **Dispatcher was NOT in n8n before this session:** Previous "per CLI erfolgt" import had not persisted. Workflow was freshly imported during this session.
+- **All nodes green, no errors:** The end-to-end smoke test passed without any node failures.
+- **OpenCode provider not configured:** Runner agent_runtime reports `opencode_provider_configured: false` — expected for `manual-terminal` mode
+
+### Documentation Updated
+- `README.md` — correct dispatcher ID, smoke test result
+- `STATUS.md` — new session entry, all component statuses updated
+- `CHANGELOG.md` — this entry
+- `workflows/github-ready-issue-dispatch.export.json` — updated with correct ID
+
+### Status
+**GREEN_PARTIAL_PLUS** — Smoke test passed, label transition verified, evidence produced, GitHub comment posted. OpenCode Provider/Auth and Hermes remain blocked as expected.
+
+---
+
 ## 2026-06-24 — GitHub Ready Issue Dispatcher + Mermaid Diagrams
 
 ### Completed
