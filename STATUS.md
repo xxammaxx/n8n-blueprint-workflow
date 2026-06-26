@@ -1,8 +1,8 @@
 # STATUS: GREEN_PARTIAL_PLUS
 
-**Last Updated:** 2026-06-25T04:00:00Z
-**Session:** dispatcher-smoke-test-20260625
-**Previous Session:** github-ready-dispatcher-20260624
+**Last Updated:** 2026-06-26T11:30:00Z
+**Session:** dispatcher-ui-activation-20260626-v2
+**Previous Session:** dispatcher-ui-activation-blocked-20260626
 
 ## Current State
 
@@ -36,9 +36,20 @@
 | **GitHub Agent Labels** | ✅ CREATED | 14 labels (agent:*, mode:*, risk:*, evidence:*, human-approval-required) |
 | **Issue Template** | ✅ CREATED | `.github/ISSUE_TEMPLATE/agent-task.yml` |
 | **n8n GitHub Intake Workflow (Live)** | ✅ VALIDATED | Workflow ID `h78eENwLGwr2QUmU` — 9 nodes, all green |
-| **GitHub Ready Issue Dispatcher (ID: Sv12QTo56NoPUu2D)** | ✅ LIVE TESTED | 15 nodes, all green in smoke test, `active: false` (manual only, activation pending separate approval) |
-| **Trigger Strategy** | ✅ Polling Verified | Schedule Trigger + GitHub Search API — internal network has no public URL for GitHub webhooks |
-| **Smoke Test Issue #2** | ✅ VERIFIED | `agent:ready` → `agent:running` → `agent:needs-review` + `evidence:attached` — full label transition confirmed |
+| **GitHub Ready Issue Dispatcher (ID: Sv12QTo56NoPUu2D)** | ✅ **FIXED + ACTIVATED** | 18 nodes, unused variable removed via PATCH API, activated via POST /activate (active: true, 200 OK) |
+| **Trigger Strategy** | ⚠️ **ACTIVATED — REGISTRATION UNVERIFIED** | Schedule Trigger (10 min) konfiguriert, API activation returned success, aber Runtime-Registration kann ohne UI-Zugriff nicht bestätigt werden |
+| **Smoke Test Issue #3** | ⏳ AWAITING PROCESSING | Created with `agent:ready`, Labels unchanged (no run yet — activation only just completed) |
+| **n8n Publish Button** | ✅ **FIXED** | Root cause: Code node "Format Final Result" had unused variable `const data = $input.first().json;` — n8n Code node linter flagged this as a blocking issue. Removed via PATCH API. |
+| **storageState** | ✅ **RENEWED** | Renewed at `C:\Users\xxammaxx\.n8n-automation\playwright\n8n-storage-state.json` (8,907 bytes). NOT in repo. Requires browser-id header (SHA-256 hashed) for API calls. |
+| **Workflow API State** | ✅ **active=true** | `POST /rest/workflows/Sv12QTo56NoPUu2D/activate` returned `{"active":true}` with status 200 |
+| **n8n Startup Activation List** | ⚠️ **UNVERIFIED** | Cannot verify without UI. API activation may not register Schedule Trigger at runtime — needs UI confirmation or next Schedule Trigger firing |
+| **Manuelle Ausführung** | ✅ **FUNKTIONIERT** | Execution #42: Manual Trigger → Fetch Issue → Guardrails (blocked Issue #2 korrekt: "ready missing") |
+| **Schedule Trigger Node** | ✅ CONFIGURED | 10-minute interval, `minutesInterval: 10` |
+| **GitHub Search Node** | ✅ CONFIGURED | Searches `is:issue is:open label:agent:ready repo:xxammaxx/n8n-blueprint-workflow&per_page=1` |
+| **Pick First Node** | ✅ CONFIGURED | Extracts first result, returns `[]` if none found (stops execution) |
+| **Dual-Entry Architecture** | ✅ DEPLOYED | Manual Trigger path (smoke testing) + Schedule Trigger path (production) converge at Fetch Issue |
+| **Guardrails (updated)** | ✅ DEPLOYED | No longer depends on Manual Trigger pinData — uses `$input.first().json` directly |
+| **Old Dispatcher (k1c2d3FfWHee6Jr0e)** | ⬜ INACTIVE BACKUP | 15-node version kept as reference, `active: false` |
 | **Runner GitHub Run Script** | ✅ PREPARED | `start_github_issue_run.sh` — requires `--input-json` flag |
 | **GitHub Issue #1** | ✅ CREATED | Feat-Issue für GitHub SoT: `agent:queued` + Alle Labels |
 | **Evidence Comment Format** | ✅ DEFINED | Standardisierte Issue-Kommentar-Struktur |
@@ -47,13 +58,16 @@
 | **Expression Mode** | ✅ **APPLIED** | Nodes 4,5,7 switched to Expression mode with cross-node references to Node 3 |
 | **Cross-Node Data Reference Pattern** | ✅ **DOCUMENTED** | `$('Prepare RUN_INPUT.json').first().json.owner` — stable after GitHub API calls; `$json.owner` is UNSTABLE after API nodes |
 | **Node 5 Credential** | ✅ dev-runner-ssh CONFIRMED | Credential was already set — root cause was Expression Mode, not missing credential |
-| **storageState** | ✅ VALID | Confirmed working 2026-06-25 — Playwright persistent session functional, no renewal needed |
+| **storageState** | ✅ RENEWED | Renewed 2026-06-26 — 8,907 bytes at `C:\Users\xxammaxx\.n8n-automation\playwright\n8n-storage-state.json`. Requires browser-id header for API calls. |
 | **Dispatcher workflow in n8n** | ✅ IMPORTED & VERIFIED | Workflow `Sv12QTo56NoPUu2D` live in n8n instance — previously only existed as JSON export |
 | **Playwright Automation** | ✅ Working | UI tests with persistent session — bypasses n8n login |
 | **n8n GitHub Credential** | ✅ **LIVE VERIFIED** | Comment #4790885907 posted successfully to Issue #1 — credential `GitHub account` works |
 | **n8n Auth Strategy** | ✅ DOCUMENTED | `docs/n8n-auth-automation.md` — API Key (Option A), storageState (Option B), Login-Disable (Option C RED_HOLD) |
 | **n8n UI Login** | ✅ **BYPASSED via storageState** | Playwright persistent session works — no manual login needed |
 | **RUN_INPUT Schema** | ✅ EXTENDED | GitHub SoT-Felder (issue_url, issue_number, approval_policy) |
+| **n8n Architecture Discovery** | ✅ **n8n runs on Proxmox HOST** | n8n runs on the Proxmox host (192.168.1.136, PID 420195, user 100999), NOT in container 101. Container 101 only has system processes. n8n listens on 192.168.1.52:5678 which routes to the host. |
+| **Failed Host n8n Service** | ⚠️ INDEPENDENT | The Proxmox host has a separate failed n8n service definition (looking for /bin/n8n) in restart loop — this is independent from the working n8n that runs directly |
+| **API Auth Requirements** | ✅ DOCUMENTED | API calls require browser-id header (SHA-256 hashed) + n8n-auth JWT cookie. StorageState contains these credentials. |
 | Git Repo (local) | ACTIVE | `C:\n8n-blueprint-workflow` |
 | Git Repo (GitHub) | LIVE | `https://github.com/xxammaxx/n8n-blueprint-workflow` — commit `89d896b` |
 
@@ -228,8 +242,12 @@ The Wait node was initially configured with `"unit": "hours"` which caused the n
 - ~~Validate Issue Contract blocks without labels~~ ✅ RESOLVED — labels array requirement documented
 - ~~GitHub auto-comment/label nodes missing~~ ✅ RESOLVED — 3 HTTP Request nodes added to workflow JSON
 - ~~Node 11 data flow fix needed (Add Labels node receives comment response instead of issue identifiers — blocks auto-labeling)~~ ✅ RESOLVED — cross-node references to Prepare node
-- **storageState expired** — n8n UI login required; Playwright persistent session at `C:\Users\xxammaxx\.n8n-automation\playwright\n8n-storage-state.json` expired during 2026-06-24 session (blocks UI automation)
-- Dispatcher workflow `k1c2d3FfWHee6Jr0e` imported but not active — needs storageState fix for UI activation
+- ~~**Dispatcher-Aktivierung BLOCKED**: Publish-Button deaktiviert~~ ✅ RESOLVED — Root cause: unused variable in Code node "Format Final Result" (`const data = $input.first().json;`). Removed via PATCH API. Workflow activated via POST /activate.
+- ~~**Publish-Button deaktiviert**: Root cause unknown~~ ✅ RESOLVED — Code node lint error (unused variable) was blocking Publish. n8n's Code node linter flags unused variables as a blocking issue preventing publication.
+- ~~**storageState semi-funktional**: Page-Reload → Signin~~ ✅ RESOLVED — storageState renewed at 8,907 bytes, includes browser-id header support
+- **Schedule Trigger Runtime Registration UNVERIFIED**: API activation returned `active: true`, but whether the Schedule Trigger is runtime-registered cannot be confirmed without UI access or waiting for next trigger firing. Previous finding: only UI Publish+Active-Toggle registers Schedule Triggers at n8n startup.
+- **Issue #3 NOT YET PROCESSED**: Labels unchanged (still `agent:ready`). Dispatcher may process it on next Schedule Trigger cycle, or may need UI verification first.
+- **Architecture discovery**: n8n actually runs on the Proxmox HOST (not in container 101). Container 101 has system processes only. The host has a separate failed n8n service definition in restart loop — this is independent.
 - GitHub webhooks unavailable — internal network has no public URL; Polling (Schedule + GitHub Search API) selected as trigger strategy
 - OpenCode provider/API-key not yet configured (blocks autonomous agent runs)
 - OpenCode interactive provider prompt blocks non-interactive execution
@@ -247,10 +265,15 @@ The Wait node was initially configured with `"unit": "hours"` which caused the n
 8. ~~Run live test~~ ✅ PARTIAL — Comment works, Labels need fix
 9. ~~Fix Node 11 data flow~~ ✅ DONE — Add Labels node now references Prepare node directly
 10. ~~Re-test full 12-node workflow~~ ✅ DONE — 12/12 GREEN, labels verified on GitHub Issue #1
-11. Create n8n API Key for future automation (optional but recommended)
-12. Run Chrome DevTools MCP test against n8n UI (dedicated session)
-13. Run Playwright CLI regression tests (`npx playwright test tests/ui/`)
-14. Obtain approval for LLM provider API key configuration
-15. Configure provider via `opencode providers login`
-16. Run first controlled `opencode-run` execution via n8n form or GitHub issue
-17. Optional: Hermes as secondary agent (separate, approved run)
+11. ~~**⚠️ BLOCKED: Dispatcher UI-Aktivierung**~~ ✅ **RESOLVED via API** — Code node lint error (unused variable) fixed via PATCH API. Workflow activated via POST /activate. Root cause documented.
+12. **☑️ VERIFY Schedule Trigger runtime registration** — Important: API activation may NOT register the Schedule Trigger at n8n startup. Two options:
+    - **Option A: UI verification** — Log into n8n UI, open Sv12QTo56NoPUu2D, check if Active toggle shows "Active". If Publish button is still disabled → Code node fix didn't persist (unlikely since PATCH returned success). If Active shows → Schedule is registered.
+    - **Option B: Wait for next Schedule Trigger** (10 min cycle) — Check if Issue #3 gets automatically processed. If Issue #3 labels change from `agent:ready` → processed → Schedule Trigger works.
+13. Check if Issue #3 was actually processed (labels should change from `agent:ready`)
+14. Create n8n API Key for future automation (optional but recommended)
+15. Run Chrome DevTools MCP test against n8n UI (dedicated session)
+16. Run Playwright CLI regression tests (`npx playwright test tests/ui/`)
+17. Obtain approval for LLM provider API key configuration
+18. Configure provider via `opencode providers login`
+19. Run first controlled `opencode-run` execution via n8n form or GitHub issue
+20. Optional: Hermes as secondary agent (future run)

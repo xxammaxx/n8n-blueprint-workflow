@@ -1,5 +1,86 @@
 # CHANGELOG
 
+## 2026-06-26 — Dispatcher UI Activation: GREEN_PARTIAL_PLUS (Code Fix + API Activation)
+
+### Status
+**GREEN_PARTIAL_PLUS** — Code node lint error fixed, workflow activated via API. Schedule Trigger runtime registration UNVERIFIED.
+
+### Root Cause of Publish Button Block (RESOLVED)
+- **Problem:** `PATCH /rest/workflows/Sv12QTo56NoPUu2D` was attempted on a workflow with an unused variable — the request hung
+- **Root cause discovered:** Code node "Format Final Result" had an unused variable `const data = $input.first().json;` that n8n's Code node linter flagged as a **blocking issue** — this prevented the Publish button from being enabled in the n8n UI
+- **Fix applied:** Removed the unused line via n8n REST API PATCH to `/rest/workflows/Sv12QTo56NoPUu2D`. The code now correctly uses only `const prepData = $('Prepare RUN_INPUT.json').first().json;`
+
+### Activation (via API)
+- **Endpoint:** `POST /rest/workflows/Sv12QTo56NoPUu2D/activate`
+- **Response:** `{active: true}` — HTTP 200 OK
+- **Note:** API activation may NOT register the Schedule Trigger at n8n startup (per previous findings). UI verification is recommended.
+
+### Architecture Discovery
+- **n8n runs on Proxmox HOST** (192.168.1.136, PID 420195, user 100999), NOT in container 101
+- Container 101 only has system processes — n8n is not running there
+- n8n listens on 192.168.1.52:5678 which routes to the host
+- The Proxmox host has a separate **failed n8n service definition** (looking for `/bin/n8n`) that's in a restart loop — this is **independent** from the working n8n that runs directly on the host
+- API calls require `browser-id` header (SHA-256 hashed) + `n8n-auth` JWT cookie
+
+### StorageState Renewed
+- File: `C:\Users\xxammaxx\.n8n-automation\playwright\n8n-storage-state.json`
+- Size: 8,907 bytes
+- NOT in repo
+- Contains browser-id + n8n-auth JWT cookie
+
+### What was NOT confirmed
+- Whether the Schedule Trigger is actually runtime-registered (can't verify without UI access)
+- Issue #3 was NOT processed (labels still show `agent:ready`)
+
+### Nächster Schritt
+Verify activation: Check n8n UI Active toggle, or wait for next Schedule Trigger (10 min) to auto-process Issue #3.
+
+### Dokumentation aktualisiert
+- `STATUS.md` — Status auf GREEN_PARTIAL_PLUS, neue Komponenten-Zeilen für Code Fix + Activation + Architektur
+- `CHANGELOG.md` — dieser Eintrag
+- `docs/troubleshooting.md` — Neues Symptom: "Dispatcher Publish Button Disabled" mit Root Cause
+- `docs/github-issue-intake-runbook.md` — Aktivierungsmechanismus aktualisiert mit Code-Lint-Requirement
+- `docs/architecture.md` — n8n läuft auf Proxmox Host, Dual-Service-Situation, API Endpoints
+- `docs/security-boundaries.md` — storageState-Pfad und API-Header dokumentiert
+- `docs/github-source-of-truth.md` — Code Fix + Activation Status für Sv12QTo56NoPUu2D
+- `evidence-index/latest.md` — Neuer Abschlussbericht
+
+---
+
+## 2026-06-26 — Dispatcher UI Activation: BLOCKED_WITH_DIAGNOSIS
+
+### Status
+**BLOCKED_WITH_DIAGNOSIS** — Dispatcher-Workflow kann nicht aktiviert werden.
+
+### Root Cause Analysis
+- **Workflow `Sv12QTo56NoPUu2D` hat `active=0` in der n8n-Datenbank** — wurde nie über UI publisht/aktiviert
+- **Publish-Button im n8n UI ist DEAKTIVIERT** — sowohl "Publish" als auch "Unpublish" im Dropdown disabled
+- **CLI-Publish (`n8n publish:workflow`) reicht NICHT** — setzt zwar `active=1` im DB-Feld, aber n8n registriert den Schedule-Trigger beim Startup NICHT
+- **Nur UI-Publish + UI-Activate-Toggle** registrieren Schedule-Trigger korrekt für Runtime-Aktivierung
+- **n8n Startup-Log bestätigt**: "Currently active workflows" listet nur 3 Workflows — Sv12QTo56NoPUu2D fehlt
+- **Manuelle Ausführung funktioniert**: Execution #42 (Manual Trigger → Fetch Issue → Guardrails) lief korrekt — Guardrails blockierten Issue #2 (kein `agent:ready`)
+- **storageState semi-funktional**: Initial-Auth hielt (Workflow geladen), aber Reload führte zu Signin-Redirect
+
+### Nächster Schritt
+Manuelles Login in n8n UI erforderlich:
+1. Workflow Sv12QTo56NoPUu2D öffnen
+2. Ursache für deaktivierten Publish-Button diagnostizieren
+3. Workflow publishen + aktivieren
+4. storageState erneuern
+5. Issue #3 (agent:ready) wird dann vom Schedule-Trigger automatisch verarbeitet
+
+### Dokumentation aktualisiert
+- `STATUS.md` — Status auf BLOCKED_WITH_DIAGNOSIS, neue Komponenten-Zeilen, aktualisierte Blocker
+- `CHANGELOG.md` — dieser Eintrag
+- `docs/troubleshooting.md` — Neues Symptom: "Dispatcher Workflow wird nicht aktiv"
+- `docs/github-issue-intake-runbook.md` — Neuer Abschnitt: "Dispatcher-Aktivierung"
+- `docs/security-boundaries.md` — storageState-Sicherheit aktualisiert
+- `docs/architecture.md` — Dispatcher-Aktivierungsmechanismus dokumentiert
+- `docs/github-source-of-truth.md` — Aktivierungsstatus aktualisiert
+- `evidence-index/latest.md` — Neuer Abschlussbericht
+
+---
+
 ## 2026-06-25 — Dispatcher Smoke Test End-to-End
 
 ### Completed

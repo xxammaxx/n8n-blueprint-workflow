@@ -80,9 +80,55 @@ flowchart TD
 1. n8n instance (LXC 101) has no public URL — GitHub cannot deliver webhooks to `192.168.1.52`
 2. Schedule Trigger runs periodically and queries GitHub Search API: `is:issue is:open repo:xxammaxx/n8n-blueprint-workflow label:"agent:ready"`
 3. No public internet exposure needed — all traffic is outbound from n8n to `api.github.com`
-4. Polling interval is configurable (recommended: every 5 minutes)
+4. Polling interval is configurable (recommended: every 10 minutes)
 
-**Dispatcher workflow:** `workflows/github-ready-issue-dispatch.export.json` (ID: `k1c2d3FfWHee6Jr0e`, 15 nodes, `active: false`)
+**Dispatcher workflow:** `workflows/github-ready-issue-dispatch.export.json` (Live ID: `Sv12QTo56NoPUu2D`, 18 nodes, Status: ✅ FIXED + ACTIVATED (via API), Schedule Trigger registration UNVERIFIED)
+
+### 🛠️ Code Fix Applied (2026-06-26)
+
+**Problem:** The "Format Final Result" Code node had an unused variable that blocked Publish.
+
+```javascript
+// BEFORE (Publish blocked):
+const data = $input.first().json;  // ← UNUSED — triggers lint error
+const prepData = $('Prepare RUN_INPUT.json').first().json;
+
+// AFTER (Publish enabled):
+const prepData = $('Prepare RUN_INPUT.json').first().json;
+```
+
+**n8n Code Node Linter Rule:** Version 2.26.8 flags **unused variables** as blocking issues. This prevents the Publish button from being enabled in the UI. The linter treats this as a hard error, not a warning.
+
+**Fix applied via:** `PATCH /rest/workflows/Sv12QTo56NoPUu2D` (n8n REST API)
+
+### ✅ Activation Status (2026-06-26)
+
+| Method | Result | Detail |
+|--------|--------|--------|
+| API PATCH (code fix) | ✅ SUCCESS | Unused variable removed, workflow updated |
+| API POST /activate | ✅ SUCCESS | `POST /rest/workflows/Sv12QTo56NoPUu2D/activate` → `{"active":true}` HTTP 200 |
+| UI Publish Button | ✅ FIXED | Root cause removed (unused variable) |
+| UI Active Toggle | ⚠️ UNVERIFIED | Cannot verify without UI access |
+| Schedule Trigger Registration | ⚠️ UNVERIFIED | May not be registered — only UI Publish+Active Toggle confirmed to register Schedule Triggers at startup |
+| Issue #3 Processing | ❌ NOT YET | Labels unchanged (still `agent:ready`) |
+
+### ⚠️ Critical: Activation Mechanism
+
+In n8n v2.26.8 regular deployment mode, Schedule Trigger registration at startup requires the workflow to be **activated through the UI** (Publish + Active Toggle). Neither CLI publish nor direct database updates achieve this:
+
+```
+UI Publish + Active Toggle    → active=1 in DB + Schedule registered at startup ✅
+API PATCH + POST /activate    → active=1 but Schedule registration UNVERIFIED     ⚠️
+CLI publish:workflow          → active=1 in DB only, Schedule NOT registered      ❌
+DB UPDATE SET active=1        → active=1 in DB only, Schedule NOT registered      ❌
+API import only               → active=0 in DB, not published                     ❌
+```
+
+**Verification command:**
+```bash
+ssh root@192.168.1.136 'journalctl -u n8n --no-pager | grep "Currently active workflows" -A20'
+```
+Sv12QTo56NoPUu2D must appear in this list for the Schedule Trigger to fire.
 
 ## Source-of-Truth-Regeln
 

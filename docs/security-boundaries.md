@@ -41,11 +41,38 @@ All SSH nodes in the GitHub Issue Intake workflow **MUST** use **Expression Mode
 | Audit trail | Opaque — no way to verify what was executed | ✅ n8n logs the resolved expression |
 | Credential exposure | Higher risk if node config is exported | ✅ Credentials stay in n8n encrypted store |
 
-### storageState Security (2026-06-24)
+### storageState Security (updated 2026-06-26)
 - storageState stored OUTSIDE repo: `C:\Users\xxammaxx\.n8n-automation\playwright\n8n-storage-state.json`
 - storageState NEVER in repo, logs, evidence, or screenshots
 - `.gitignore` includes: `n8n-api-key*`, `.n8n-automation/`
-- storageState contains authentication cookies — treat as sensitive credential
+- storageState contains authentication cookies (httpOnly `n8n-auth` JWT) — treat as sensitive credential
+- **Session Expiry Note:** The `n8n-auth` JWT has a long expiry (`exp: 1782914733` ≈ Jul 2026), but session invalidation occurs on page reload in Playwright MCP context — browser context may not reload cookies correctly
+- After manual n8n login, storageState should be refreshed: `npx playwright open --save-storage=...`
+- **Last renewal:** 2026-06-26 — 8,907 bytes at `C:\Users\xxammaxx\.n8n-automation\playwright\n8n-storage-state.json`
+
+### API Authentication Requirements
+n8n REST API calls require specific authentication derived from storageState:
+
+| Requirement | Source | Format |
+|-------------|--------|--------|
+| `n8n-auth` cookie | storageState `cookies[]` | JWT token string |
+| `browser-id` header | storageState `origins[].localStorage[].browserId` | SHA-256 hash of the `browserId` value |
+
+**How to use for API calls:**
+```powershell
+# Extract cookie and browserId from storageState JSON
+$storageState = Get-Content "$env:USERPROFILE\.n8n-automation\playwright\n8n-storage-state.json" | ConvertFrom-Json
+$n8nAuthCookie = ($storageState.cookies | Where-Object { $_.name -eq "n8n-auth" }).value
+$browserId = ($storageState.origins[0].localStorage | Where-Object { $_.name -eq "browserId" }).value
+# SHA-256 hash the browserId for the header
+$browserIdHash = [System.BitConverter]::ToString((New-Object Security.Cryptography.SHA256Managed).ComputeHash([Text.Encoding]::UTF8.GetBytes($browserId))) -replace '-', ''
+```
+
+**Security Rules:**
+- storageState file contains BOTH the JWT cookie AND the browserId — treat as a full credential
+- NEVER paste `n8n-auth` cookie value or `browserId` into chat, logs, or repo
+- storageState enables full API access to n8n — protect accordingly
+- `.gitignore` blocks `.n8n-automation/` directory globally
 
 ### Expression Mode Security
 - Expression mode is REQUIRED for SSH nodes with template variables

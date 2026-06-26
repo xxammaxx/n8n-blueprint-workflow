@@ -1,5 +1,5 @@
 {
-  "name": "GitHub Ready Issue -> Runner Agent Dispatch",
+  "name": "GitHub Ready Issue -> Runner Agent Dispatch (Scheduled)",
   "nodes": [
     {
       "parameters": {},
@@ -7,7 +7,10 @@
       "name": "Manual Trigger (Smoke Test)",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
-      "position": [0, 0]
+      "position": [
+        0,
+        0
+      ]
     },
     {
       "parameters": {
@@ -18,8 +21,14 @@
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            {"name": "Accept", "value": "application/vnd.github+json"},
-            {"name": "X-GitHub-Api-Version", "value": "2022-11-28"}
+            {
+              "name": "Accept",
+              "value": "application/vnd.github+json"
+            },
+            {
+              "name": "X-GitHub-Api-Version",
+              "value": "2022-11-28"
+            }
           ]
         },
         "options": {}
@@ -28,7 +37,10 @@
       "name": "Fetch Issue from GitHub",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [256, 0],
+      "position": [
+        256,
+        0
+      ],
       "credentials": {
         "githubApi": {
           "id": "M5hvZu2nCwFcHBYX",
@@ -38,13 +50,16 @@
     },
     {
       "parameters": {
-        "jsCode": "// ============================================================================\n// Guardrails: Validate issue state before dispatch\n// Check: issue open, agent:ready present, no running/blocked/done\n// ============================================================================\n\nconst prepRef = $('Manual Trigger (Smoke Test)').first().json;\nconst issueData = $input.first().json;\n\nconst owner = prepRef.owner || 'xxammaxx';\nconst repo = prepRef.repo || 'n8n-blueprint-workflow';\nconst issueNumber = prepRef.issue_number || issueData.number || 0;\nconst issueTitle = issueData.title || '';\nconst issueBody = issueData.body || '';\nconst issueState = issueData.state || 'unknown';\nconst labels = issueData.labels || [];\n\nconst labelNames = labels.map(function(l) { return typeof l === 'string' ? l : l.name; }).filter(Boolean);\nconst hasReady = labelNames.includes('agent:ready');\nconst hasRunning = labelNames.includes('agent:running');\nconst hasBlocked = labelNames.includes('agent:blocked');\nconst hasDone = labelNames.includes('agent:done');\n\nvar mode = 'manual-terminal';\nif (labelNames.includes('mode:opencode-run')) mode = 'opencode-run';\nelse if (labelNames.includes('mode:hermes-review')) mode = 'hermes-review';\n\nvar risk = 'medium';\nif (labelNames.includes('risk:low')) risk = 'low';\nelse if (labelNames.includes('risk:high')) risk = 'high';\n\nconst isOpen = issueState === 'open';\nconst canStart = isOpen && hasReady && !hasRunning && !hasBlocked && !hasDone;\n\nconst guardResult = {\n  owner: owner,\n  repo: repo,\n  issue_number: issueNumber,\n  issue_title: issueTitle,\n  issue_body: issueBody,\n  issue_url: 'https://github.com/' + owner + '/' + repo + '/issues/' + issueNumber,\n  is_open: isOpen,\n  has_ready: hasReady,\n  has_running: hasRunning,\n  has_blocked: hasBlocked,\n  has_done: hasDone,\n  can_start: canStart,\n  mode: mode,\n  risk: risk,\n  labels: labels,\n  label_names: labelNames,\n  guardrail: canStart ? 'PASS' : 'BLOCKED',\n  guardrail_reason: !isOpen ? 'issue not open' :\n                    !hasReady ? 'label agent:ready missing' :\n                    hasRunning ? 'already running' :\n                    hasBlocked ? 'is blocked' :\n                    hasDone ? 'is done' : 'unknown'\n};\n\nif (!canStart) {\n  throw new Error('GUARDRAIL_BLOCKED: ' + guardResult.guardrail_reason + ' (issue #' + issueNumber + ')');\n}\n\nreturn [{\n  json: guardResult\n}];"
+        "jsCode": "// ============================================================================\n// Guardrails: Validate issue state before dispatch\n// Check: issue open, agent:ready present, no running/blocked/done\n// Works with BOTH Manual Trigger pinData AND Schedule/Search path\n// ============================================================================\n\nconst issueData = $input.first().json;\n\n// Static values for single-repo dispatcher (no dependency on Manual Trigger pinData)\nconst owner = 'xxammaxx';\nconst repo = 'n8n-blueprint-workflow';\nconst issueNumber = issueData.number || 0;\nconst issueTitle = issueData.title || '';\nconst issueBody = issueData.body || '';\nconst issueState = issueData.state || 'unknown';\nconst labels = issueData.labels || [];\n\nconst labelNames = labels.map(function(l) { return typeof l === 'string' ? l : l.name; }).filter(Boolean);\nconst hasReady = labelNames.includes('agent:ready');\nconst hasRunning = labelNames.includes('agent:running');\nconst hasBlocked = labelNames.includes('agent:blocked');\nconst hasDone = labelNames.includes('agent:done');\n\nvar mode = 'manual-terminal';\nif (labelNames.includes('mode:opencode-run')) mode = 'opencode-run';\nelse if (labelNames.includes('mode:hermes-review')) mode = 'hermes-review';\n\nvar risk = 'medium';\nif (labelNames.includes('risk:low')) risk = 'low';\nelse if (labelNames.includes('risk:high')) risk = 'high';\n\nconst isOpen = issueState === 'open';\nconst canStart = isOpen && hasReady && !hasRunning && !hasBlocked && !hasDone;\n\nconst guardResult = {\n  owner: owner,\n  repo: repo,\n  issue_number: issueNumber,\n  issue_title: issueTitle,\n  issue_body: issueBody,\n  issue_url: 'https://github.com/' + owner + '/' + repo + '/issues/' + issueNumber,\n  is_open: isOpen,\n  has_ready: hasReady,\n  has_running: hasRunning,\n  has_blocked: hasBlocked,\n  has_done: hasDone,\n  can_start: canStart,\n  mode: mode,\n  risk: risk,\n  labels: labels,\n  label_names: labelNames,\n  guardrail: canStart ? 'PASS' : 'BLOCKED',\n  guardrail_reason: canStart ? 'Ready to dispatch' : (\n    !isOpen ? 'Issue is not open' :\n    !hasReady ? 'Missing agent:ready label' :\n    hasRunning ? 'agent:running already set - duplicate run blocked' :\n    hasBlocked ? 'Issue is blocked' :\n    hasDone ? 'Issue already done' : 'Unknown guardrail failure'\n  )\n};\n\nreturn [{\n  json: guardResult\n}];"
       },
       "id": "a1b2c3d4-e003-4003-a003-000000000003",
       "name": "Guardrails & Validate",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [512, 0]
+      "position": [
+        512,
+        0
+      ]
     },
     {
       "parameters": {
@@ -55,8 +70,14 @@
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            {"name": "Accept", "value": "application/vnd.github+json"},
-            {"name": "X-GitHub-Api-Version", "value": "2022-11-28"}
+            {
+              "name": "Accept",
+              "value": "application/vnd.github+json"
+            },
+            {
+              "name": "X-GitHub-Api-Version",
+              "value": "2022-11-28"
+            }
           ]
         },
         "options": {}
@@ -65,7 +86,10 @@
       "name": "Remove agent:ready Label",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [768, 0],
+      "position": [
+        768,
+        0
+      ],
       "credentials": {
         "githubApi": {
           "id": "M5hvZu2nCwFcHBYX",
@@ -83,8 +107,14 @@
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            {"name": "Accept", "value": "application/vnd.github+json"},
-            {"name": "X-GitHub-Api-Version", "value": "2022-11-28"}
+            {
+              "name": "Accept",
+              "value": "application/vnd.github+json"
+            },
+            {
+              "name": "X-GitHub-Api-Version",
+              "value": "2022-11-28"
+            }
           ]
         },
         "sendBody": true,
@@ -96,7 +126,10 @@
       "name": "Add agent:running Label",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [1024, 0],
+      "position": [
+        1024,
+        0
+      ],
       "credentials": {
         "githubApi": {
           "id": "M5hvZu2nCwFcHBYX",
@@ -112,7 +145,10 @@
       "name": "Prepare RUN_INPUT.json",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1280, 0]
+      "position": [
+        1280,
+        0
+      ]
     },
     {
       "parameters": {
@@ -123,7 +159,10 @@
       "name": "SSH Write RUN_INPUT to Runner",
       "type": "n8n-nodes-base.ssh",
       "typeVersion": 1,
-      "position": [1536, 0],
+      "position": [
+        1536,
+        0
+      ],
       "credentials": {
         "sshPrivateKey": {
           "id": "42a60f05-16eb-493f-8257-3eeb5aef531a",
@@ -140,7 +179,10 @@
       "name": "SSH Start Runner Script",
       "type": "n8n-nodes-base.ssh",
       "typeVersion": 1,
-      "position": [1792, 0],
+      "position": [
+        1792,
+        0
+      ],
       "credentials": {
         "sshPrivateKey": {
           "id": "42a60f05-16eb-493f-8257-3eeb5aef531a",
@@ -157,7 +199,10 @@
       "name": "Wait (5s)",
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1,
-      "position": [2048, 0],
+      "position": [
+        2048,
+        0
+      ],
       "webhookId": "a1b2c3d4-e009-w001-a009-000000000009"
     },
     {
@@ -169,7 +214,10 @@
       "name": "SSH Read status.json",
       "type": "n8n-nodes-base.ssh",
       "typeVersion": 1,
-      "position": [2304, 0],
+      "position": [
+        2304,
+        0
+      ],
       "credentials": {
         "sshPrivateKey": {
           "id": "42a60f05-16eb-493f-8257-3eeb5aef531a",
@@ -185,7 +233,10 @@
       "name": "Format Evidence Comment",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [2560, 0]
+      "position": [
+        2560,
+        0
+      ]
     },
     {
       "parameters": {
@@ -196,8 +247,14 @@
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            {"name": "Accept", "value": "application/vnd.github+json"},
-            {"name": "X-GitHub-Api-Version", "value": "2022-11-28"}
+            {
+              "name": "Accept",
+              "value": "application/vnd.github+json"
+            },
+            {
+              "name": "X-GitHub-Api-Version",
+              "value": "2022-11-28"
+            }
           ]
         },
         "sendBody": true,
@@ -209,7 +266,10 @@
       "name": "Create GitHub Comment on Issue",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [2816, 0],
+      "position": [
+        2816,
+        0
+      ],
       "credentials": {
         "githubApi": {
           "id": "M5hvZu2nCwFcHBYX",
@@ -226,8 +286,14 @@
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            {"name": "Accept", "value": "application/vnd.github+json"},
-            {"name": "X-GitHub-Api-Version", "value": "2022-11-28"}
+            {
+              "name": "Accept",
+              "value": "application/vnd.github+json"
+            },
+            {
+              "name": "X-GitHub-Api-Version",
+              "value": "2022-11-28"
+            }
           ]
         },
         "sendBody": true,
@@ -239,7 +305,10 @@
       "name": "Add Labels (agent:needs-review, evidence:attached)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [3072, 0],
+      "position": [
+        3072,
+        0
+      ],
       "credentials": {
         "githubApi": {
           "id": "M5hvZu2nCwFcHBYX",
@@ -256,8 +325,14 @@
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            {"name": "Accept", "value": "application/vnd.github+json"},
-            {"name": "X-GitHub-Api-Version", "value": "2022-11-28"}
+            {
+              "name": "Accept",
+              "value": "application/vnd.github+json"
+            },
+            {
+              "name": "X-GitHub-Api-Version",
+              "value": "2022-11-28"
+            }
           ]
         },
         "options": {}
@@ -266,7 +341,10 @@
       "name": "Remove agent:running Label (404-tolerant)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [3328, 0],
+      "position": [
+        3328,
+        0
+      ],
       "credentials": {
         "githubApi": {
           "id": "M5hvZu2nCwFcHBYX",
@@ -277,13 +355,85 @@
     },
     {
       "parameters": {
-        "jsCode": "// ============================================================================\n// Final Result / Log Output\n// ============================================================================\n\nconst prepData = $('Prepare RUN_INPUT.json').first().json;\nconst data = $input.first().json;\n\nconst result = {\n  status: 'GREEN_PARTIAL_PLUS',\n  issue_number: prepData.issue_number,\n  issue_url: prepData.issue_url,\n  run_id: prepData.run_id,\n  evidence_dir: prepData.evidence_dir,\n  dispatch_mode: 'manual-terminal',\n  guardrail_passed: true,\n  labels_updated: true,\n  comment_posted: true,\n  next_action: 'Issue remains open. Human review required. Labels: agent:needs-review + evidence:attached set. OpenCode Provider/Auth + Hermes continue pending.'\n};\n\nreturn result;"
+        "jsCode": "// ============================================================================\n// Final Result / Log Output\n// ============================================================================\n\nconst prepData = $('Prepare RUN_INPUT.json').first().json;\n\nconst result = {\n  status: 'GREEN_PARTIAL_PLUS',\n  issue_number: prepData.issue_number,\n  issue_url: prepData.issue_url,\n  run_id: prepData.run_id,\n  evidence_dir: prepData.evidence_dir,\n  dispatch_mode: 'manual-terminal',\n  guardrail_passed: true,\n  labels_updated: true,\n  comment_posted: true,\n  next_action: 'Issue remains open. Human review required. Labels: agent:needs-review + evidence:attached set. OpenCode Provider/Auth + Hermes continue pending.'\n};\n\nreturn result;"
       },
       "id": "a1b2c3d4-e015-4015-a015-000000000015",
       "name": "Format Final Result",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [3584, 0]
+      "position": [
+        3584,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 10
+            }
+          ]
+        }
+      },
+      "id": "a1b2c3d4-e016-4016-a016-000000000016",
+      "name": "Schedule Trigger (10 min)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.github.com/search/issues?q=is:issue+is:open+label:agent:ready+repo:xxammaxx/n8n-blueprint-workflow&per_page=1&sort=created&order=asc",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "githubApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/vnd.github+json"
+            },
+            {
+              "name": "X-GitHub-Api-Version",
+              "value": "2022-11-28"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a1b2c3d4-e017-4017-a017-000000000017",
+      "name": "GitHub Search Issues (agent:ready)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        256,
+        300
+      ],
+      "credentials": {
+        "githubApi": {
+          "id": "M5hvZu2nCwFcHBYX",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pick first ready issue from GitHub Search results\nconst searchResults = $input.first().json;\n\nif (!searchResults || !searchResults.items || searchResults.items.length === 0) {\n  // No ready issues - return empty array to stop execution\n  return [];\n}\n\nconst first = searchResults.items[0];\nconst labelNames = (first.labels || []).map(function(l) { return typeof l === \"string\" ? l : l.name; }).filter(Boolean);\n\n// Double-check: issue must have agent:ready (Schedule Trigger might fire between search and fetch)\nif (!labelNames.includes(\"agent:ready\")) {\n  return [];\n}\n\nreturn [{\n  json: {\n    found: true,\n    owner: \"xxammaxx\",\n    repo: \"n8n-blueprint-workflow\",\n    issue_number: first.number,\n    issue_title: first.title,\n    issue_state: first.state,\n    labels: first.labels || [],\n    label_names: labelNames,\n    html_url: first.html_url\n  }\n}];"
+      },
+      "id": "a1b2c3d4-e018-4018-a018-000000000018",
+      "name": "Pick First Ready Issue",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        512,
+        300
+      ]
     }
   ],
   "pinData": {
@@ -293,53 +443,202 @@
           "owner": "xxammaxx",
           "repo": "n8n-blueprint-workflow",
           "issue_number": 2,
-          "labels": ["agent:ready", "mode:manual-terminal", "risk:low"]
+          "labels": [
+            "agent:ready",
+            "mode:manual-terminal",
+            "risk:low"
+          ]
         }
       }
     ]
   },
   "connections": {
     "Manual Trigger (Smoke Test)": {
-      "main": [[{"node": "Fetch Issue from GitHub", "type": "main", "index": 0}]]
+      "main": [
+        [
+          {
+            "node": "Fetch Issue from GitHub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Fetch Issue from GitHub": {
-      "main": [[{"node": "Guardrails & Validate", "type": "main", "index": 0}]]
+      "main": [
+        [
+          {
+            "node": "Guardrails & Validate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Guardrails & Validate": {
-      "main": [[{"node": "Remove agent:ready Label", "type": "main", "index": 0}]]
+      "main": [
+        [
+          {
+            "node": "Remove agent:ready Label",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Remove agent:ready Label": {
-      "main": [[{"node": "Add agent:running Label", "type": "main", "index": 0}]]
+      "main": [
+        [
+          {
+            "node": "Add agent:running Label",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Add agent:running Label": {
-      "main": [[{"node": "Prepare RUN_INPUT.json", "type": "main", "index": 0}]]
+      "main": [
+        [
+          {
+            "node": "Prepare RUN_INPUT.json",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Prepare RUN_INPUT.json": {
-      "main": [[{"node": "SSH Write RUN_INPUT to Runner", "type": "main", "index": 0}]]
+      "main": [
+        [
+          {
+            "node": "SSH Write RUN_INPUT to Runner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "SSH Write RUN_INPUT to Runner": {
-      "main": [[{"node": "SSH Start Runner Script", "type": "main", "index": 0}]]
+      "main": [
+        [
+          {
+            "node": "SSH Start Runner Script",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "SSH Start Runner Script": {
-      "main": [[{"node": "Wait (5s)", "type": "main", "index": 0}]]
+      "main": [
+        [
+          {
+            "node": "Wait (5s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Wait (5s)": {
-      "main": [[{"node": "SSH Read status.json", "type": "main", "index": 0}]]
+      "main": [
+        [
+          {
+            "node": "SSH Read status.json",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "SSH Read status.json": {
-      "main": [[{"node": "Format Evidence Comment", "type": "main", "index": 0}]]
+      "main": [
+        [
+          {
+            "node": "Format Evidence Comment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Format Evidence Comment": {
-      "main": [[{"node": "Create GitHub Comment on Issue", "type": "main", "index": 0}]]
+      "main": [
+        [
+          {
+            "node": "Create GitHub Comment on Issue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Create GitHub Comment on Issue": {
-      "main": [[{"node": "Add Labels (agent:needs-review, evidence:attached)", "type": "main", "index": 0}]]
+      "main": [
+        [
+          {
+            "node": "Add Labels (agent:needs-review, evidence:attached)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Add Labels (agent:needs-review, evidence:attached)": {
-      "main": [[{"node": "Remove agent:running Label (404-tolerant)", "type": "main", "index": 0}]]
+      "main": [
+        [
+          {
+            "node": "Remove agent:running Label (404-tolerant)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Remove agent:running Label (404-tolerant)": {
-      "main": [[{"node": "Format Final Result", "type": "main", "index": 0}]]
+      "main": [
+        [
+          {
+            "node": "Format Final Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger (10 min)": {
+      "main": [
+        [
+          {
+            "node": "GitHub Search Issues (agent:ready)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GitHub Search Issues (agent:ready)": {
+      "main": [
+        [
+          {
+            "node": "Pick First Ready Issue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pick First Ready Issue": {
+      "main": [
+        [
+          {
+            "node": "Fetch Issue from GitHub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,

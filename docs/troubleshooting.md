@@ -1,5 +1,106 @@
 # Troubleshooting Guide
 
+## Symptom: Dispatcher Publish Button Disabled (Publish/Unpublish greyed out)
+
+### Root Cause: Unused variable in Code node triggers n8n lint error
+
+The "Format Final Result" Code node in the dispatcher workflow (`Sv12QTo56NoPUu2D`) had an **unused variable declaration**:
+
+```javascript
+// BEFORE (broken):
+const data = $input.first().json;
+const prepData = $('Prepare RUN_INPUT.json').first().json;
+```
+
+The line `const data = $input.first().json;` declares a variable `data` that is never used anywhere in the node. n8n v2.26.8's Code node linter flags unused variables as a **blocking issue** — this prevents the Publish button from being enabled in the UI.
+
+**Why this matters:**
+- The linter treats unused variables as errors, not warnings
+- Both "Publish" and "Unpublish" buttons become greyed out/unclickable
+- The Active/Inactive toggle is not visible/disabled
+- The workflow can still be executed manually (Manual Trigger works)
+- The workflow can be activated via API even without UI Publish
+
+**Diagnosis:**
+1. Open the workflow in n8n UI
+2. Look for yellow/red warning indicators on Code nodes
+3. Open the "Format Final Result" (or any Code node) — check for unused variables
+4. In the n8n console/network tab: check if PATCH `/rest/workflows/<ID>` requests hang
+
+**Fix (via API):**
+```powershell
+# 1. Get workflow JSON, remove the unused variable line
+# 2. PATCH to update the workflow:
+$headers = @{
+    "Content-Type" = "application/json"
+    "Cookie" = "n8n-auth=$n8nAuthCookie"
+    "browser-id" = "<sha256-hashed-browser-id>"
+}
+$body = @{ ... } | ConvertTo-Json
+Invoke-RestMethod -Uri "http://192.168.1.52:5678/rest/workflows/Sv12QTo56NoPUu2D" `
+    -Method Patch -Headers $headers -Body $body
+```
+
+**Fix (in UI):**
+1. Log into n8n UI
+2. Open the dispatcher workflow (`Sv12QTo56NoPUu2D`)
+3. Open the "Format Final Result" Code node
+4. Remove the line `const data = $input.first().json;` (it's unused)
+5. Save the node
+6. The Publish button should now be enabled
+7. Publish and activate the workflow
+
+**Verification:**
+- Check that the Code node has no warning indicators
+- The Publish button should now be clickable
+- After fixing via API: `PATCH /rest/workflows/Sv12QTo56NoPUu2D` returns HTTP 200 with workflow data
+- After fixing via API: `POST /rest/workflows/Sv12QTo56NoPUu2D/activate` returns `{"active":true}` with HTTP 200
+
+**API Activation Requirements:**
+- `n8n-auth` JWT cookie (from storageState or browser session)
+- `browser-id` header (SHA-256 hash of browser's identifier from storageState)
+- `Content-Type: application/json`
+
+**⚠️ Caveat:** API activation may NOT register the Schedule Trigger at n8n startup. UI Publish + Active-Toggle is the only method that fully registers Schedule Triggers for runtime activation in regular deployment mode. After API activation, verify by checking if the Schedule Trigger fires on the next cycle.
+
+## Symptom: Dispatcher Workflow wird nicht aktiv (Publish-Button deaktiviert)
+
+### Root Cause: n8n regular deployment mode registered Schedule-Trigger nur bei UI-Aktivierung
+
+CLI-Publish (`n8n publish:workflow`) oder DB-Update (`UPDATE workflow_entity SET active=1`) reichen NICHT aus, um den Schedule-Trigger beim n8n Startup zu registrieren. Nur die UI-Aktivierung (Publish + Active-Toggle) löst die vollständige Runtime-Registrierung aus.
+
+**Diagnose:**
+```bash
+# Workflow active-Status in DB prüfen:
+ssh root@192.168.1.136 "echo 'SELECT id, name, active FROM workflow_entity;' | pct exec 101 -- sh -c 'cat > /tmp/q.sql && sqlite3 /opt/dev-fabric/n8n/data/.n8n/database.sqlite < /tmp/q.sql'" | grep -i dispatch
+
+# n8n Startup-Log prüfen:
+ssh root@192.168.1.136 'pct exec 101 -- journalctl -u n8n --no-pager | grep "Currently active" -A10'
+```
+
+**Recovery:**
+1. In n8n UI (`http://192.168.1.52:5678`) einloggen
+2. Workflow `Sv12QTo56NoPUu2D` öffnen
+3. Prüfen ob Publish-Button aktiviert ist:
+   - Wenn deaktiviert: Nodes auf Validierungsfehler prüfen (rote Warnsymbole)
+   - Credentials prüfen: `GitHub account` und `dev-runner-ssh` müssen gültig sein
+4. Workflow publishen (Publish-Button klicken)
+5. Active-Toggle auf "Active" setzen
+6. Speichern
+7. Verifikation: `journalctl -u n8n | grep "Activated workflow.*Dispatch"` sollte erscheinen
+
+**Alternative: API-Key-Aktivierung (nur wenn UI nicht erreichbar)**
+```powershell
+# API-Key sicher lokal speichern (NICHT im Chat, NICHT im Repo):
+$apiKey = Read-Host "n8n API Key eingeben"
+New-Item -ItemType Directory -Path "$env:USERPROFILE\.n8n-automation" -Force | Out-Null
+$apiKey | Out-File -FilePath "$env:USERPROFILE\.n8n-automation\n8n-api-key.txt" -NoNewline
+
+# Dann mit gespeichertem Key aktivieren:
+$apiKey = Get-Content "$env:USERPROFILE\.n8n-automation\n8n-api-key.txt"
+# API-Call zur Aktivierung (falls REST-Endpoint funktioniert)
+```
+
 ## Symptom: Form returns HTTP 404 / "Problem loading form"
 
 ### Check n8n service

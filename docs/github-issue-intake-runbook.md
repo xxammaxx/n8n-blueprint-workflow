@@ -60,6 +60,87 @@
 - Issue bleibt offen
 - Lokale Evidence-Pfade bei Bedarf prüfen
 
+## Dispatcher-Aktivierung (einmalig)
+
+### Warum manuelle Aktivierung?
+
+Der Dispatcher-Workflow (`Sv12QTo56NoPUu2D`, "GitHub Ready Issue -> Runner Agent Dispatch") muss **über die n8n UI publish'ed und aktiviert werden**, weil:
+
+1. **CLI-Publish reicht nicht:** `n8n publish:workflow` setzt `active=1` in der Datenbank, aber n8n registriert den Schedule-Trigger beim Startup NICHT
+2. **DB-Update reicht nicht:** Direktes `UPDATE workflow_entity SET active=1` hat denselben Effekt — Schedule wird nicht registriert
+3. **Nur UI-Publish + Active-Toggle** löst die vollständige Runtime-Registrierung aus
+
+### Aktivierungsschritte
+
+1. **n8n UI öffnen:** `http://192.168.1.52:5678`
+2. **Einloggen** mit Owner-Credentials
+3. **Workflow öffnen:** `Sv12QTo56NoPUu2D` oder "GitHub Ready Issue -> Runner Agent Dispatch"
+4. **Publish-Button prüfen:**
+   - Wenn deaktiviert → **Häufigste Ursache: Unused Variable in Code Node**
+   - Öffne den "Format Final Result" Code Node
+   - Prüfe auf ungenutzte Variablen wie `const data = $input.first().json;`
+   - n8n's Code Node Linter behandelt ungenutzte Variablen als **blockierenden Fehler**
+   - Entferne die ungenutzte Zeile → Publish-Button wird aktiv
+   - Alternativ: Alle Code Nodes auf rote/gelbe Warnsymbole prüfen
+5. **Workflow publishen:** Rechts oben "Publish" klicken
+6. **Workflow aktivieren:** Active-Toggle auf "Active" setzen
+7. **Speichern** (Ctrl+S oder Auto-Save)
+8. **Verifikation:** In n8n-Logs erscheint `Activated workflow "GitHub Ready Issue -> Runner Agent Dispatch"`
+
+### Aktivierung via API (Alternative)
+
+Falls das n8n UI nicht erreichbar ist, kann die Aktivierung über die REST API erfolgen:
+
+```powershell
+# 1. Workflow fixen (unused variable entfernen):
+$headers = @{
+    "Content-Type" = "application/json"
+    "Cookie" = "n8n-auth=$n8nAuthCookie"
+    "browser-id" = "<sha256-hashed-browser-id>"
+}
+# PATCH /rest/workflows/Sv12QTo56NoPUu2D mit korrigiertem Code
+
+# 2. Aktivieren:
+Invoke-RestMethod -Uri "http://192.168.1.52:5678/rest/workflows/Sv12QTo56NoPUu2D/activate" `
+    -Method Post -Headers $headers
+# Response: {"active":true} — HTTP 200
+```
+
+**API Auth Voraussetzungen:**
+- `n8n-auth` JWT Cookie (aus storageState)
+- `browser-id` Header (SHA-256 Hash des browserId aus storageState)
+- `Content-Type: application/json`
+
+**⚠️ Einschränkung:** API-Aktivierung registriert den Schedule-Trigger MÖGLICHERWEISE NICHT für das n8n Startup. In früheren Tests wurde festgestellt, dass nur UI-Publish+Active-Toggle den Schedule-Trigger vollständig registriert. Nach API-Aktivierung sollte per UI überprüft werden, ob der Workflow wirklich aktiv ist und der Schedule-Trigger feuert.
+
+### Verifikation nach Aktivierung
+
+```bash
+# Auf Proxmox-Host:
+ssh root@192.168.1.136 'pct exec 101 -- journalctl -u n8n -n 100 --no-pager | grep -E "Currently active|Activated|Dispatch"'
+
+# Erwartete Ausgabe:
+# Currently active workflows:
+#    - GitHub Ready Issue -> Runner Agent Dispatch (ID: Sv12QTo56NoPUu2D)
+```
+
+### Schedule-Trigger
+
+- **Intervall:** Alle 10 Minuten
+- **Aktion:** GitHub Search API: `is:issue is:open label:agent:ready repo:xxammaxx/n8n-blueprint-workflow&per_page=1`
+- **Limit:** 1 Issue pro Run
+- **Guardrails:** Issue muss `agent:ready` haben, `agent:running`/`agent:blocked`/`agent:done` dürfen nicht gesetzt sein
+
+### storageState erneuern
+
+Nach manuellem Login kann die Playwright-Session erneuert werden:
+
+```powershell
+# PowerShell (lokal):
+npx playwright open --save-storage="$env:USERPROFILE\.n8n-automation\playwright\n8n-storage-state.json" http://192.168.1.52:5678
+# Manuell einloggen, dann Browser schließen
+```
+
 ## Recovery-Szenarien
 
 ### R1: GitHub Credential fehlt in n8n
