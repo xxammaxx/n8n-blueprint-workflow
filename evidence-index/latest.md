@@ -2,9 +2,11 @@
 
 ## Status: GREEN_PARTIAL
 
-**Session ID:** dispatcher-manual-verification-20260626
-**Completed:** 2026-06-26T07:38:02Z
-**Orchestrator:** documentation-agent (deepseek-v4-flash)
+**Session ID:** dispatcher-schedule-runner-verification-20260626
+**Completed:** 2026-06-26T09:57:00Z
+**Commit:** 2ab0766 (pushed to origin/main)
+**Full Report:** evidence-index/dispatcher-schedule-runner-verification-20260626T095746Z/final-report.md
+**Orchestrator:** issue-orchestrator (deepseek-v4-pro)
 **Previous Session:** dispatcher-ui-activation-20260626-v2
 
 ---
