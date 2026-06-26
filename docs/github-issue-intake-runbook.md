@@ -60,36 +60,86 @@
 - Issue bleibt offen
 - Lokale Evidence-Pfade bei Bedarf prüfen
 
-## Dispatcher-Aktivierung (einmalig)
+## Dispatcher-Status: Active (Manual Trigger only)
 
-### Warum manuelle Aktivierung?
+### Aktueller Status (2026-06-26)
 
-Der Dispatcher-Workflow (`Sv12QTo56NoPUu2D`, "GitHub Ready Issue -> Runner Agent Dispatch") muss **über die n8n UI publish'ed und aktiviert werden**, weil:
+| Aspekt | Status |
+|--------|--------|
+| **Workflow ID** | `Sv12QTo56NoPUu2D` |
+| **Name** | GitHub Ready Issue -> Runner Agent Dispatch |
+| **Active** | ✅ JA — UI zeigt ▶️ Icon, alle Nodes zeigen "Deactivate" |
+| **Trigger** | **Manual Trigger ONLY** — kein Schedule Trigger Node vorhanden |
+| **Nodes** | 15 |
+| **Issue #3 Execution** | ✅ 14/15 Nodes OK (Node 15: pre-existing JS syntax error) |
+| **Schedule Auto-Run** | ❌ NICHT möglich — Schedule Trigger fehlt im Workflow |
 
-1. **CLI-Publish reicht nicht:** `n8n publish:workflow` setzt `active=1` in der Datenbank, aber n8n registriert den Schedule-Trigger beim Startup NICHT
-2. **DB-Update reicht nicht:** Direktes `UPDATE workflow_entity SET active=1` hat denselben Effekt — Schedule wird nicht registriert
-3. **Nur UI-Publish + Active-Toggle** löst die vollständige Runtime-Registrierung aus
+### Warum kein Schedule Trigger?
 
-### Aktivierungsschritte
+Der Workflow wurde aus einem JSON-Export importiert, der **keinen Schedule Trigger Node** enthielt. Das bedeutet:
+- Der Workflow ist aktiv und kann manuell ausgeführt werden
+- Automatische Polling-Ausführung (z.B. alle 10 Minuten) ist NICHT möglich
+- Manual Trigger ist die einzige Ausführungsmethode
 
-1. **n8n UI öffnen:** `http://192.168.1.52:5678`
-2. **Einloggen** mit Owner-Credentials
-3. **Workflow öffnen:** `Sv12QTo56NoPUu2D` oder "GitHub Ready Issue -> Runner Agent Dispatch"
-4. **Publish-Button prüfen:**
-   - Wenn deaktiviert → **Häufigste Ursache: Unused Variable in Code Node**
-   - Öffne den "Format Final Result" Code Node
-   - Prüfe auf ungenutzte Variablen wie `const data = $input.first().json;`
-   - n8n's Code Node Linter behandelt ungenutzte Variablen als **blockierenden Fehler**
-   - Entferne die ungenutzte Zeile → Publish-Button wird aktiv
-   - Alternativ: Alle Code Nodes auf rote/gelbe Warnsymbole prüfen
-5. **Workflow publishen:** Rechts oben "Publish" klicken
-6. **Workflow aktivieren:** Active-Toggle auf "Active" setzen
-7. **Speichern** (Ctrl+S oder Auto-Save)
-8. **Verifikation:** In n8n-Logs erscheint `Activated workflow "GitHub Ready Issue -> Runner Agent Dispatch"`
+### Manual Trigger Ausführungsschritte
 
-### Aktivierung via API (Alternative)
+**Via n8n UI:**
+1. Workflow `Sv12QTo56NoPUu2D` im n8n Editor öffnen
+2. "Execute Workflow" Button (Manual Trigger) klicken
+3. Parameter eingeben: `issue_number` = `<Nummer des zu verarbeitenden Issues>`
+4. Workflow läuft durch: Fetch Issue → Guardrails → Labels → SSH Write → SSH Start → Wait → SSH Read → Comment → Labels → Format Final Result
+5. Nach Ausführung: Issue-Kommentar + Labels prüfen
 
-Falls das n8n UI nicht erreichbar ist, kann die Aktivierung über die REST API erfolgen:
+**Via n8n REST API:**
+```powershell
+# Headers aus storageState extrahieren:
+$storageState = Get-Content "$env:USERPROFILE\.n8n-automation\playwright\n8n-storage-state.json" | ConvertFrom-Json
+$n8nAuthCookie = ($storageState.cookies | Where-Object { $_.name -eq "n8n-auth" }).value
+$browserId = ($storageState.origins[0].localStorage | Where-Object { $_.name -eq "browserId" }).value
+$browserIdHash = [System.BitConverter]::ToString((New-Object Security.Cryptography.SHA256Managed).ComputeHash([Text.Encoding]::UTF8.GetBytes($browserId))) -replace '-', ''
+
+$headers = @{
+    "Content-Type" = "application/json"
+    "Cookie" = "n8n-auth=$n8nAuthCookie"
+    "browser-id" = $browserIdHash
+}
+
+# Manuelle Ausführung starten:
+Invoke-RestMethod -Uri "http://192.168.1.52:5678/rest/workflows/Sv12QTo56NoPUu2D/execute" `
+    -Method Post -Headers $headers `
+    -Body '{"issue_number":3}'
+```
+
+### Schedule Trigger Konfiguration (für Auto-Run)
+
+Um automatische Polling-Ausführung zu aktivieren, muss ein Schedule Trigger Node via n8n UI hinzugefügt werden:
+
+**Schritte:**
+1. Workflow in n8n UI öffnen (`Sv12QTo56NoPUu2D`)
+2. **"Add Node" → "Trigger" → "Schedule Trigger"** auswählen
+3. Intervall konfigurieren (empfohlen: 10 Minuten):
+   - Mode: "Every X Minutes"
+   - Value: 10
+4. **GitHub Search Node** hinzufügen:
+   - Credential: `github-n8n-blueprint`
+   - Query: `is:issue is:open label:agent:ready repo:xxammaxx/n8n-blueprint-workflow&per_page=1`
+   - Method: GET
+5. **Pick First Node** (Code Node oder Set Node) hinzufügen:
+   - Extrahiert das erste Issue aus der Search-Response
+   - Gibt `[]` zurück wenn kein Issue gefunden (stoppt Execution)
+   - Output: `owner`, `repo`, `issue_number`, `labels`
+6. Verbinden mit bestehendem **Fetch Issue** Node
+7. **UI-Publish** klicken (NICHT CLI publish — CLI registriert Schedule nicht)
+8. **Active-Toggle** auf ON setzen
+9. **Verifikation:**
+   - n8n-Logs: `journalctl -u n8n | grep "Currently active workflows"` sollte Dispatcher zeigen
+   - Nächsten Schedule-Zyklus abwarten oder n8n restarten
+
+**Wichtig:** In n8n v2.26.8 registriert NUR UI-Publish + UI-Active-Toggle den Schedule-Trigger zuverlässig. CLI-Publish (`n8n publish:workflow`) und DB-Updates (`UPDATE workflow_entity SET active=1`) reichen NICHT aus.
+
+### Aktivierung via API (nur für Code-Fix, nicht für Schedule)
+
+Falls der Publish-Button deaktiviert ist (unused variable in Code Node):
 
 ```powershell
 # 1. Workflow fixen (unused variable entfernen):
@@ -111,25 +161,18 @@ Invoke-RestMethod -Uri "http://192.168.1.52:5678/rest/workflows/Sv12QTo56NoPUu2D
 - `browser-id` Header (SHA-256 Hash des browserId aus storageState)
 - `Content-Type: application/json`
 
-**⚠️ Einschränkung:** API-Aktivierung registriert den Schedule-Trigger MÖGLICHERWEISE NICHT für das n8n Startup. In früheren Tests wurde festgestellt, dass nur UI-Publish+Active-Toggle den Schedule-Trigger vollständig registriert. Nach API-Aktivierung sollte per UI überprüft werden, ob der Workflow wirklich aktiv ist und der Schedule-Trigger feuert.
+**Hinweis:** API-Aktivierung macht den Workflow active, aber registriert den Schedule-Trigger NICHT für Startup. Für Schedule: UI-Publish+Active-Toggle verwenden (siehe oben).
 
 ### Verifikation nach Aktivierung
 
 ```bash
-# Auf Proxmox-Host:
-ssh root@192.168.1.136 'pct exec 101 -- journalctl -u n8n -n 100 --no-pager | grep -E "Currently active|Activated|Dispatch"'
+# n8n Logs prüfen (CT 101):
+pct exec 101 -- journalctl -u n8n -n 100 --no-pager | grep -E "Currently active|Activated|Dispatch"
 
-# Erwartete Ausgabe:
+# Erwartet (wenn Schedule Trigger konfiguriert):
 # Currently active workflows:
 #    - GitHub Ready Issue -> Runner Agent Dispatch (ID: Sv12QTo56NoPUu2D)
 ```
-
-### Schedule-Trigger
-
-- **Intervall:** Alle 10 Minuten
-- **Aktion:** GitHub Search API: `is:issue is:open label:agent:ready repo:xxammaxx/n8n-blueprint-workflow&per_page=1`
-- **Limit:** 1 Issue pro Run
-- **Guardrails:** Issue muss `agent:ready` haben, `agent:running`/`agent:blocked`/`agent:done` dürfen nicht gesetzt sein
 
 ### storageState erneuern
 
@@ -563,31 +606,45 @@ Node 11 previously received GitHub comment response data (`url`, `html_url`, `id
 
 ---
 
-## Automated Dispatcher Workflow (New)
+## Automated Dispatcher Workflow (Active — Manual Trigger Only)
 
-A new **GitHub Ready Issue → Runner Agent Dispatch** workflow (ID: `k1c2d3FfWHee6Jr0e`, 15 nodes) provides automated dispatching. This runs alongside the existing 12-node manual intake workflow.
+The **GitHub Ready Issue → Runner Agent Dispatch** workflow (ID: `Sv12QTo56NoPUu2D`, 15 nodes) provides dispatching for GitHub Issues with `agent:ready` label. **The workflow is active but currently only supports Manual Trigger execution — no Schedule Trigger node is present.**
 
 ### Trigger Strategy
 
 | Aspect | Detail |
 |--------|--------|
-| **Trigger** | Polling (Schedule Trigger + GitHub Search API) |
+| **Trigger (aktuell)** | Manual Trigger ONLY |
+| **Trigger (geplant)** | Polling (Schedule Trigger + GitHub Search API) — Node muss noch via UI hinzugefügt werden |
 | **Why not GitHub Trigger?** | n8n instance on internal network (192.168.1.52) — no public URL for webhooks |
-| **Polling Query** | `is:issue is:open repo:xxammaxx/n8n-blueprint-workflow label:"agent:ready"` |
-| **Interval** | Configurable (recommended: every 5 minutes) |
-| **Dispatcher ID** | `k1c2d3FfWHee6Jr0e` |
+| **Schedule Interval (geplant)** | Alle 10 Minuten |
+| **Polling Query (geplant)** | `is:issue is:open repo:xxammaxx/n8n-blueprint-workflow label:"agent:ready"` |
+| **Dispatcher ID** | `Sv12QTo56NoPUu2D` |
 | **Nodes** | 15 |
-| **Status** | Imported via CLI, `active: false` (needs UI activation) |
+| **Status** | ✅ Active (Manual Trigger). Schedule Trigger: ❌ nicht vorhanden — muss via UI hinzugefügt werden |
 
-### Dispatcher Workflow Nodes (15)
+### Dispatcher Workflow Nodes (15) — Current State
 
 ```
-Schedule Trigger (Polling) → Fetch Issue from GitHub → Guardrails & Validate →
+Manual Trigger → Fetch Issue from GitHub → Guardrails & Validate →
 Remove agent:ready Label → Add agent:running Label → Prepare RUN_INPUT.json →
 SSH Write → SSH Start → Wait (5s) → SSH Read → Format Evidence Comment →
 Create GitHub Comment → Add Labels (agent:needs-review, evidence:attached) →
 Remove agent:running Label (404-tolerant) → Format Final Result
 ```
+
+### Issue #3 Processing Result
+
+| Detail | Value |
+|--------|-------|
+| Issue | #3 — "[smoke] Scheduler-Dispatcher Dauerbetrieb — automatisierter Smoke Test" |
+| Execution | #44 — Manual trigger, 1m 28.494s |
+| Nodes 1-14 | ✅ SUCCESS (all core dispatcher nodes) |
+| Node 15 | ❌ ERROR — pre-existing JS syntax error in "Format Final Result" |
+| Pre-state | `agent:ready`, `mode:manual-terminal`, `risk:low` |
+| Post-state | `agent:needs-review`, `evidence:attached`, `mode:manual-terminal`, `risk:low` |
+| Runner Evidence | `/opt/dev-fabric/evidence/github-agent-runs/xxammaxx/n8n-blueprint-workflow/issue-3/gh-issue-3-20260626T073802Z/` |
+| status.json | `GREEN_PARTIAL`, `source_of_truth=github`, `issue_number=3` |
 
 ### Guardrails & Dual-Start Protection
 
@@ -637,11 +694,32 @@ Evidence path:
 /opt/dev-fabric/evidence/github-agent-runs/xxammaxx/n8n-blueprint-workflow/issue-<number>/<run_id>/
 ```
 
-### Smoke Test
+### Smoke Test Results (Issue #3)
 
-Issue #2 has been created with the `agent:ready` label for testing the dispatcher. To execute:
-1. Resolve storageState expiry (re-login to n8n UI)
-2. Activate the dispatcher workflow in n8n UI
-3. Ensure `dev-runner-ssh` and GitHub credentials are valid
-4. The Schedule Trigger will pick up Issue #2 on next poll cycle
-5. Or use the Manual Trigger (Smoke Test) node for immediate execution
+**Issue #3** ("[smoke] Scheduler-Dispatcher Dauerbetrieb — automatisierter Smoke Test") was processed via **Manual Trigger** (Execution #44):
+
+| Check | Result |
+|-------|--------|
+| Fetch Issue | ✅ |
+| Guardrails | ✅ — `agent:ready` present, `agent:running` absent, issue open |
+| Remove `agent:ready` | ✅ |
+| Add `agent:running` | ✅ |
+| Prepare RUN_INPUT.json | ✅ |
+| SSH Write | ✅ |
+| SSH Start (Runner Script) | ✅ |
+| Wait 5s | ✅ |
+| SSH Read status.json | ✅ — `GREEN_PARTIAL` found |
+| Format Evidence Comment | ✅ |
+| GitHub Comment API | ✅ — Agent Run Result posted (Run ID: `gh-issue-3-20260626T073802Z`) |
+| Add Labels (needs-review, evidence:attached) | ✅ |
+| Remove agent:running | ✅ (404-tolerant) |
+| Format Final Result | ❌ ERROR — pre-existing JS syntax error (unrelated to dispatcher logic) |
+
+**Evidence:** `/opt/dev-fabric/evidence/github-agent-runs/xxammaxx/n8n-blueprint-workflow/issue-3/gh-issue-3-20260626T073802Z/`
+
+**To execute a smoke test for a new issue:**
+1. Ensure the issue has `agent:ready` label
+2. Open dispatcher workflow in n8n UI
+3. Click "Execute Workflow" (Manual Trigger)
+4. Set parameter `issue_number` to the target issue number
+5. After execution, check the issue for the Agent Run Result comment and updated labels

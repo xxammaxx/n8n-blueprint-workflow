@@ -1,6 +1,34 @@
 ﻿# Known Evidence Paths
 
-## Latest Entry (2026-06-24) — GitHub Ready Issue Dispatcher + Mermaid Diagrams
+## Latest Entry (2026-06-26) — Dispatcher Manual Verification & Issue #3 Processing
+
+| Property | Value |
+|----------|-------|
+| **Session** | `dispatcher-manual-verification-20260626` |
+| **Run ID** | `gh-issue-3-20260626T073802Z` |
+| **Workflow ID** | `Sv12QTo56NoPUu2D` |
+| **Workflow Name** | GitHub Ready Issue -> Runner Agent Dispatch |
+| **Workflow Nodes** | 15 |
+| **Workflow Active** | ✅ YES — UI shows active (Manual Trigger only, no Schedule Trigger) |
+| **Issue** | [#3](https://github.com/xxammaxx/n8n-blueprint-workflow/issues/3) — "[smoke] Scheduler-Dispatcher Dauerbetrieb" |
+| **Execution** | #44 — Manual trigger, 1m 28.494s |
+| **Nodes 1-14** | ✅ SUCCESS |
+| **Node 15** | ❌ ERROR (pre-existing JS syntax error) |
+| **Pre-state** | `agent:ready`, `mode:manual-terminal`, `risk:low` |
+| **Post-state** | `agent:needs-review`, `evidence:attached`, `mode:manual-terminal`, `risk:low` |
+| **Evidence Path** | `/opt/dev-fabric/evidence/github-agent-runs/xxammaxx/n8n-blueprint-workflow/issue-3/gh-issue-3-20260626T073802Z/` |
+| **status.json** | `GREEN_PARTIAL`, `source_of_truth=github`, `issue_number=3` |
+| **Files** | `agent.log`, `commands.log`, `github-context.md`, `operator-commands.md`, `RUN_INPUT.json`, `RUN_INPUT.redacted.json`, `run-report.md`, `status.json` |
+| **Total Files** | 8 |
+| **Runner Script** | `/opt/dev-fabric/scripts/start_github_issue_run.sh` (755, bash -n PASS) |
+| **Runner** | LXC 102 / lxc-dev-runner / 192.168.1.53 |
+| **n8n Location** | CT 101 / 192.168.1.52 (corrected from previous Proxmox host assumption) |
+| **Key Finding** | No Schedule Trigger in deployed workflow — only Manual Trigger |
+| **Agent Run Result Comment** | Posted to Issue #3 |
+
+---
+
+## Previous Entry (2026-06-24) — GitHub Ready Issue Dispatcher + Mermaid Diagrams
 
 | Property | Value |
 |----------|-------|

@@ -7,17 +7,17 @@
 
 ```mermaid
 flowchart TD
-    GH_Issue["GitHub Issue<br/>Source of Truth"] --> GH_LabelReady["Label: agent:ready"]
-    GH_LabelReady --> N8N_Dispatch["n8n Dispatcher<br/>GitHub Ready Issue -> Runner Agent Dispatch"]
+    ManualTrigger["Manual Trigger<br/>(n8n UI / API execution)<br/>No Schedule Trigger present"] --> FetchIssue["GitHub Fetch Issue<br/>via issue_number parameter"]
+    FetchIssue --> GH_Issue["GitHub Issue #3<br/>Source of Truth"]
 
-    N8N_Dispatch --> Guard["Guardrails<br/>open issue, ready label,<br/>not running, not blocked, not done"]
+    GH_Issue --> Guard["Guardrails<br/>open issue, ready label,<br/>not running, not blocked, not done"]
     Guard -->|valid| MarkRunning["GitHub Labels<br/>remove agent:ready<br/>add agent:running"]
     Guard -->|invalid| Skip["Skip / BLOCKED_WITH_DIAGNOSIS<br/>no runner execution"]
 
     MarkRunning --> Prepare["Prepare RUN_INPUT.json<br/>source_of_truth=github"]
     Prepare --> SSHWrite["n8n SSH Write<br/>RUN_INPUT.json to Runner"]
     SSHWrite --> SSHStart["n8n SSH Start<br/>start_github_issue_run.sh"]
-    SSHStart --> Runner["Runner LXC 102<br/>local execution boundary"]
+    SSHStart --> Runner["Runner LXC 102<br/>192.168.1.53"]
 
     Runner --> Evidence["Local Evidence<br/>status.json, run-report.md,<br/>agent.log, commands.log"]
     Evidence --> SSHRead["n8n SSH Read<br/>status.json"]
@@ -35,9 +35,11 @@ flowchart TD
     classDef runner fill:#eef6ff,stroke:#2563eb,stroke-width:1px;
     classDef evidence fill:#ecfdf5,stroke:#059669,stroke-width:1px;
     classDef blocked fill:#fef2f2,stroke:#dc2626,stroke-width:1px;
+    classDef manual fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
 
-    class GH_Issue,GH_LabelReady,GHComment,SuccessLabels,FailureComment,FailureLabels,HumanReview github;
-    class N8N_Dispatch,Guard,MarkRunning,Prepare,SSHWrite,SSHStart,SSHRead,Format n8n;
+    class GH_Issue,GHComment,SuccessLabels,FailureComment,FailureLabels,HumanReview github;
+    class ManualTrigger,FetchIssue,N8N_Dispatch,Guard,MarkRunning,Prepare,SSHWrite,SSHStart,SSHRead,Format n8n;
+    class ManualTrigger manual;
     class Runner runner;
     class Evidence evidence;
     class Skip blocked;
@@ -75,9 +77,9 @@ stateDiagram-v2
 
 | Option | Status | Detail |
 |--------|--------|--------|
-| GitHub Trigger (issues:labeled) | ✅ SELECTED | 42 GitHub trigger nodes available in n8n v2.26.8. `On issues` trigger with label filter is the preferred approach. |
-| Polling (Schedule + Search API) | 🔄 FALLBACK | Available if GitHub Trigger proves unreliable. Uses GitHub Search API with `label:agent:ready` query. |
-| Manual Trigger | ✅ FALLBACK | Existing 12-node workflow `jb7BgKeWGee5Iq9d` retains Manual Trigger as developer fallback. |
+| GitHub Trigger (issues:labeled) | ❌ NOT AVAILABLE | Requires public webhook URL — n8n instance (192.168.1.52) is on internal network, GitHub cannot deliver webhooks to private IP. |
+| Polling (Schedule + Search API) | ❌ NOT IMPLEMENTED | Schedule Trigger node was not added to deployed workflow. Only Manual Trigger exists in current deployment. |
+| Manual Trigger | ✅ ACTIVE | Dispatcher workflow `Sv12QTo56NoPUu2D` has only Manual Trigger. Execution #44 (Issue #3) succeeded for nodes 1-14, node 15 has pre-existing JS syntax error. |
 
 ## Component Map
 
@@ -161,7 +163,20 @@ Evidence path:
 
 ## Workflow References
 
-| Name | ID | Role | Active |
-|------|----|------|--------|
-| GitHub Issue -> Runner Agent Intake | `jb7BgKeWGee5Iq9d` | Manual fallback (12 nodes) | No |
-| GitHub Ready Issue -> Runner Agent Dispatch | (new) | Auto-dispatcher via GitHub Trigger | TBD |
+| Name | ID | Role | Active | Trigger |
+|------|----|------|--------|---------|
+| GitHub Issue -> Runner Agent Intake | `jb7BgKeWGee5Iq9d` | Manual fallback (12 nodes) | No | Manual |
+| GitHub Ready Issue -> Runner Agent Dispatch | `Sv12QTo56NoPUu2D` | Auto-dispatcher via Manual Trigger (15 nodes) | **Yes** — UI shows active | **Manual only** (no Schedule Trigger) |
+
+## Issue #3 Processing Result
+
+| Detail | Value |
+|--------|-------|
+| Issue | https://github.com/xxammaxx/n8n-blueprint-workflow/issues/3 |
+| Execution | #44 — Manual trigger, 1m 28.494s |
+| Nodes 1-14 | ✅ SUCCESS |
+| Node 15 (Format Final Result) | ❌ ERROR — pre-existing JS syntax error |
+| Pre-state | `agent:ready`, `mode:manual-terminal`, `risk:low` |
+| Post-state | `agent:needs-review`, `evidence:attached`, `mode:manual-terminal`, `risk:low` |
+| Runner Evidence | `/opt/dev-fabric/evidence/github-agent-runs/xxammaxx/n8n-blueprint-workflow/issue-3/gh-issue-3-20260626T073802Z/` |
+| status.json | `GREEN_PARTIAL`, `source_of_truth=github`, `issue_number=3` |

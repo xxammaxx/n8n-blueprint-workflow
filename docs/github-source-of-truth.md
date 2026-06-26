@@ -76,13 +76,13 @@ flowchart TD
 | **Polling** (Schedule + GitHub Search API) | ✅ **SELECTED** | Uses n8n Schedule Trigger + GitHub Search API with `label:agent:ready` query. Compatible with internal network. |
 | Manual Trigger | ✅ FALLBACK | Existing 12-node workflow `jb7BgKeWGee5Iq9d` retains Manual Trigger. 15-node dispatcher `k1c2d3FfWHee6Jr0e` also has Manual Trigger for smoke testing. |
 
-**Why Polling was selected:**
-1. n8n instance (LXC 101) has no public URL — GitHub cannot deliver webhooks to `192.168.1.52`
-2. Schedule Trigger runs periodically and queries GitHub Search API: `is:issue is:open repo:xxammaxx/n8n-blueprint-workflow label:"agent:ready"`
+**Why Polling was selected (but NOT yet implemented):**
+1. n8n instance (CT 101 / 192.168.1.52) has no public URL — GitHub cannot deliver webhooks to private IP
+2. Schedule Trigger would run periodically and query GitHub Search API: `is:issue is:open repo:xxammaxx/n8n-blueprint-workflow label:"agent:ready"`
 3. No public internet exposure needed — all traffic is outbound from n8n to `api.github.com`
-4. Polling interval is configurable (recommended: every 10 minutes)
+4. **However:** The Schedule Trigger node was never added to the deployed workflow. Only Manual Trigger exists in the current deployment.
 
-**Dispatcher workflow:** `workflows/github-ready-issue-dispatch.export.json` (Live ID: `Sv12QTo56NoPUu2D`, 18 nodes, Status: ✅ FIXED + ACTIVATED (via API), Schedule Trigger registration UNVERIFIED)
+**Dispatcher workflow:** `workflows/github-ready-issue-dispatch.export.json` (Live ID: `Sv12QTo56NoPUu2D`, 15 nodes, Status: ✅ ACTIVE — Manual Trigger only. No Schedule Trigger present.)
 
 ### 🛠️ Code Fix Applied (2026-06-26)
 
@@ -101,32 +101,40 @@ const prepData = $('Prepare RUN_INPUT.json').first().json;
 
 **Fix applied via:** `PATCH /rest/workflows/Sv12QTo56NoPUu2D` (n8n REST API)
 
-### ✅ Activation Status (2026-06-26)
+### ✅ Activation Status (2026-06-26) — Updated
 
 | Method | Result | Detail |
 |--------|--------|--------|
 | API PATCH (code fix) | ✅ SUCCESS | Unused variable removed, workflow updated |
 | API POST /activate | ✅ SUCCESS | `POST /rest/workflows/Sv12QTo56NoPUu2D/activate` → `{"active":true}` HTTP 200 |
-| UI Publish Button | ✅ FIXED | Root cause removed (unused variable) |
-| UI Active Toggle | ⚠️ UNVERIFIED | Cannot verify without UI access |
-| Schedule Trigger Registration | ⚠️ UNVERIFIED | May not be registered — only UI Publish+Active Toggle confirmed to register Schedule Triggers at startup |
-| Issue #3 Processing | ❌ NOT YET | Labels unchanged (still `agent:ready`) |
+| UI Active Status | ✅ **CONFIRMED ACTIVE** | UI shows ▶️ icon, all nodes show "Deactivate" |
+| Trigger Type | ⚠️ **Manual Trigger ONLY** | No Schedule Trigger node present in deployed workflow |
+| Schedule Auto-Run | ❌ **NOT POSSIBLE** | Schedule Trigger node was never added to the workflow |
+| Issue #3 Processing | ✅ **PROCESSED (14/15 OK)** | Execution #44, Manual trigger. Node 15 has pre-existing JS syntax error. Post-state: `agent:needs-review`, `evidence:attached`. |
 
-### ⚠️ Critical: Activation Mechanism
+### Key Correction: No Schedule Trigger in Deployed Workflow
 
-In n8n v2.26.8 regular deployment mode, Schedule Trigger registration at startup requires the workflow to be **activated through the UI** (Publish + Active Toggle). Neither CLI publish nor direct database updates achieve this:
+The deployed dispatcher workflow (`Sv12QTo56NoPUu2D`) contains **only a Manual Trigger**. The Schedule Trigger, GitHub Search, and Pick First nodes were NOT included in the workflow export. This means:
+
+- **Workflow is active** and can be executed manually
+- **No automatic polling** occurs — no Schedule Trigger to fire
+- **Issue #3 was processed** successfully via Manual Trigger (Execution #44)
+- For Schedule auto-run: nodes must be added via n8n UI, then UI-Publish + UI-Active-Toggle
+
+### Schedule Trigger Activation (when configured)
+
+In n8n v2.26.8, Schedule Trigger registration at startup requires the workflow to be **activated through the UI** (Publish + Active Toggle):
 
 ```
-UI Publish + Active Toggle    → active=1 in DB + Schedule registered at startup ✅
-API PATCH + POST /activate    → active=1 but Schedule registration UNVERIFIED     ⚠️
-CLI publish:workflow          → active=1 in DB only, Schedule NOT registered      ❌
-DB UPDATE SET active=1        → active=1 in DB only, Schedule NOT registered      ❌
-API import only               → active=0 in DB, not published                     ❌
+UI Publish + Active Toggle (with Schedule node) → active=1 + Schedule registered at startup ✅
+API PATCH + POST /activate (no Schedule node)   → active=1, Manual only                    ✅
+CLI publish:workflow                            → active=1 in DB only, Schedule NOT registered ❌
+DB UPDATE SET active=1                          → active=1 in DB only, Schedule NOT registered ❌
 ```
 
-**Verification command:**
+**Verification command (when Schedule Trigger is configured):**
 ```bash
-ssh root@192.168.1.136 'journalctl -u n8n --no-pager | grep "Currently active workflows" -A20'
+pct exec 101 -- journalctl -u n8n --no-pager | grep "Currently active workflows" -A20
 ```
 Sv12QTo56NoPUu2D must appear in this list for the Schedule Trigger to fire.
 
@@ -322,13 +330,14 @@ No repository files changed by the agent run.
 
 ## Dispatcher Workflow Reference
 
-The **GitHub Ready Issue → Runner Agent Dispatch** workflow (ID: `k1c2d3FfWHee6Jr0e`) is the automated dispatcher. See `docs/architecture/github-source-of-truth-flow.md` for full Mermaid diagrams:
+The **GitHub Ready Issue → Runner Agent Dispatch** workflow (ID: `Sv12QTo56NoPUu2D`, 15 nodes) is the dispatcher. See `docs/architecture/github-source-of-truth-flow.md` for full Mermaid diagrams:
 
-- **Full Dispatch Flow** — end-to-end flowchart from `agent:ready` label to evidence comment
+- **Full Dispatch Flow** — end-to-end flowchart from `agent:ready` label to evidence comment (updated: Manual Trigger mode)
 - **Label State Machine** — state diagram for label transitions
-- **Trigger Decision** — polling vs webhook comparison
+- **Trigger Decision** — polling vs webhook comparison (current: Manual Trigger only)
 - **Component Map** — GitHub → n8n → Runner system architecture
 - **Dual-Start Protection** — guardrails preventing concurrent agent runs
+- **Issue #3 Result** — Processing details for the first successful manual dispatch run
 
 ## Evidence-Pfad-Struktur
 

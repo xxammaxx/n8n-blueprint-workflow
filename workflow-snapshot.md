@@ -1,0 +1,412 @@
+- generic [ref=e3]:
+  - main [ref=e4]:
+    - generic [ref=e6]:
+      - generic [ref=e9]:
+        - generic [ref=e11]:
+          - generic [ref=e14]:
+            - link "Personal" [ref=e16] [cursor=pointer]:
+              - /url: /projects/fLfBCnB9rifW9Cu2
+              - generic [ref=e18]:
+                - generic "Personal" [ref=e19]:
+                  - img [ref=e20]
+                - generic "Personal" [ref=e24]
+            - generic [ref=e25]: /
+            - generic "GitHub Ready Issue -> Runner Agent Dispatch" [ref=e26]:
+              - generic [ref=e28] [cursor=pointer]: GitHub Ready Issue -> Runner Agent Dispatch
+          - generic [ref=e31]:
+            - generic "source-of-truth" [ref=e34] [cursor=pointer]:
+              - generic: source-of-truth
+            - generic "dispatcher" [ref=e37] [cursor=pointer]:
+              - generic: dispatcher
+            - generic "github" [ref=e40] [cursor=pointer]:
+              - generic: github
+          - generic [ref=e41]:
+            - generic [ref=e43] [cursor=pointer]:
+              - generic: 0 / 3
+            - generic [ref=e44]:
+              - generic [ref=e46]:
+                - button "Publish" [disabled] [ref=e48]:
+                  - generic [ref=e52]: Publish
+                - button "More actions" [ref=e55] [cursor=pointer]:
+                  - img [ref=e57]
+              - link "Version History" [ref=e60] [cursor=pointer]:
+                - /url: /workflow/Sv12QTo56NoPUu2D/history
+                - button "Version History" [ref=e61]:
+                  - img [ref=e63]
+              - button "Actions" [ref=e70] [cursor=pointer]:
+                - img [ref=e72]
+        - radiogroup [ref=e78]:
+          - radio "Editor" [checked] [ref=e79]:
+            - generic [ref=e80] [cursor=pointer]: Editor
+          - radio "Executions" [ref=e81]:
+            - generic [ref=e82] [cursor=pointer]: Executions
+          - radio "Evaluations" [ref=e83]:
+            - generic [ref=e84] [cursor=pointer]: Evaluations
+      - complementary [ref=e85]:
+        - generic [ref=e86]:
+          - generic [ref=e88]:
+            - menubar [ref=e89]:
+              - menuitem "Add new item" [ref=e90]:
+                - button "Add new item" [ref=e92] [cursor=pointer]:
+                  - img [ref=e94]
+            - button "Open command palette" [ref=e97] [cursor=pointer]:
+              - img [ref=e99]
+            - button "Toggle sidebar" [ref=e104] [cursor=pointer]:
+              - img [ref=e106]
+          - generic [ref=e114]:
+            - menuitem "Overview" [ref=e117] [cursor=pointer]:
+              - img [ref=e119]
+            - menuitem "Chat" [ref=e125] [cursor=pointer]:
+              - img [ref=e127]
+          - generic [ref=e130]:
+            - menuitem "Templates" [ref=e133] [cursor=pointer]:
+              - img [ref=e135]
+            - menuitem "Insights" [ref=e142] [cursor=pointer]:
+              - img [ref=e144]
+            - menuitem "Help" [ref=e148] [cursor=pointer]:
+              - img [ref=e150]
+            - menuitem "Settings" [ref=e156] [cursor=pointer]:
+              - img [ref=e158]
+      - main [ref=e162]:
+        - generic [ref=e165]:
+          - generic [ref=e167]:
+            - generic [ref=e169]:
+              - generic:
+                - img
+                - img:
+                  - group "Edge from 85e67e06-d857-4413-bba3-6247db0f2737 to 2d16d3af-2e93-433d-9feb-6e26d33c5100":
+                    - img
+                - img:
+                  - group "Edge from 2d16d3af-2e93-433d-9feb-6e26d33c5100 to 848355a6-223e-4e84-8b34-b5e7b5f634dc":
+                    - img
+                - img:
+                  - group "Edge from 848355a6-223e-4e84-8b34-b5e7b5f634dc to d0a66aea-4a62-4497-a2d9-ac2fabf08281":
+                    - img
+                - img:
+                  - group "Edge from d0a66aea-4a62-4497-a2d9-ac2fabf08281 to f75e4581-12a9-4da9-8370-82bc2d6dbac4":
+                    - img
+                - img:
+                  - group "Edge from f75e4581-12a9-4da9-8370-82bc2d6dbac4 to 0e03bd83-2b85-4227-a380-78e7aeeac5cc":
+                    - img
+                - img:
+                  - group "Edge from 0e03bd83-2b85-4227-a380-78e7aeeac5cc to bbc6efd4-0f27-4fef-8c4f-040a4cdaff3b":
+                    - img
+                - img:
+                  - group "Edge from bbc6efd4-0f27-4fef-8c4f-040a4cdaff3b to 4f5b0160-3a40-4d09-8620-ade252975993":
+                    - img
+                - img:
+                  - group "Edge from 4f5b0160-3a40-4d09-8620-ade252975993 to c7411679-fd1c-4b69-abcc-0769756cb349":
+                    - img
+                - img:
+                  - group "Edge from c7411679-fd1c-4b69-abcc-0769756cb349 to 592fc2b2-3f3b-4a30-b2f1-6eb1e254de42":
+                    - img
+                - img:
+                  - group "Edge from 592fc2b2-3f3b-4a30-b2f1-6eb1e254de42 to 25d2cbd3-b919-4f19-9f41-5aac51841742":
+                    - img
+                - img:
+                  - group "Edge from 25d2cbd3-b919-4f19-9f41-5aac51841742 to d2de1066-a6bb-4286-9460-4687c59db475":
+                    - img
+                - img:
+                  - group "Edge from d2de1066-a6bb-4286-9460-4687c59db475 to 5f7ff1c9-196a-4353-b3ac-f24ad51b93cd":
+                    - img
+                - img:
+                  - group "Edge from 5f7ff1c9-196a-4353-b3ac-f24ad51b93cd to 9d09319e-9ed6-4e85-9cf7-aedfe3fd1c41":
+                    - img
+                - img:
+                  - group "Edge from 9d09319e-9ed6-4e85-9cf7-aedfe3fd1c41 to f1aedb55-8b84-4886-85be-8a672817add5":
+                    - img
+                - generic:
+                  - generic:
+                    - generic: 1 item
+                - generic:
+                  - group [ref=e170] [cursor=pointer]:
+                    - generic [ref=e171]:
+                      - generic [ref=e176]:
+                        - button "Execute step" [ref=e177]:
+                          - img [ref=e179]
+                        - button "Deactivate" [ref=e181]:
+                          - img [ref=e183]
+                        - button "Delete" [ref=e186]:
+                          - img [ref=e188]
+                        - button "More actions" [ref=e190]:
+                          - img [ref=e192]
+                      - generic [ref=e194]:
+                        - generic [ref=e197]:
+                          - img
+                        - generic:
+                          - generic: Manual Trigger (Smoke Test)
+                        - img [ref=e199]
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - button "Execute workflow":
+                            - generic:
+                              - img
+                              - generic: Execute workflow
+                  - group [ref=e201] [cursor=pointer]:
+                    - generic [ref=e202]:
+                      - generic [ref=e211]:
+                        - button "Execute step" [ref=e212]:
+                          - img [ref=e214]
+                        - button "Deactivate" [ref=e216]:
+                          - img [ref=e218]
+                        - button "Delete" [ref=e221]:
+                          - img [ref=e223]
+                        - button "More actions" [ref=e225]:
+                          - img [ref=e227]
+                      - generic [ref=e229]:
+                        - generic [ref=e232]:
+                          - img
+                        - generic:
+                          - generic: Fetch Issue from GitHub
+                  - group [ref=e233] [cursor=pointer]:
+                    - generic [ref=e234]:
+                      - generic [ref=e243]:
+                        - button "Execute step" [ref=e244]:
+                          - img [ref=e246]
+                        - button "Deactivate" [ref=e248]:
+                          - img [ref=e250]
+                        - button "Delete" [ref=e253]:
+                          - img [ref=e255]
+                        - button "More actions" [ref=e257]:
+                          - img [ref=e259]
+                      - generic [ref=e261]:
+                        - generic [ref=e264]:
+                          - img
+                        - generic:
+                          - generic: Guardrails & Validate
+                  - group [ref=e265] [cursor=pointer]:
+                    - generic [ref=e266]:
+                      - generic [ref=e275]:
+                        - button "Execute step" [ref=e276]:
+                          - img [ref=e278]
+                        - button "Deactivate" [ref=e280]:
+                          - img [ref=e282]
+                        - button "Delete" [ref=e285]:
+                          - img [ref=e287]
+                        - button "More actions" [ref=e289]:
+                          - img [ref=e291]
+                      - generic [ref=e293]:
+                        - generic [ref=e296]:
+                          - img
+                        - img [ref=e300]
+                        - generic:
+                          - generic: Remove agent:ready Label
+                  - group [ref=e302] [cursor=pointer]:
+                    - generic [ref=e303]:
+                      - generic [ref=e312]:
+                        - button "Execute step" [ref=e313]:
+                          - img [ref=e315]
+                        - button "Deactivate" [ref=e317]:
+                          - img [ref=e319]
+                        - button "Delete" [ref=e322]:
+                          - img [ref=e324]
+                        - button "More actions" [ref=e326]:
+                          - img [ref=e328]
+                      - generic [ref=e330]:
+                        - generic [ref=e333]:
+                          - img
+                        - generic:
+                          - generic: Add agent:running Label
+                  - group [ref=e334] [cursor=pointer]:
+                    - generic [ref=e335]:
+                      - generic [ref=e344]:
+                        - button "Execute step" [ref=e345]:
+                          - img [ref=e347]
+                        - button "Deactivate" [ref=e349]:
+                          - img [ref=e351]
+                        - button "Delete" [ref=e354]:
+                          - img [ref=e356]
+                        - button "More actions" [ref=e358]:
+                          - img [ref=e360]
+                      - generic [ref=e362]:
+                        - generic [ref=e365]:
+                          - img
+                        - generic:
+                          - generic: Prepare RUN_INPUT.json
+                  - group [ref=e366] [cursor=pointer]:
+                    - generic [ref=e367]:
+                      - generic [ref=e376]:
+                        - button "Execute step" [ref=e377]:
+                          - img [ref=e379]
+                        - button "Deactivate" [ref=e381]:
+                          - img [ref=e383]
+                        - button "Delete" [ref=e386]:
+                          - img [ref=e388]
+                        - button "More actions" [ref=e390]:
+                          - img [ref=e392]
+                      - generic [ref=e394]:
+                        - generic [ref=e397]:
+                          - img
+                        - generic:
+                          - generic: SSH Write RUN_INPUT to Runner
+                          - generic: "execute: command"
+                  - group [ref=e398] [cursor=pointer]:
+                    - generic [ref=e399]:
+                      - generic [ref=e408]:
+                        - button "Execute step" [ref=e409]:
+                          - img [ref=e411]
+                        - button "Deactivate" [ref=e413]:
+                          - img [ref=e415]
+                        - button "Delete" [ref=e418]:
+                          - img [ref=e420]
+                        - button "More actions" [ref=e422]:
+                          - img [ref=e424]
+                      - generic [ref=e426]:
+                        - generic [ref=e429]:
+                          - img
+                        - generic:
+                          - generic: SSH Start Runner Script
+                          - generic: "execute: command"
+                  - group [ref=e430] [cursor=pointer]:
+                    - generic [ref=e431]:
+                      - generic [ref=e440]:
+                        - button "Execute step" [ref=e441]:
+                          - img [ref=e443]
+                        - button "Deactivate" [ref=e445]:
+                          - img [ref=e447]
+                        - button "Delete" [ref=e450]:
+                          - img [ref=e452]
+                        - button "More actions" [ref=e454]:
+                          - img [ref=e456]
+                      - generic [ref=e458]:
+                        - generic [ref=e461]:
+                          - img
+                        - generic:
+                          - generic: Wait (5s)
+                  - group [ref=e462] [cursor=pointer]:
+                    - generic [ref=e463]:
+                      - generic [ref=e472]:
+                        - button "Execute step" [ref=e473]:
+                          - img [ref=e475]
+                        - button "Deactivate" [ref=e477]:
+                          - img [ref=e479]
+                        - button "Delete" [ref=e482]:
+                          - img [ref=e484]
+                        - button "More actions" [ref=e486]:
+                          - img [ref=e488]
+                      - generic [ref=e490]:
+                        - generic [ref=e493]:
+                          - img
+                        - generic:
+                          - generic: SSH Read status.json
+                          - generic: "execute: command"
+                  - group [ref=e494] [cursor=pointer]:
+                    - generic [ref=e495]:
+                      - generic [ref=e504]:
+                        - button "Execute step" [ref=e505]:
+                          - img [ref=e507]
+                        - button "Deactivate" [ref=e509]:
+                          - img [ref=e511]
+                        - button "Delete" [ref=e514]:
+                          - img [ref=e516]
+                        - button "More actions" [ref=e518]:
+                          - img [ref=e520]
+                      - generic [ref=e522]:
+                        - generic [ref=e525]:
+                          - img
+                        - generic:
+                          - generic: Format Evidence Comment
+                  - group [ref=e526] [cursor=pointer]:
+                    - generic [ref=e527]:
+                      - generic [ref=e536]:
+                        - button "Execute step" [ref=e537]:
+                          - img [ref=e539]
+                        - button "Deactivate" [ref=e541]:
+                          - img [ref=e543]
+                        - button "Delete" [ref=e546]:
+                          - img [ref=e548]
+                        - button "More actions" [ref=e550]:
+                          - img [ref=e552]
+                      - generic [ref=e554]:
+                        - generic [ref=e557]:
+                          - img
+                        - generic:
+                          - generic: Create GitHub Comment on Issue
+                  - group [ref=e558] [cursor=pointer]:
+                    - generic [ref=e559]:
+                      - generic [ref=e568]:
+                        - button "Execute step" [ref=e569]:
+                          - img [ref=e571]
+                        - button "Deactivate" [ref=e573]:
+                          - img [ref=e575]
+                        - button "Delete" [ref=e578]:
+                          - img [ref=e580]
+                        - button "More actions" [ref=e582]:
+                          - img [ref=e584]
+                      - generic [ref=e586]:
+                        - generic [ref=e589]:
+                          - img
+                        - generic:
+                          - generic: Add Labels (agent:needs-review, evidence:attached)
+                  - group [ref=e590] [cursor=pointer]:
+                    - generic [ref=e591]:
+                      - generic [ref=e600]:
+                        - button "Execute step" [ref=e601]:
+                          - img [ref=e603]
+                        - button "Deactivate" [ref=e605]:
+                          - img [ref=e607]
+                        - button "Delete" [ref=e610]:
+                          - img [ref=e612]
+                        - button "More actions" [ref=e614]:
+                          - img [ref=e616]
+                      - generic [ref=e618]:
+                        - generic [ref=e621]:
+                          - img
+                        - img [ref=e625]
+                        - generic:
+                          - generic: Remove agent:running Label (404-tolerant)
+                  - group [ref=e627] [cursor=pointer]:
+                    - generic [ref=e628]:
+                      - img [ref=e634]
+                      - generic [ref=e642]:
+                        - button "Execute step" [ref=e643]:
+                          - img [ref=e645]
+                        - button "Deactivate" [ref=e647]:
+                          - img [ref=e649]
+                        - button "Delete" [ref=e652]:
+                          - img [ref=e654]
+                        - button "More actions" [ref=e656]:
+                          - img [ref=e658]
+                      - generic [ref=e660]:
+                        - generic [ref=e663]:
+                          - img
+                        - generic:
+                          - generic: Format Final Result
+            - img [ref=e664]
+            - img [ref=e665]
+            - generic [ref=e667]:
+              - button "Zoom to Fit" [ref=e669] [cursor=pointer]:
+                - img [ref=e671]
+              - button "Zoom In" [ref=e674] [cursor=pointer]:
+                - img [ref=e676]
+              - button "Zoom Out" [ref=e681] [cursor=pointer]:
+                - img [ref=e683]
+              - button "Reset Zoom" [ref=e688] [cursor=pointer]:
+                - img [ref=e690]
+              - button "Tidy Up" [ref=e695] [cursor=pointer]:
+                - img [ref=e697]
+          - button "Execute workflow" [ref=e702] [cursor=pointer]:
+            - generic [ref=e703]:
+              - img [ref=e704]
+              - generic [ref=e706]: Execute workflow
+          - generic [ref=e707]:
+            - button "Open nodes panel" [ref=e709] [cursor=pointer]:
+              - img [ref=e711]
+            - button "Command bar" [ref=e714] [cursor=pointer]:
+              - img [ref=e716]
+            - button "Add sticky note" [ref=e721] [cursor=pointer]:
+              - img [ref=e723]
+            - button "Open focus panel" [ref=e728] [cursor=pointer]:
+              - img [ref=e730]
+          - generic:
+            - complementary
+        - generic [ref=e742] [cursor=pointer]:
+          - generic [ref=e743]: Logs
+          - generic [ref=e745]:
+            - button "Pop out panel" [ref=e747]:
+              - img [ref=e749]
+            - button "Open panel" [ref=e752]:
+              - img [ref=e754]
+  - complementary

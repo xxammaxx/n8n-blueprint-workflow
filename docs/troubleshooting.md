@@ -1,5 +1,90 @@
 # Troubleshooting Guide
 
+## Symptom: Dispatcher Schedule Trigger fehlt — Workflow läuft nur mit Manual Trigger
+
+### Root Cause: Schedule Trigger node wurde nicht in den deployten Workflow aufgenommen
+
+Der Dispatcher-Workflow (`Sv12QTo56NoPUu2D`) wurde aus einem JSON-Export importiert, der **keinen Schedule Trigger Node** enthielt. Der Workflow hat nur einen **Manual Trigger**. Automatische Polling-Ausführung (alle 10 Minuten) ist daher nicht möglich.
+
+**Diagnose:**
+1. Workflow in n8n UI öffnen (`http://192.168.1.52:5678/workflow/Sv12QTo56NoPUu2D`)
+2. Prüfen, welche Trigger-Nodes vorhanden sind
+3. Nur "Manual Trigger" sichtbar → Schedule Trigger fehlt
+4. Der Workflow ist zwar **Active** (▶️ Icon sichtbar), aber ohne Schedule Trigger keine Auto-Ausführung
+
+**Workaround (Manual Trigger):**
+```powershell
+# Via n8n REST API einen manuellen Run starten:
+# 1. API-Headers aus storageState extrahieren
+# 2. POST /rest/workflows/Sv12QTo56NoPUu2D/execute
+# Mit issue_number als Parameter für das zu verarbeitende Issue
+```
+
+Oder im n8n UI:
+1. Workflow öffnen
+2. "Execute Workflow" Button (Manual Trigger) klicken
+3. Parameter `issue_number` setzen (z.B. 3)
+4. Workflow läuft durch
+
+**Fix (Schedule Trigger hinzufügen):**
+1. Workflow in n8n UI öffnen
+2. "Add Node" → "Trigger" → "Schedule Trigger" auswählen
+3. Intervall konfigurieren (z.B. alle 10 Minuten)
+4. Mit GitHub Search Node verbinden: Query `is:issue is:open label:agent:ready repo:xxammaxx/n8n-blueprint-workflow`
+5. Pick First Node hinzufügen (extrahiert erstes Issue)
+6. Mit Fetch Issue Node verbinden
+7. **UI-Publish** klicken (wichtig: nicht CLI publish)
+8. Active-Toggle auf ON setzen
+9. Verifikation: Nächsten Schedule-Zyklus abwarten oder n8n-Logs prüfen: `"Currently active workflows"` sollte den Dispatcher enthalten
+
+**Bekannte Einschränkung:** Weder CLI-Publish (`n8n publish:workflow`) noch DB-Update (`UPDATE workflow_entity SET active=1`) registrieren den Schedule-Trigger zuverlässig. Nur **UI-Publish + UI-Active-Toggle** funktioniert für Schedule-Registration in n8n v2.26.8.
+
+## Symptom: Runner-Script fehlt auf dem Runner (`start_github_issue_run.sh`)
+
+### Root Cause: Script wurde nicht deployt oder liegt unter falschem Pfad
+
+Das Script `start_github_issue_run.sh` muss auf dem Runner (CT 102, 192.168.1.53) unter `/opt/dev-fabric/scripts/` liegen und ausführbar sein.
+
+**Diagnose:**
+```bash
+# Von Proxmox Host:
+ssh root@192.168.1.136 'pct exec 102 -- ls -la /opt/dev-fabric/scripts/start_github_issue_run.sh'
+
+# Erwartet: -rwxr-xr-x 1 root root ... /opt/dev-fabric/scripts/start_github_issue_run.sh
+# Falls nicht vorhanden: Datei existiert nicht
+```
+
+**Deployment-Prozedur:**
+```bash
+# 1. Script vom Repo kopieren:
+# Das Script liegt im lokalen Repo unter scripts/start_github_issue_run.sh
+# Auf den Runner kopieren via n8n SSH oder direkt:
+
+# Option A: Via SCP vom Proxmox Host
+scp /path/to/start_github_issue_run.sh root@192.168.1.136:/opt/dev-fabric/scripts/
+
+# Option B: Via n8n SSH Write (cmd: mkdir -p + base64 -d)
+
+# 2. Berechtigungen setzen:
+ssh root@192.168.1.136 'pct exec 102 -- bash -lc "
+chmod 755 /opt/dev-fabric/scripts/start_github_issue_run.sh
+chown root:root /opt/dev-fabric/scripts/start_github_issue_run.sh
+"'
+
+# 3. Syntax-Prüfung:
+ssh root@192.168.1.136 'pct exec 102 -- bash -n /opt/dev-fabric/scripts/start_github_issue_run.sh'
+# Erwartet: kein Output (Exit Code 0)
+
+# 4. Ausführung testen (mit --help oder minimal args):
+ssh root@192.168.1.136 'pct exec 102 -- /opt/dev-fabric/scripts/start_github_issue_run.sh --help'
+```
+
+**Verifikation:**
+```bash
+# Prüfen ob Script läuft:
+ssh root@192.168.1.136 'pct exec 102 -- bash -lc "file /opt/dev-fabric/scripts/start_github_issue_run.sh && /opt/dev-fabric/scripts/start_github_issue_run.sh --help 2>&1 | head -5"'
+```
+
 ## Symptom: Dispatcher Publish Button Disabled (Publish/Unpublish greyed out)
 
 ### Root Cause: Unused variable in Code node triggers n8n lint error
@@ -63,43 +148,38 @@ Invoke-RestMethod -Uri "http://192.168.1.52:5678/rest/workflows/Sv12QTo56NoPUu2D
 
 **⚠️ Caveat:** API activation may NOT register the Schedule Trigger at n8n startup. UI Publish + Active-Toggle is the only method that fully registers Schedule Triggers for runtime activation in regular deployment mode. After API activation, verify by checking if the Schedule Trigger fires on the next cycle.
 
-## Symptom: Dispatcher Workflow wird nicht aktiv (Publish-Button deaktiviert)
+## Symptom: Dispatcher Workflow active, aber nur Manual Trigger — keine Auto-Ausführung
 
-### Root Cause: n8n regular deployment mode registered Schedule-Trigger nur bei UI-Aktivierung
+### Root Cause: Deployter Workflow hat keinen Schedule Trigger Node
 
-CLI-Publish (`n8n publish:workflow`) oder DB-Update (`UPDATE workflow_entity SET active=1`) reichen NICHT aus, um den Schedule-Trigger beim n8n Startup zu registrieren. Nur die UI-Aktivierung (Publish + Active-Toggle) löst die vollständige Runtime-Registrierung aus.
+Der Dispatcher-Workflow (`Sv12QTo56NoPUu2D`) ist aktiv (UI zeigt ▶️ Icon, alle Nodes zeigen "Deactivate"), hat aber **nur einen Manual Trigger**. Der Schedule Trigger Node wurde nie zum Workflow hinzugefügt — weder im JSON-Export noch via UI.
 
 **Diagnose:**
-```bash
-# Workflow active-Status in DB prüfen:
-ssh root@192.168.1.136 "echo 'SELECT id, name, active FROM workflow_entity;' | pct exec 101 -- sh -c 'cat > /tmp/q.sql && sqlite3 /opt/dev-fabric/n8n/data/.n8n/database.sqlite < /tmp/q.sql'" | grep -i dispatch
+1. Workflow in n8n UI öffnen: `http://192.168.1.52:5678/workflow/Sv12QTo56NoPUu2D`
+2. Prüfen ob ein Schedule/Trigger Node vorhanden ist
+3. Nur "Manual Trigger" → Schedule Trigger fehlt
+4. Active-Status ✅ (grün) bedeutet nur "Workflow kann manuell ausgeführt werden"
 
-# n8n Startup-Log prüfen:
-ssh root@192.168.1.136 'pct exec 101 -- journalctl -u n8n --no-pager | grep "Currently active" -A10'
-```
-
-**Recovery:**
+**Recovery (Schedule Trigger hinzufügen):**
 1. In n8n UI (`http://192.168.1.52:5678`) einloggen
 2. Workflow `Sv12QTo56NoPUu2D` öffnen
-3. Prüfen ob Publish-Button aktiviert ist:
-   - Wenn deaktiviert: Nodes auf Validierungsfehler prüfen (rote Warnsymbole)
-   - Credentials prüfen: `GitHub account` und `dev-runner-ssh` müssen gültig sein
-4. Workflow publishen (Publish-Button klicken)
-5. Active-Toggle auf "Active" setzen
-6. Speichern
-7. Verifikation: `journalctl -u n8n | grep "Activated workflow.*Dispatch"` sollte erscheinen
+3. "Add Node" → "Trigger" → "Schedule Trigger" auswählen
+4. Intervall konfigurieren (empfohlen: alle 10 Minuten)
+5. GitHub Search Node hinzufügen mit Query: `is:issue is:open label:agent:ready repo:xxammaxx/n8n-blueprint-workflow`
+6. Pick First Node hinzufügen
+7. Mit Fetch Issue Node verbinden
+8. **UI-Publish** klicken (NICHT CLI publish)
+9. Active-Toggle auf ON setzen
+10. Verifikation: n8n-Logs prüfen: `journalctl -u n8n | grep "Activated workflow.*Dispatch"` sollte erscheinen
 
-**Alternative: API-Key-Aktivierung (nur wenn UI nicht erreichbar)**
-```powershell
-# API-Key sicher lokal speichern (NICHT im Chat, NICHT im Repo):
-$apiKey = Read-Host "n8n API Key eingeben"
-New-Item -ItemType Directory -Path "$env:USERPROFILE\.n8n-automation" -Force | Out-Null
-$apiKey | Out-File -FilePath "$env:USERPROFILE\.n8n-automation\n8n-api-key.txt" -NoNewline
+**Alternative: Manuelle Ausführung (bestehender Workflow)**
+Da der Workflow aktiv ist, kann er jederzeit manuell gestartet werden:
+1. Workflow im n8n Editor öffnen
+2. "Execute Workflow" Button klicken
+3. Parameter `issue_number` setzen (z.B. 3 für Issue #3)
+4. Alle 14 Kern-Nodes laufen durch, Node 15 hat JS Syntax Error
 
-# Dann mit gespeichertem Key aktivieren:
-$apiKey = Get-Content "$env:USERPROFILE\.n8n-automation\n8n-api-key.txt"
-# API-Call zur Aktivierung (falls REST-Endpoint funktioniert)
-```
+**Wichtig:** CLI-Publish (`n8n publish:workflow`) oder DB-Update (`UPDATE workflow_entity SET active=1`) registrieren Schedule Trigger NICHT zuverlässig. Nur UI-Publish + UI-Active-Toggle funktioniert für Schedule-Registration in n8n v2.26.8.
 
 ## Symptom: Form returns HTTP 404 / "Problem loading form"
 

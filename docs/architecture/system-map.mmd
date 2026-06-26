@@ -1,6 +1,6 @@
 flowchart TD
-    GH[GitHub Issues + Labels] --> N8N[n8n Orchestrator]
-    N8N -->|SSH| R[Runner LXC 102]
+    GH[GitHub Issues + Labels] --> N8N[n8n Orchestrator<br/>CT 101 / 192.168.1.52]
+    N8N -->|SSH| R[Runner LXC 102<br/>192.168.1.53]
     R --> E[Local Evidence]
     N8N -->|SSH Read| E
     N8N -->|GitHub API| GH

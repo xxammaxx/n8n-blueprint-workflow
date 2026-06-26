@@ -5,9 +5,9 @@
 ```
 Zone 0: User Browser (untrusted)
   ↓ HTTP (internal network only)
-Zone 1: n8n Instance (LXC 101)
+Zone 1: n8n Instance (CT 101 / 192.168.1.52)
   ↓ SSH (key-based auth)
-Zone 2: Runner (LXC 102)
+Zone 2: Runner (CT 102 / lxc-dev-runner / 192.168.1.53)
   ↓ Filesystem
 Zone 3: Evidence / Workspace (read-only for n8n)
 ```
@@ -249,7 +249,7 @@ See `evidence-index/` for known evidence paths and `evidence-index/latest.md` fo
 | Spam protection | GitHub validates HMAC | ✅ Polling query is read-only |
 | **Selected** | ❌ Not viable (internal network) | ✅ **Selected** for dispatcher |
 
-The dispatcher workflow (`k1c2d3FfWHee6Jr0e`) uses Polling (Schedule Trigger + GitHub Search API) because the n8n instance has no public URL. This is **more secure** than webhooks — no incoming connections, no payload validation needed.
+The dispatcher workflow (`Sv12QTo56NoPUu2D`) currently uses only a **Manual Trigger** (no Schedule Trigger node present in deployed workflow). Polling (Schedule + GitHub Search API) is the intended production strategy but has NOT been implemented yet — the Schedule Trigger node was never added to the deployed workflow export. See `docs/github-issue-intake-runbook.md#schedule-trigger-configuration` for setup instructions.
 
 ### Guardrail Security
 
@@ -291,8 +291,8 @@ The Polling approach uses the existing `githubApi` credential in n8n:
 
 ## Network Isolation
 
-- n8n (192.168.1.52:5678) — internal only
-- Runner (container 102) — internal only
-- Proxmox (192.168.1.136) — management interface
+- n8n (CT 101 / 192.168.1.52:5678) — internal only
+- Runner (CT 102 / lxc-dev-runner / 192.168.1.53) — internal only
+- Proxmox host (192.168.1.136) — management interface, has defective n8n.service in restart loop (separate from working instance in CT 101)
 - No DMZ, no public exposure
 - MCP servers: internal only, never exposed publicly

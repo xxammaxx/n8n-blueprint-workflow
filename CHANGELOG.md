@@ -1,5 +1,62 @@
 # CHANGELOG
 
+## 2026-06-26 — Dispatcher Manual Verification & Issue #3 Processing: GREEN_PARTIAL
+
+### Status
+**GREEN_PARTIAL** — Dispatcher manual execution verified (14/15 nodes OK). No Schedule Trigger present in deployed workflow. Issue #3 processed via Manual Trigger.
+
+### Key Discoveries
+- **n8n runs in CT 101 (192.168.1.52)**, NOT on Proxmox host as previously documented. PID 420195 in container, `node /usr/bin/n8n start` as user `n8n`. Corrected earlier architecture finding.
+- **Proxmox host has defective n8n.service** in restart loop (counter 80850+) looking for `/bin/n8n` — independent from the working instance in CT 101.
+- **Schedule Trigger NOT present** in deployed dispatcher workflow. The export/import only included a Manual Trigger. No Schedule Trigger node exists.
+- **CLI publish / DB update insufficient** for schedule registration in n8n v2.26.8 — UI-Publish + UI-Active-Toggle required.
+
+### Issue #3 Processing (Execution #44)
+- **Pre-state:** `agent:ready`, `mode:manual-terminal`, `risk:low`
+- **Execution:** Manual trigger, 1m 28.494s
+- **Nodes 1-14:** ✅ SUCCESS (Fetch Issue, Guardrails, Labels, SSH Write/Start/Read, Comment API)
+- **Node 15 (Format Final Result):** ❌ ERROR — pre-existing JS syntax error (unrelated to dispatcher logic)
+- **Post-state:** `agent:needs-review`, `evidence:attached`, `mode:manual-terminal`, `risk:low`
+- **agent:ready** REMOVED, **agent:running** set and REMOVED, **agent:done** NOT set
+- **Issue remains OPEN**
+- **Comment posted:** Agent Run Result — Run ID `gh-issue-3-20260626T073802Z`
+
+### Runner Evidence (Issue #3)
+- **Path:** `/opt/dev-fabric/evidence/github-agent-runs/xxammaxx/n8n-blueprint-workflow/issue-3/gh-issue-3-20260626T073802Z/`
+- **status.json:** `GREEN_PARTIAL`, `source_of_truth=github`, `issue_number=3`
+- **Files:** agent.log, commands.log, github-context.md, operator-commands.md, RUN_INPUT.json, RUN_INPUT.redacted.json, run-report.md, status.json
+- **OpenCode v1.17.9** available, provider NOT configured, Hermes NOT installed
+
+### Runner Script
+- **Deployed:** `/opt/dev-fabric/scripts/start_github_issue_run.sh` on LXC 102 (192.168.1.53)
+- **Permissions:** 755 root:root (world-executable)
+- **bash -n:** PASS
+- **Runner user:** uid=1000, exists
+
+### System Status
+- **Overall:** GREEN_PARTIAL (Schedule Runtime UNVERIFIED — no Schedule Trigger exists)
+- **n8n:** Active, PID 420195 in CT 101, listening on 192.168.1.52:5678
+- **OpenCode Provider/Auth:** NOT configured
+- **Hermes:** NOT installed
+- **No DB/SQL used, no CLI publish, no MCP extended, no secrets exposed**
+- **.github/workflows** confirmed absent
+
+### Documentation Updated
+- `STATUS.md` — Corrected n8n location (CT 101), dispatcher status (Manual Trigger only, not Schedule), Issue #3 processed
+- `CHANGELOG.md` — this entry
+- `docs/troubleshooting.md` — Added "Dispatcher Schedule Trigger fehlt" + "Runner-Script fehlt" entries
+- `docs/github-issue-intake-runbook.md` — Updated dispatcher activation, Manual Trigger steps, Schedule Trigger guide
+- `docs/architecture.md` — Corrected n8n location (CT 101), activation mechanism, added Issue #3 result
+- `docs/security-boundaries.md` — Updated network zones with correct IPs, CT 101/102
+- `docs/github-source-of-truth.md` — Updated dispatcher status, Issue #3 result
+- `docs/architecture/github-source-of-truth-flow.md` — Manual Trigger mode documented, Issue #3 result
+- `docs/architecture/system-map.mmd` — n8n in CT 101, IP labels added
+- `docs/architecture/evidence-flow.mmd` — Evidence path for Issue #3, Manual Trigger path
+- `evidence-index/latest.md` — Full abschlussbericht for this run
+- `evidence-index/known-evidence-paths.md` — Added Issue #3 evidence path
+
+---
+
 ## 2026-06-26 — Dispatcher UI Activation: GREEN_PARTIAL_PLUS (Code Fix + API Activation)
 
 ### Status

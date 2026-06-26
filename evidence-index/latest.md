@@ -1,11 +1,11 @@
-# Abschlussbericht — dispatcher-ui-activation-20260626-v2
+# Abschlussbericht — Dispatcher Manual Verification & Issue #3 Processing
 
-## Status: GREEN_PARTIAL_PLUS
+## Status: GREEN_PARTIAL
 
-**Session ID:** dispatcher-ui-activation-20260626-v2
-**Completed:** 2026-06-26T11:30:00Z
-**Orchestrator:** issue-orchestrator (deepseek-v4-flash)
-**Previous Session:** dispatcher-ui-activation-blocked-20260626
+**Session ID:** dispatcher-manual-verification-20260626
+**Completed:** 2026-06-26T07:38:02Z
+**Orchestrator:** documentation-agent (deepseek-v4-flash)
+**Previous Session:** dispatcher-ui-activation-20260626-v2
 
 ---
 
@@ -13,161 +13,158 @@
 
 | Feld | Wert |
 |------|------|
-| **Status** | GREEN_PARTIAL_PLUS |
+| **Status** | GREEN_PARTIAL |
 | **GitHub Repo URL** | https://github.com/xxammaxx/n8n-blueprint-workflow |
-| **Letzter Commit vor Lauf** | `53a992e` — docs: update abschlussbericht for dispatcher smoke test session |
-| **Keine neuen Commits** | Reine Diagnose+API-Fix-Session — keine Code-Änderungen im Repo |
-| **Dispatcher Workflow ID** | `Sv12QTo56NoPUu2D` (18 nodes, live in n8n) |
-| **Root Cause (Publish blocked)** | ✅ **IDENTIFIED** — Unused variable in Code node "Format Final Result" |
-| **Code Fix Applied** | ✅ **REMOVED unused var** via `PATCH /rest/workflows/Sv12QTo56NoPUu2D` |
-| **API Activation** | ✅ **SUCCESS** — `POST /rest/workflows/Sv12QTo56NoPUu2D/activate` → `{"active":true}` HTTP 200 |
-| **Schedule Trigger Registration** | ⚠️ **UNVERIFIED** — API activation may not register Schedule Trigger at n8n startup |
-| **Issue #3 Processing** | ❌ **NOT YET** — Labels unchanged (still `agent:ready`) |
-| **storageState** | ✅ **RENEWED** — 8,907 bytes at `C:\Users\xxammaxx\.n8n-automation\playwright\n8n-storage-state.json` |
-| **Architecture Discovery** | ✅ **n8n runs on Proxmox HOST** (192.168.1.136, PID 420195, user 100999), NOT in container 101 |
-| **Host n8n Service** | ⚠️ **FAILED** — Separate system service looking for `/bin/n8n` in restart loop (independent) |
-| **n8n Login deaktiviert** | ❌ NEIN |
-| **n8n API-Key genutzt** | ❌ NEIN (JWT Cookie + browser-id Header verwendet) |
-| **Login-Datei genutzt** | ❌ NEIN |
-| **Trigger-Strategie** | Polling/Schedule (10 min) — konfiguriert, API-aktiviert, Runtime UNVERIFIED |
-| **Smoke-Issue URL** | https://github.com/xxammaxx/n8n-blueprint-workflow/issues/3 |
-| **Issue #3 Labels** | `agent:ready`, `mode:manual-terminal`, `risk:low` (OPEN) |
-| **Issue #3 Status** | ⏳ Awaiting Schedule Trigger or UI verification |
-| **Manuelle Ausführung** | ✅ Execution #42 erfolgreich (Guardrails blockierten Issue #2 korrekt) |
-| **Runner Evidence (Issue #3)** | ❌ Nicht vorhanden (Dispatcher noch nicht gelaufen) |
+| **Letzter Commit vor Lauf** | Vorherige Session — docs updated |
+| **Keine neuen Commits** | Reine Dokumentations-Update-Session |
+| **Dispatcher Workflow ID** | `Sv12QTo56NoPUu2D` (15 nodes, live in n8n, active) |
+| **Trigger Type** | **Manual Trigger ONLY** — kein Schedule Trigger Node im Workflow |
+| **Issue #3 Processing** | ✅ Execution #44, 1m 28.494s — Nodes 1-14 SUCCESS, Node 15 ERROR (pre-existing JS syntax error) |
+| **Issue #3 Post-state** | `agent:needs-review`, `evidence:attached`, `mode:manual-terminal`, `risk:low` |
+| **Issue #3 URL** | https://github.com/xxammaxx/n8n-blueprint-workflow/issues/3 |
+| **Runner Evidence (Issue #3)** | `/opt/dev-fabric/evidence/github-agent-runs/xxammaxx/n8n-blueprint-workflow/issue-3/gh-issue-3-20260626T073802Z/` |
+| **status.json** | `GREEN_PARTIAL`, `source_of_truth=github`, `issue_number=3` |
+| **n8n Location** | ✅ **CT 101** (192.168.1.52) — PID 420195, `node /usr/bin/n8n start`, user `n8n` |
+| **Runner Location** | CT 102 / lxc-dev-runner / 192.168.1.53 |
+| **Proxmox Host n8n.service** | ⚠️ DEFECTIVE — restart loop (counter 80850+), looking for `/bin/n8n`. Independent from working instance. |
+| **Runner Script** | ✅ Deployed at `/opt/dev-fabric/scripts/start_github_issue_run.sh` (755, bash -n PASS) |
+| **OpenCode Version** | v1.17.9 (verfuegbar, Provider/Auth NICHT konfiguriert) |
+| **Hermes** | ❌ NICHT installiert |
 | **MCP nicht erweitert** | ✅ Ja |
 | **Produktivworkflows nicht für MCP freigegeben** | ✅ Ja |
 | **Token sichtbar** | ❌ NEIN |
 | **Private Key sichtbar** | ❌ NEIN |
 | **.github/workflows weiterhin fehlt** | ✅ Ja |
-| **Secret-Scan-Ergebnis** | Keine neuen Commits — kein Scan nötig |
-| **OpenCode-Version** | v1.17.9 |
-| **OpenCode Provider/Auth Status** | ❌ nicht konfiguriert |
-| **Hermes Status** | ❌ nicht installiert |
+| **Kein DB/SQL verwendet** | ✅ Ja |
+| **Kein CLI publish verwendet** | ✅ Ja |
 
 ---
 
-## Root Cause Analysis: Publish Button Disabled
+## Key Discovery: Schedule Trigger NOT Present
 
-### Root Cause: Unused Variable in Code Node
+### Bisherige Annahme (korrigiert)
 
-The "Format Final Result" Code node contained an **unused variable** that n8n's Code node linter flagged as a **blocking issue**:
+In der vorherigen Session wurde angenommen, dass ein Schedule Trigger (10 Minuten Intervall) im Dispatcher-Workflow konfiguriert sei und die API-Aktivierung den Schedule möglicherweise nicht registrieren würde.
 
-```javascript
-// BEFORE — Publish blocked:
-const data = $input.first().json;  // ← NEVER USED ANYWHERE
-const prepData = $('Prepare RUN_INPUT.json').first().json;
-```
+**Korrektur:** Der deployte Workflow enthaelt **gar keinen Schedule Trigger Node**. Nur ein Manual Trigger ist vorhanden. Die Nodes "Schedule Trigger", "GitHub Search" und "Pick First" waren nie Teil des exportierten Workflow-JSONs.
 
-**Why this blocks Publish:**
-- n8n v2.26.8's JS Task Runner linter treats unused variables as errors
-- This prevents both "Publish" and "Unpublish" from being enabled
-- The Active/Inactive toggle is not accessible
-- Manual execution (via Manual Trigger button) still works
-- The workflow JSON can still be exported/imported
+### Auswirkungen
 
-### Fix Applied
+| Aspekt | Vor Korrektur | Nach Korrektur |
+|--------|--------------|----------------|
+| Schedule Trigger | Konfiguriert aber Registration unbestätigt | **Nicht vorhanden** |
+| Auto-Run alle 10 Min | Unbestätigt | **Nicht möglich** |
+| Issue #3 Verarbeitung | Nicht verarbeitet | **✅ Verarbeitet via Manual Trigger** |
+| Nächster Schritt | Schedule Registration verifizieren | Schedule Trigger Node via UI hinzufügen |
 
-Removed the unused variable line via REST API PATCH:
+### Issue #3 Processing Details
 
-```powershell
-# PATCH request to update the workflow
-Invoke-RestMethod -Uri "http://192.168.1.52:5678/rest/workflows/Sv12QTo56NoPUu2D" `
-    -Method Patch `
-    -Headers @{
-        "Content-Type" = "application/json"
-        "Cookie" = "n8n-auth=<from storageState>"
-        "browser-id" = "<sha256-of-browserId>"
-    } `
-    -Body $fixedWorkflowJson
-```
+Issue #3 ("[smoke] Scheduler-Dispatcher Dauerbetrieb — automatisierter Smoke Test") wurde manuell getriggert:
 
-Result: PATCH succeeded, workflow JSON updated with the unused variable removed. Final code:
+| Node | Name | Result |
+|------|------|--------|
+| 1 | Manual Trigger | ✅ |
+| 2 | GitHub: Get Issue | ✅ |
+| 3 | Guardrails & Validate | ✅ |
+| 4 | Remove agent:ready | ✅ |
+| 5 | Add agent:running | ✅ |
+| 6 | Prepare RUN_INPUT.json | ✅ |
+| 7 | SSH Write | ✅ |
+| 8 | SSH Start (Runner Script) | ✅ |
+| 9 | Wait 5s | ✅ |
+| 10 | SSH Read status.json | ✅ — `GREEN_PARTIAL` |
+| 11 | Format Evidence Comment | ✅ |
+| 12 | GitHub Comment API | ✅ — Run ID posted |
+| 13 | Add Labels | ✅ |
+| 14 | Remove agent:running | ✅ (404-tolerant) |
+| **15** | **Format Final Result** | **❌ ERROR — pre-existing JS syntax error** |
 
-```javascript
-const prepData = $('Prepare RUN_INPUT.json').first().json;
-```
+Labels transition: `agent:ready` → (removed) → `agent:running` → (removed) → `agent:needs-review` + `evidence:attached`
 
-### Activation
-
-```powershell
-Invoke-RestMethod -Uri "http://192.168.1.52:5678/rest/workflows/Sv12QTo56NoPUu2D/activate" `
-    -Method Post `
-    -Headers $headers
-```
-
-**Response:** `{"active":true}` — HTTP 200 OK
-
----
-
-## Architecture Discovery
-
-### n8n runs on Proxmox HOST (NOT in Container 101)
-
-**Previous assumption:** n8n runs inside LXC container 101 at 192.168.1.136
-**Actual finding:** n8n runs directly on the **Proxmox host** (192.168.1.136):
+### Runner Script Verification
 
 | Check | Result |
 |-------|--------|
-| `ps aux \| grep n8n` on HOST | PID 420195, user 100999, runs directly |
-| `pct exec 101 -- ps aux \| grep n8n` | **NOT FOUND** — n8n not in container 101 |
-| Container 101 processes | Only system processes (init, sshd, syslog, cron) |
-| `192.168.1.52:5678` | Routes to Proxmox host, NOT container 101 |
-| Host systemd n8n service | **FAILED** — looks for `/bin/n8n` which doesn't exist, restart loop |
+| Path | `/opt/dev-fabric/scripts/start_github_issue_run.sh` |
+| Permissions | 755 root:root (world-executable) |
+| Syntax (`bash -n`) | ✅ PASS |
+| Runner user | uid=1000, exists |
+| Evidence produced | 8 files under Issue #3 run directory |
 
-### Dual n8n Service Situation
+---
 
-The Proxmox host has **two n8n processes** (one working, one failed):
+## Architecture Correction: n8n in CT 101
 
-1. **Working n8n** — Started directly by user 100999, PID 420195
-   - Listens on 192.168.1.52:5678
-   - Contains all workflows (Blueprint V2, GitHub Intake, Ready Issue Dispatcher)
-   - Responds to API calls at `/rest/workflows/...`
-2. **Failed n8n service** — systemd unit, restart loop
-   - Looks for binary at `/bin/n8n` which does NOT exist
-   - This is a **separate, independent** issue from the working n8n
-   - Does NOT affect the working n8n
+### Bisherige Annahme (aus vorheriger Session, KORRIGIERT)
 
-### API Auth Requirements
+Die vorherige Session dokumentierte: "n8n runs on Proxmox HOST (NOT in Container 101)". Diese Annahme war **falsch** — die korrekte Architektur ist:
 
-| Requirement | Source | Example |
-|-------------|--------|---------|
-| `Cookie: n8n-auth=<JWT>` | storageState cookies → `n8n-auth` | Long JWT string |
-| `browser-id: <hash>` | storageState localStorage → `browserId`, then SHA-256 | 64-char hex string |
-| `Content-Type: application/json` | Standard | — |
+| Aspekt | Vorherige Annahme | Korrektur |
+|--------|------------------|-----------|
+| **n8n Location** | Proxmox Host (192.168.1.136) | **CT 101** (192.168.1.52) |
+| **PID** | 420195 auf Host | 420195 **in CT 101** |
+| **User** | 100999 (Host) | `n8n` (Container) |
+| **Process** | direkt gestartet | `node /usr/bin/n8n start` |
+| **Port 5678** | Router zum Host | **CT 101 bindet direkt** |
+
+### Fehlerquelle
+
+Die Verwechslung entstand wahrscheinlich weil:
+- `ps aux | grep n8n` auf dem Proxmox Host den Prozess innerhalb von CT 101 anzeigt (je nach Tool-Konfiguration)
+- Der Port 192.168.1.52:5678 wird vom Host an CT 101 weitergeleitet
+- Der defekte systemd n8n.service auf dem Host (Restart-Loop, `/bin/n8n` nicht gefunden) wurde fälschlicherweise mit dem laufenden n8n in Verbindung gebracht
+
+### Korrekte Befehle
+
+```bash
+# n8n in CT 101 prüfen:
+pct exec 101 -- ps aux | grep n8n
+# → PID 420195, /usr/bin/n8n start
+
+# n8n Service in CT 101 prüfen:
+pct exec 101 -- systemctl status n8n
+
+# Health-Check:
+curl -s http://192.168.1.52:5678/healthz
+# → OK
+
+# Host n8n.service (defekt, unabhängig):
+ssh root@192.168.1.136 'systemctl status n8n'
+# → failed, restart loop
+```
 
 ---
 
 ## Was wurde dokumentiert (diese Session)
 
-- `STATUS.md` — Status auf GREEN_PARTIAL_PLUS, Code Fix + Activation + Architektur-Discovery
-- `CHANGELOG.md` — Neuer Eintrag: Dispatcher UI Activation GREEN_PARTIAL_PLUS
-- `docs/troubleshooting.md` — Neues Symptom: "Dispatcher Publish Button Disabled" mit Root Cause + API Fix
-- `docs/github-issue-intake-runbook.md` — Aktivierungsabschnitt aktualisiert mit Code-Lint-Requirement + API-Endpoint
-- `docs/architecture.md` — n8n läuft auf Proxmox HOST, Dual-Service-Situation, API Endpoints
-- `docs/security-boundaries.md` — storageState-Pfad + API-Auth-Header dokumentiert
-- `docs/github-source-of-truth.md` — Code Fix + Activation Status für Sv12QTo56NoPUu2D
-- `evidence-index/latest.md` — Dieser Bericht
+Siehe CHANGELOG.md fuer vollstaendige Liste. Kern-Änderungen:
+
+- **STATUS.md** — Korrektur: n8n in CT 101, kein Schedule Trigger, Issue #3 verarbeitet
+- **docs/architecture.md** — n8n Location korrigiert, Activation Mechanism aktualisiert, Issue #3 Ergebnis
+- **docs/troubleshooting.md** — Neue Eintraege: "Dispatcher Schedule Trigger fehlt", "Runner-Script fehlt"
+- **docs/github-issue-intake-runbook.md** — Manual Trigger Schritte, Schedule Trigger Konfiguration
+- **docs/architecture/system-map.mmd** — IPs hinzugefuegt, CT 101/102 labels
+- **docs/architecture/evidence-flow.mmd** — Issue #3 Evidence Path, Manual Trigger
+- **evidence-index/known-evidence-paths.md** — Issue #3 Run hinzugefuegt
 
 ---
 
-## Nächster Schritt
+## Nächste Schritte
 
-1. **☑️ Schedule Trigger Registration verifizieren** — Zwei Optionen:
-   - **Option A:** n8n UI öffnen → Workflow Sv12QTo56NoPUu2D → Active-Toggle-Status prüfen
-   - **Option B:** Auf nächsten Schedule-Trigger-Zyklus warten (alle 10 Min) → Prüfen ob Issue #3 automatisch verarbeitet wird
-2. **Issue #3 Status prüfen** — Labels sollten von `agent:ready` auf `agent:running` → `agent:needs-review` wechseln
-3. **Bei Erfolg:** Dispatcher-Aktivierung als vollständig bestätigt dokumentieren
-4. **OpenCode Provider/Auth** konfigurieren (separate Approval erforderlich)
+1. **Schedule Trigger Node hinzufuegen** (fuer Auto-Run):
+   - Via n8n UI Schedule Trigger + GitHub Search + Pick First Nodes hinzufuegen
+   - UI-Publish + Active-Toggle
+2. **Node 15 JS Syntax Error fixen** — "Format Final Result" Code Node reparieren
+3. **OpenCode Provider/Auth** konfigurieren (separate Approval erforderlich)
+4. **Hermes** optional installieren (zukuenftiger Schritt)
 
 ## Offene Einschränkungen
 
-1. **Schedule Trigger Registration** unbestätigt — API-Aktivierung reicht möglicherweise nicht für Startup-Registration
-2. **Issue #3** noch nicht verarbeitet
-3. **OpenCode Provider/Auth** weiterhin nicht konfiguriert
+1. **Schedule Trigger nicht vorhanden** — kein Auto-Run moeglich (Workaround: Manual Trigger)
+2. **Node 15** JS Syntax Error — 14/15 Nodes funktionieren
+3. **OpenCode Provider/Auth** nicht konfiguriert
 4. **Hermes** nicht installiert
-5. **MCP für Produktivworkflows** nicht freigegeben
-6. **Host n8n Service** im Restart-Loop (separates Problem, betrifft Arbeits-n8n nicht)
+5. **Host n8n.service** im Restart-Loop (80850+) — unabhaengig vom Working-Instance in CT 101
 
 ---
 
@@ -175,9 +172,11 @@ The Proxmox host has **two n8n processes** (one working, one failed):
 
 | Evidence Type | Path/Detail |
 |--------------|-------------|
-| storageState file | `C:\Users\xxammaxx\.n8n-automation\playwright\n8n-storage-state.json` (8,907 bytes) |
-| Workflow JSON (fixed) | In-memory PATCH to `/rest/workflows/Sv12QTo56NoPUu2D` |
-| Activation response | `POST /rest/workflows/Sv12QTo56NoPUu2D/activate` → `{"active":true}` HTTP 200 |
-| Architecture confirmation | `ps aux | grep n8n` on Proxmox host → PID 420195 |
-| Container 101 state | `pct exec 101 -- ps aux` → no n8n process |
-| Host n8n service | `systemctl status n8n` → failed, `/bin/n8n` not found |
+| Issue #3 Evidence | `/opt/dev-fabric/evidence/github-agent-runs/xxammaxx/n8n-blueprint-workflow/issue-3/gh-issue-3-20260626T073802Z/` |
+| status.json | `GREEN_PARTIAL`, `source_of_truth=github`, `issue_number=3` |
+| Runner Script | `/opt/dev-fabric/scripts/start_github_issue_run.sh` (755, bash -n PASS) |
+| n8n health check | `curl http://192.168.1.52:5678/healthz` — OK |
+| n8n process | PID 420195 in CT 101, `node /usr/bin/n8n start`, user `n8n` |
+| Host n8n.service | Defective, restart loop 80850+ |
+| CT 102 (Runner) | Running at 192.168.1.53 |
+| Workflow active | Confirmed via UI (▶️ icon, all nodes "Deactivate") |

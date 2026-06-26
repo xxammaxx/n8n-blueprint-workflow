@@ -7,12 +7,12 @@ User Browser (form)
        |
        | HTTP POST multipart/form-data
        v
- n8n Instance (Proxmox HOST 192.168.1.136, listens on 192.168.1.52:5678)
+ n8n Instance (CT 101 / 192.168.1.52, listens on 192.168.1.52:5678)
        |
        | n8n Form Trigger → Code Nodes → SSH Nodes
        |
        v
- Runner (LXC 102, internal network)
+ Runner (CT 102 / lxc-dev-runner / 192.168.1.53, internal network)
        |
        | start_blueprint_bootstrap.sh
        | speckit_iteration.sh
@@ -20,24 +20,24 @@ User Browser (form)
  Evidence Directory / Workspace
 ```
 
-### 🏗️ Architecture Correction: n8n runs on Proxmox HOST, NOT in Container 101
+### n8n Location: CT 101 (Container), NOT Proxmox Host
 
-**Discovered 2026-06-26:** n8n does NOT run inside container (LXC) 101 as previously assumed. It runs directly on the Proxmox host:
+**Verified 2026-06-26:** n8n runs inside container (LXC) 101 on the Proxmox host:
 
-| Aspect | Previous Assumption | Actual |
-|--------|-------------------|--------|
-| **n8n location** | LXC 101 | **Proxmox HOST** (192.168.1.136) |
-| **n8n PID** | — | 420195 |
-| **n8n user** | — | 100999 |
-| **n8n listening** | Container 101 | Host → 192.168.1.52:5678 routes to host |
-| **Container 101 content** | n8n + dependencies | **Only system processes** |
-| **Host n8n service** | n/a | **FAILED** — `/bin/n8n` not found, restart loop (independent from working n8n) |
+| Aspect | Detail |
+|--------|--------|
+| **n8n location** | **CT 101** (192.168.1.52) |
+| **n8n PID** | 420195 inside CT 101 |
+| **n8n user** | `n8n` (system user within container) |
+| **n8n process** | `node /usr/bin/n8n start` |
+| **Listening** | CT 101 binds to 192.168.1.52:5678 — confirmed via `curl healthz` |
+| **Proxmox host** | 192.168.1.136 — has **defective n8n.service** in restart loop (80850+ restarts), looking for `/bin/n8n` which does not exist. This is NOT the live instance — it is a separate, failed systemd unit. |
+| **CT 102** | `lxc-dev-runner` at 192.168.1.53 — running, used as execution boundary |
 
-**Implications:**
-- All `pct exec 101` commands for n8n service management may be incorrect — n8n is not in that container
-- The failed system service (`n8n.service` looking for `/bin/n8n`) on the host is a **separate issue** — it does NOT affect the working n8n instance
-- The working n8n was started directly (not via systemd) by user 100999
-- For service management: use `ssh root@192.168.1.136` directly (not `pct exec 101`) for n8n-related operations
+**Correct commands for n8n service management:**
+- Container-level: `pct exec 101 -- <command>` for n8n operations inside CT 101
+- Host-level: `ssh root@192.168.1.136` for Proxmox host management
+- The defective host n8n.service does NOT affect the working n8n in CT 101
 
 ## Component Architecture
 
@@ -214,42 +214,44 @@ Node 3: Prepare RUN_INPUT.json  ← produces stable context (owner, repo, issue_
 
 ### GitHub Ready Issue Dispatcher Workflow
 
-The **dispatcher workflow** (`Sv12QTo56NoPUu2D`, 18 nodes) provides automated polling-based dispatching for GitHub Issues with `agent:ready` label.
+The **dispatcher workflow** (`Sv12QTo56NoPUu2D`, 15 nodes) provides dispatching for GitHub Issues with `agent:ready` label via Manual Trigger. No Schedule Trigger node is present in the deployed workflow.
 
 ```
-[Schedule Trigger (10 min)] ─→ [GitHub Search Issues] ─→ [Pick First Ready Issue]
-        │                                                    │
-        │  (if found)                                        │  (if none → stop)
-        ▼                                                    │
-[Fetch Issue from GitHub] ←──────────────────────────────────┘
-        │
-        ▼
-[Guardrails & Validate] ─→ (fails → stop if no agent:ready)
-        │
-        ▼
-[Remove agent:ready] → [Add agent:running] → [Prepare RUN_INPUT.json]
-        │
-        ▼
-[SSH Write] → [SSH Start] → [Wait 10s] → [SSH Read status.json]
-        │
-        ▼
-[Format Evidence Comment] → [GitHub Comment API] → [Add Labels: agent:needs-review, evidence:attached]
-        │
-        ▼
-[Remove agent:running] → [Format Final Result]
+[Manual Trigger] ─→ [GitHub: Get Issue] ─→ [Guardrails & Validate]
+        │                                            │
+        │                                            ▼
+        │                          (pass) → [Remove agent:ready] → [Add agent:running]
+        │                                            │
+        │                                            ▼
+        │                                   [Prepare RUN_INPUT.json]
+        │                                            │
+        │                                            ▼
+        │                              [SSH Write] → [SSH Start] → [Wait 5s] → [SSH Read status.json]
+        │                                            │
+        │                                            ▼
+        │                              [Format Evidence Comment] → [GitHub Comment API]
+        │                                            │
+        │                                            ▼
+        │                              [Add Labels: agent:needs-review, evidence:attached]
+        │                                            │
+        │                                            ▼
+        │                              [Remove agent:running] (404-tolerant) → [Format Final Result]
+        │                                            │
+        │                                            ▼
+        │                                    (Node 15: JS Syntax Error)
 ```
 
-**Activation Mechanism — Critical Finding (2026-06-26):**
+**Activation Mechanism — Key Finding (2026-06-26):**
 
-In n8n regular deployment mode, Schedule Trigger registration requires **UI-level Publish + Active-Toggle**. Neither CLI publish (`n8n publish:workflow`) nor direct database update (`UPDATE workflow_entity SET active=1`) suffices:
+The dispatcher workflow (`Sv12QTo56NoPUu2D`) is **active** in the n8n UI (shows ▶️ icon, all nodes show "Deactivate"). It uses a **Manual Trigger** only — no Schedule Trigger node is present in the deployed workflow. For Schedule auto-run, a Schedule Trigger node must be added via the n8n UI, followed by UI-Publish and UI-Active-Toggle.
 
-| Method | DB `active` Flag | Schedule Registered | Runtime Active |
-|--------|-----------------|---------------------|----------------|
-| UI Publish + Active Toggle | ✅ = 1 | ✅ Yes | ✅ Yes |
-| CLI `n8n publish:workflow` | ✅ = 1 | ❌ No | ❌ No |
-| DB `UPDATE SET active=1` | ✅ = 1 | ❌ No | ❌ No |
-| API Import only | ❌ = 0 | ❌ No | ❌ No |
-| API PATCH + POST /activate | ✅ = 1 | ⚠️ **UNVERIFIED** | ⚠️ **UNVERIFIED** |
+| Method | DB `active` Flag | Trigger Type | Result |
+|--------|-----------------|--------------|--------|
+| UI Import + Manual Trigger only | ✅ = 1 | Manual only | ✅ Active, manual execution works |
+| UI Publish + Active Toggle (with Schedule node) | ✅ = 1 | Schedule | ✅ Schedule registered at startup |
+| API PATCH + POST /activate (no Schedule node) | ✅ = 1 | Manual only | ✅ Active, but no auto-run |
+| CLI `n8n publish:workflow` | ✅ = 1 | N/A | ❌ Doesn't add Schedule Trigger |
+| DB `UPDATE SET active=1` | ✅ = 1 | N/A | ❌ Schedule NOT registered |
 
 **Code Node Lint Requirement:** n8n v2.26.8's Code node linter flags **unused variables** as blocking issues. This prevents the Publish button from being enabled. Before activation, ensure all Code nodes have no lint warnings:
 ```javascript
@@ -266,20 +268,51 @@ const prepData = $('Prepare RUN_INPUT.json').first().json;
 - `POST /rest/workflows/<ID>/activate` — Activate workflow (returns `{"active":true}`)
 - Requires: `n8n-auth` JWT cookie + `browser-id` header (SHA-256 hashed)
 
-**⚠️ API Activation Caveat:** While `POST /rest/workflows/<ID>/activate` returns `active: true` with HTTP 200, it may NOT register the Schedule Trigger for n8n startup activation. Only UI Publish + Active Toggle is confirmed to register Schedule Triggers. After API activation, verify by:
-1. Checking n8n UI Active toggle status
-2. Waiting for next Schedule Trigger cycle and checking if issues are processed
-3. Checking n8n startup logs for `"Currently active workflows"` after n8n restart
+**Current Dispatcher State:**
+- **Workflow ID:** `Sv12QTo56NoPUu2D`
+- **Active:** YES (UI shows active with ▶️ icon)
+- **Nodes:** 15
+- **Trigger:** Manual Trigger (NOT Schedule Trigger)
+- **Manual execution #44 (Issue #3):** Nodes 1-14 ✅ SUCCESS, Node 15 ❌ ERROR (pre-existing JS syntax error in "Format Final Result")
 
-**Verification:** Check n8n startup logs for `"Currently active workflows"` — only UI-activated workflows appear. This is confirmed for n8n v2.26.8.
+**For Schedule auto-run, the following steps are required:**
+1. Add a Schedule Trigger node to the workflow via n8n UI
+2. UI-Publish the workflow
+3. Toggle Active to register the Schedule Trigger at n8n startup
+4. Verify: next cycle should auto-process issues with `agent:ready`
 
-**Trigger:** Polling (Schedule + GitHub Search API: `is:issue is:open label:agent:ready repo:xxammaxx/n8n-blueprint-workflow&per_page=1`, every 10 minutes) — selected because n8n is on internal network without public URL for GitHub webhooks.
+**Trigger Decision:** GitHub webhooks are not viable (n8n is on internal network without public URL). Polling (Schedule + GitHub Search API) is the intended strategy but requires the Schedule Trigger node to be added to the workflow first.
 
 **Guardrails:** Anti-double-start protection prevents concurrent runs. See `docs/architecture/github-source-of-truth-flow.md` for full Mermaid diagrams.
 
-**Old Dispatcher:** `k1c2d3FfWHee6Jr0e` (15 nodes, embedded export ID only) — kept as inactive backup. Live ID is `Sv12QTo56NoPUu2D`.
+**Old Dispatcher (export reference):** `k1c2d3FfWHee6Jr0e` (embedded export ID only — not a live workflow). Live ID is `Sv12QTo56NoPUu2D` (15 nodes).
 
 **Integration:** The dispatcher reuses the same runner scripts, evidence structure, and label conventions as the manual intake workflow.
+
+## Issue #3 Processing Result
+
+| Detail | Value |
+|--------|-------|
+| Issue | [#3](https://github.com/xxammaxx/n8n-blueprint-workflow/issues/3) — "[smoke] Scheduler-Dispatcher Dauerbetrieb" |
+| Execution | #44 — Manual trigger, 1m 28.494s |
+| Nodes 1-14 | ✅ SUCCESS (all core nodes: Fetch Issue, Guardrails, Labels, SSH Write/Start/Read, Comment API) |
+| Node 15 (Format Final Result) | ❌ ERROR — pre-existing JS syntax error (unrelated to dispatcher logic) |
+| Pre-state labels | `agent:ready`, `mode:manual-terminal`, `risk:low` |
+| Post-state labels | `agent:needs-review`, `evidence:attached`, `mode:manual-terminal`, `risk:low` |
+| `agent:ready` | ✅ REMOVED |
+| `agent:running` | ✅ Set then removed |
+| `agent:done` | ❌ NOT set (requires human approval) |
+| Issue remains | OPEN |
+| Comment posted | ✅ Agent Run Result — Run ID `gh-issue-3-20260626T073802Z` |
+| Runner Evidence | `/opt/dev-fabric/evidence/github-agent-runs/xxammaxx/n8n-blueprint-workflow/issue-3/gh-issue-3-20260626T073802Z/` |
+| status.json | `GREEN_PARTIAL`, `source_of_truth=github`, `issue_number=3` |
+
+### Key Finding: Only Manual Trigger Present
+
+The deployed workflow has **no Schedule Trigger node**. The previous assumption that a 10-minute Schedule Trigger was configured was incorrect. The workflow export only contains a Manual Trigger. For scheduled auto-run:
+1. A Schedule Trigger node must be added via n8n UI
+2. The workflow must be UI-Published
+3. The Active toggle must be cycled (Off → On) to register the Schedule Trigger
 
 ### Architecture Diagrams
 
