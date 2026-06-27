@@ -1,5 +1,34 @@
 # Changelog
 
+## 2026-06-27 — OpenCode Runner Provider Configuration Scaffold 🟡
+
+### Runner Provider Setup
+- 🟡 **GREEN_PARTIAL_SECRET_PLACEHOLDER** — Secret file, loader, and smoke test deployed to runner
+- ✅ **Secret File:** `/opt/dev-fabric/secrets/opencode-provider.env` (600, runner:runner)
+- ✅ **Secret Loader:** `/opt/dev-fabric/bin/load-opencode-provider-env.sh` — validates env vars, never outputs secrets
+- ✅ **Smoke Test:** `/opt/dev-fabric/bin/opencode-provider-smoke-test.sh` — 5-stage test with policy gate
+- ✅ **Runner Discovery:** OpenCode v1.17.9, tmux 3.3a, Node 22.23.0 — all prerequisites confirmed
+- ✅ **Secret Hygiene:** GREEN — 0 real secrets in Git, Evidence, or Runner scripts
+- ⏳ **API Key:** Placeholder — user must provide real provider credentials
+- ⏳ **Provider Call:** Blocked by policy — `OPENCODE_ALLOW_PROVIDER_CALL=true` not set
+
+### Hard Constraints
+- ✅ Dispatcher Workflow unchanged
+- ✅ Schedule Trigger unchanged
+- ✅ Issues #3-#8 protected — not re-processed
+- ✅ No Proxmox/Docker destructive changes
+- ✅ No GitHub Actions
+- ✅ No Auto-Merge
+- ✅ No new Canary Issues
+- ✅ No secrets exposed
+
+### Artifacts
+- **Evidence:** `evidence/opencode-runner-provider-setup-2026-06-27T194133/` (12+ files)
+- **Updated:** STATUS.md, CHANGELOG.md, .env.example, .gitignore
+- **Runner Scripts:** `load-opencode-provider-env.sh`, `opencode-provider-smoke-test.sh`
+
+---
+
 ## 2026-06-30 — Reliability Day 3 (Final) ✅
 
 ### 3-Tage-Beobachtung abgeschlossen

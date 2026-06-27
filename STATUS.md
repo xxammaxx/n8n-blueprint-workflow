@@ -259,13 +259,43 @@
 
 ---
 
+## 🟡 OpenCode Provider Configuration Setup (2026-06-27T20:00:00Z)
+
+| Deliverable | Status |
+|------------|--------|
+| Runner Discovery | ✅ Completed — OpenCode v1.17.9, Debian 12, all tools verified |
+| Provider Model Identified | ✅ Env vars (`OPENCODE_PROVIDER`, `OPENCODE_API_KEY`, `OPENCODE_MODEL`) or `opencode providers login` |
+| Secret File Created | ✅ `/opt/dev-fabric/secrets/opencode-provider.env` (600, runner:runner) |
+| Secret Loader Script | ✅ `/opt/dev-fabric/bin/load-opencode-provider-env.sh` — working |
+| Smoke Test Script | ✅ `/opt/dev-fabric/bin/opencode-provider-smoke-test.sh` — working |
+| Secret Hygiene | ✅ GREEN — 0 real secrets, all false positives verified |
+| Readiness Decision | 🟡 **`GREEN_PARTIAL_SECRET_PLACEHOLDER`** |
+| Provider Call | ❌ Blocked — API key still placeholder |
+| Dummy Agent Test Plan | ✅ Created — NOT executed |
+
+### What's Missing
+- API Key: **PLACEHOLDER** — User must replace `PASTE_PROVIDER_API_KEY_HERE`
+- Provider Name: **PLACEHOLDER** — User must replace `PASTE_PROVIDER_NAME_HERE`
+- Model Name: **PLACEHOLDER** — User must replace `PASTE_MODEL_NAME_HERE`
+
+### How to Complete
+1. Edit `/opt/dev-fabric/secrets/opencode-provider.env` on the runner
+2. Set `OPENCODE_ALLOW_PROVIDER_CALL=true`
+3. Run `/opt/dev-fabric/bin/opencode-provider-smoke-test.sh`
+4. Status advances to `READY_FOR_PROVIDER_SMOKE`
+
+### Evidence
+- `evidence/opencode-runner-provider-setup-2026-06-27T194133/` (12+ files)
+
+---
+
 ## Next Actions
 
 **Priority 1:** ✅ Format Final Result Fix — DONE (Published via API, verified via Canary #8)
 **Priority 2:** ✅ Execution Success Confirmed — DONE (Exec #69 = `success`)
 **Priority 3:** ✅ Operations Hardening — DONE (All 4 operational plans created, gates verified)
 **Priority 4:** ✅ Push completed — DONE (f062182, 4aa36d5, e7e6465 on origin/master)
-**Priority 5:** ✅ **Reliability Observation COMPLETED** — Day 0 (2026-06-27) ✅, Day 1 (2026-06-28) ✅, Day 2 (2026-06-29) ✅, Day 3 (2026-06-30) ✅, 3-Tage-Beobachtung abgeschlossen mit `RELIABILITY_OBSERVATION_PASSED_WITH_NOTES`
+**Priority 5:** ✅ **Reliability Observation COMPLETED** — Day 0-3 abgeschlossen mit `RELIABILITY_OBSERVATION_PASSED_WITH_NOTES`
 **Priority 6:** 🔜 Configure n8N REST API key for full programmatic access (plan created)
-**Priority 7:** 🔜 Configure OpenCode Provider/API-Key for full Runner execution (plan created)
+**Priority 7:** 🟡 **OpenCode Provider Config SCAFFOLDED** — Secret file, loader, smoke test ready. API key needed from user.
 **Priority 8:** 🔜 Refresh Playwright n8n UI session for UI-based operations (plan created)
