@@ -1,0 +1,78 @@
+{
+  "generated_at": "2026-06-26T08:01:05.147Z",
+  "status": "ENTRYPOINTS_CONSISTENT",
+  "direct_cli_status": "DIRECT_CLI_OK",
+  "trusted_import_status": "TRUSTED_IMPORT_OK",
+  "entrypoint_tool_gap_accepted": false,
+  "diagnose": {
+    "direct_cli": {
+      "command": "node scripts/diagnose-n8n-http.mjs",
+      "exit_code": 0,
+      "ok": true,
+      "stdout": "C:\\Spec-kit_n8n\\evidence\\n8n-http-diagnosis.json C:\\Spec-kit_n8n\\evidence\\n8n-http-diagnosis.md",
+      "stderr": "",
+      "decision": "N8N_BASE_REACHABLE",
+      "error": ""
+    },
+    "imported": {
+      "available": true,
+      "decision": "N8N_BASE_REACHABLE",
+      "error": ""
+    },
+    "trusted_baseline_available": true
+  },
+  "scan": {
+    "direct_cli": {
+      "command": "node scripts/scan-n8n-live-readiness.mjs",
+      "exit_code": 0,
+      "ok": true,
+      "stdout": "C:\\Spec-kit_n8n\\evidence\\n8n-live-readiness-scan.json C:\\Spec-kit_n8n\\evidence\\n8n-live-readiness-scan.md C:\\Spec-kit_n8n\\evidence\\n8n-api-readiness-scan.md",
+      "stderr": "",
+      "base_status": "N8N_BASE_REACHABLE",
+      "api_status": "N8N_API_AUTH_MISSING",
+      "decision": "GREEN_PARTIAL_TOOL_GAP",
+      "allowed_next_action": "STOP_AND_DOCUMENT",
+      "error": ""
+    },
+    "imported": {
+      "available": true,
+      "base_status": "N8N_BASE_REACHABLE",
+      "api_status": "N8N_API_AUTH_MISSING",
+      "decision": "GREEN_PARTIAL_TOOL_GAP",
+      "allowed_next_action": "STOP_AND_DOCUMENT",
+      "diagnosis_decision": "N8N_BASE_REACHABLE",
+      "error": "",
+      "source": "trusted_runner_file"
+    },
+    "trusted_baseline_available": true,
+    "field_comparison": [
+      {
+        "field": "base_status",
+        "left": "N8N_BASE_REACHABLE",
+        "right": "N8N_BASE_REACHABLE",
+        "match": true
+      },
+      {
+        "field": "api_status",
+        "left": "N8N_API_AUTH_MISSING",
+        "right": "N8N_API_AUTH_MISSING",
+        "match": true
+      },
+      {
+        "field": "decision",
+        "left": "GREEN_PARTIAL_TOOL_GAP",
+        "right": "GREEN_PARTIAL_TOOL_GAP",
+        "match": true
+      },
+      {
+        "field": "allowed_next_action",
+        "left": "STOP_AND_DOCUMENT",
+        "right": "STOP_AND_DOCUMENT",
+        "match": true
+      }
+    ]
+  },
+  "reasons": [
+    "Trusted runner evidence was used as the authoritative baseline for live readiness decisions."
+  ]
+}

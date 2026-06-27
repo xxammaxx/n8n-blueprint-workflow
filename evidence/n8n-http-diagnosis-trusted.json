@@ -1,0 +1,70 @@
+{
+  "generated_at": "2026-06-26T08:01:03.365Z",
+  "n8n_base_url": "http://192.168.1.52:5678",
+  "url_parse": {
+    "protocol": "http:",
+    "host": "192.168.1.52",
+    "port": "5678",
+    "pathname": "/",
+    "valid": true
+  },
+  "timeout_ms": 8000,
+  "checks": {
+    "node_fetch_healthz": {
+      "status": "ok",
+      "http_status": 200,
+      "ok": true,
+      "content_type": "application/json; charset=utf-8",
+      "body_preview": "{\"status\":\"ok\"}",
+      "error_name": "",
+      "error_code": "",
+      "error_message_sanitized": ""
+    },
+    "node_fetch_rest_settings": {
+      "status": "ok",
+      "http_status": 200,
+      "ok": true,
+      "content_type": "application/json; charset=utf-8",
+      "body_preview": "{\"data\":{\"settingsMode\":\"public\",\"defaultLocale\":\"en\",\"userManagement\":{\"authenticationMethod\":\"email\",\"showSetupOnFirstLoad\":false,\"smtpSetup\":false,\"passwordMinLength\":8},\"sso\":{\"saml\":{\"loginEnabled\":false},\"ldap\":{\"loginEnabled\":false,\"loginLabel\":\"\"},\"oidc\":{\"loginEnabled\":false,\"loginUrl\":\"http://192.168.1.52:5678/rest/sso/oidc/login\"}},\"authCookie\":{\"secure\":false},\"previewMode\":false,\"ente",
+      "error_name": "",
+      "error_code": "",
+      "error_message_sanitized": ""
+    },
+    "node_http_request_healthz": {
+      "status": "ok",
+      "http_status": 200,
+      "ok": true,
+      "content_type": "application/json; charset=utf-8",
+      "body_preview": "{\"status\":\"ok\"}",
+      "error_name": "",
+      "error_code": "",
+      "error_message_sanitized": ""
+    },
+    "powershell_invoke_webrequest_healthz": {
+      "status": "ok",
+      "http_status": 200,
+      "ok": true,
+      "content_type": "",
+      "body_preview": "{\"status\":\"ok\"}",
+      "error_name": "",
+      "error_code": "",
+      "error_message_sanitized": ""
+    },
+    "curl_cli_healthz": {
+      "status": "ok",
+      "http_status": 200,
+      "ok": true,
+      "content_type": "application/json; charset=utf-8",
+      "body_preview": "{\"status\":\"ok\"}",
+      "error_name": "",
+      "error_code": "",
+      "error_message_sanitized": ""
+    }
+  },
+  "summary": {
+    "ok_count": 5,
+    "failure_count": 0,
+    "timeout_count": 0
+  },
+  "decision": "N8N_BASE_REACHABLE"
+}

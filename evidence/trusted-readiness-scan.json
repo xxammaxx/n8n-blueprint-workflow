@@ -1,0 +1,40 @@
+{
+  "generated_at": "2026-06-26T08:01:05.134Z",
+  "runner": {
+    "name": "run-trusted-readiness-scan.mjs",
+    "mode": "trusted_imported_functions",
+    "repo_root": "C:\\Spec-kit_n8n",
+    "cwd": "C:\\Spec-kit_n8n",
+    "script_dir": "C:\\Spec-kit_n8n\\scripts",
+    "entrypoint_tool_gap_accepted": false
+  },
+  "diagnosis": {
+    "generated_at": "2026-06-26T08:01:03.365Z",
+    "n8n_base_url": "http://192.168.1.52:5678",
+    "decision": "N8N_BASE_REACHABLE",
+    "summary": {
+      "ok_count": 5,
+      "failure_count": 0,
+      "timeout_count": 0
+    },
+    "trusted_diagnosis_path": "C:\\Spec-kit_n8n\\evidence\\n8n-http-diagnosis-trusted.json"
+  },
+  "scan": {
+    "decision": "GREEN_PARTIAL_TOOL_GAP",
+    "allowed_next_action": "STOP_AND_DOCUMENT",
+    "base_status": "N8N_BASE_REACHABLE",
+    "api_status": "N8N_API_AUTH_MISSING",
+    "workflow_status": "UNKNOWN",
+    "workflow_active": false,
+    "credential_status": "UNKNOWN",
+    "webhook_url_status": "LOCAL_ONLY_DERIVED",
+    "webhook_method": "POST",
+    "trusted_scan_path": "C:\\Spec-kit_n8n\\evidence\\n8n-live-readiness-scan-trusted.json"
+  },
+  "safety": {
+    "api_key_present": false,
+    "api_key_logged": false,
+    "secret_values_accessed": false
+  },
+  "notes": []
+}

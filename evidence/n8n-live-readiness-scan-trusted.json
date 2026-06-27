@@ -1,0 +1,238 @@
+{
+  "generated_at": "2026-06-26T08:01:03.366Z",
+  "runner": {
+    "name": "run-trusted-readiness-scan.mjs",
+    "mode": "trusted_imported_functions",
+    "repo_root": "C:\\Spec-kit_n8n",
+    "cwd": "C:\\Spec-kit_n8n",
+    "entrypoint_tool_gap_accepted": false
+  },
+  "sources": {
+    "local_workflow_json": "checked",
+    "n8n_base_http": "checked",
+    "n8n_public_api": "auth_missing",
+    "playwright_mcp_ui": "tool_gap",
+    "manual_env": "skipped"
+  },
+  "n8n": {
+    "base_url": "http://192.168.1.52:5678",
+    "base_status": "N8N_BASE_REACHABLE",
+    "api_status": "N8N_API_AUTH_MISSING",
+    "api_key_present": false
+  },
+  "local_project": {
+    "repo_root_exists": true,
+    "workflow_json_exists": true,
+    "live_dry_hop_payload_exists": true,
+    "scan_script_exists": true,
+    "payload_json_valid": true,
+    "payload_json_error": ""
+  },
+  "local_gates": {
+    "ok": true,
+    "commands": [
+      {
+        "command": "node scripts/build-workflow.mjs",
+        "exit_code": 0,
+        "ok": true,
+        "stdout": "C:\\Spec-kit_n8n\\workflows\\spec-kit-opencode-proxmox-runner-orchestrator.json",
+        "stderr": ""
+      },
+      {
+        "command": "node scripts/dry-run-local.mjs",
+        "exit_code": 0,
+        "ok": true,
+        "stdout": "{ \"ok\": true, \"phase\": \"dry_run_local\", \"checks\": [ { \"name\": \"payload_defaults\", \"ok\": true, \"detail\": { \"project_slug\": \"acme-project\", \"proxmox_host\": \"192.168.1.136\", \"docker_target_host\": \"192.168.1.136\", \"docker_target_mode\": \"direct-proxmox-docker\", \"runner_container_name\": \"n8n-runners\", \"project_root\": \"/workspace\", \"spec_kit_version\": \"v0.11.4\", \"spec_kit_plugin_module\": \"\", \"spec_kit_install_command\": \"\", \"opencode_install_command\": \"npm install -g opencode-ai\", \"prefer_spec_kit_skills\": false, \"enable_taskstoissues\": true, \"enable_implement\": false, \"dry_run\": false, \"live_dry_hop_only\": false, \"allow_install_in_dry_hop\": false, \"github_repo_url\": \"\", \"blueprint_markdown\": \"# ACME Project Blueprint\\n\\n## Goal\\nBuild the initial ACME project baseline.\" } }, { \"name\": \"dangerous_project_slug_sanitized\", \"ok\": true, \"detail\": \"acme-project-etc-passwd\" }, { \"name\": \"missing_blueprint_returns_controlled_error\", \"ok\": true, \"detail\": [ \"blueprint_markdown is required.\" ] }, { \"name\": \"official_spec_kit_default_rendered\", \"ok\": true, \"detail\": { \"strategy\": \"official-uv-default\", \"command\": \"uv tool install specify-cli --from git+https://github.com/github/spec-kit.git@v0.11.4\" } }, { \"name\": \"opencode_integration_rendered\", \"ok\": true, \"detail\": { \"opencode_init_command\": \"specify init --here --integration opencode --script sh --force\", \"slash_command_fallback_dir\": \"/workspace/acme-project/.opencode/commands\" } }, { \"name\": \"taskstoissues_skips_without_remote\", \"ok\": true, \"detail\": \"would be skipped without a configured GitHub origin remote\" }, { \"name\": \"runner_missing_container_error_path_present\", \"ok\": true, \"detail\": \"RUNNER_CONTAINER_NOT_FOUND\" }, { \"name\": \"docker_unreachable_error_path_present\", \"ok\": true, \"detail\": \"DOCKER_UNREACHABLE\" }, { \"name\": \"spec_kit_plugin_module_not_required\", \"ok\": true, \"detail\": \"Official default is active without plugin override.\" }, { \"name\": \"live_dry_hop_preview_rendered\", \"ok\": true, \"detail\": { \"phase\": \"container_pipeline_live_dry_hop_preview\", \"canary_dir\": \"/workspace/_speckit_n8n_live_dry_hop_canary\", \"canary_file\": \"/workspace/_speckit_n8n_live_dry_hop_canary/.runtime/live-dry-hop.txt\" } }, { \"name\": \"dry_run_blocks_implement\", \"ok\": true, \"detail\": [ { \"name\": \"implement\", \"reason\": \"Blocked by dry-run/live-dry-hop mode.\" } ] }, { \"name\": \"live_dry_hop_only_blocks_spec_kit_commands\", \"ok\": true, \"detail\": { \"no_spec_kit_commands_will_run\": true, \"no_taskstoissues_will_run\": true, \"no_implement_will_run\": true } }, { \"name\": \"missing_specify_policy_documented\", \"ok\": true, \"detail\": \"Return MISSING_TOOL for absent opencode/specify unless allow_install_in_dry_hop=true. No Spec Kit commands run in live dry-hop mode.\" }, { \"name\": \"workflow_contains_required_hosts_and_defaults\", \"ok\": true, \"detail\": \"Workflow embeds Proxmox, runner, workspace, and live-dry-hop defaults.\" }, { \"name\": \"no_secrets_in_dry_run_output\", \"ok\": true, \"detail\": \"Dry-run output does not expose secret-like values.\" } ] }",
+        "stderr": ""
+      },
+      {
+        "command": "node scripts/validate-local.mjs",
+        "exit_code": 0,
+        "ok": true,
+        "stdout": "Local validation passed.",
+        "stderr": ""
+      }
+    ]
+  },
+  "local_workflow_scan": {
+    "workflow_json_valid": true,
+    "workflow_json_error": "",
+    "workflow_name": "Spec Kit OpenCode Proxmox Runner Orchestrator",
+    "expected_workflow_name_matches": true,
+    "webhook_node_present": true,
+    "webhook_method": "POST",
+    "webhook_path": "spec-kit-opencode-proxmox-runner",
+    "response_mode": "responseNode",
+    "respond_to_webhook_node_present": true,
+    "ssh_nodes_present": true,
+    "ssh_nodes_count": 2,
+    "ssh_node_names": [
+      "SSH Proxmox Preflight",
+      "SSH Runner Execute"
+    ],
+    "credential_reference_name": "",
+    "credentials_visible_in_json": false,
+    "secret_like_content_found": false,
+    "destructive_patterns_found": []
+  },
+  "base_http": {
+    "diagnosis": {
+      "generated_at": "2026-06-26T08:01:03.365Z",
+      "n8n_base_url": "http://192.168.1.52:5678",
+      "url_parse": {
+        "protocol": "http:",
+        "host": "192.168.1.52",
+        "port": "5678",
+        "pathname": "/",
+        "valid": true
+      },
+      "timeout_ms": 8000,
+      "checks": {
+        "node_fetch_healthz": {
+          "status": "ok",
+          "http_status": 200,
+          "ok": true,
+          "content_type": "application/json; charset=utf-8",
+          "body_preview": "{\"status\":\"ok\"}",
+          "error_name": "",
+          "error_code": "",
+          "error_message_sanitized": ""
+        },
+        "node_fetch_rest_settings": {
+          "status": "ok",
+          "http_status": 200,
+          "ok": true,
+          "content_type": "application/json; charset=utf-8",
+          "body_preview": "{\"data\":{\"settingsMode\":\"public\",\"defaultLocale\":\"en\",\"userManagement\":{\"authenticationMethod\":\"email\",\"showSetupOnFirstLoad\":false,\"smtpSetup\":false,\"passwordMinLength\":8},\"sso\":{\"saml\":{\"loginEnabled\":false},\"ldap\":{\"loginEnabled\":false,\"loginLabel\":\"\"},\"oidc\":{\"loginEnabled\":false,\"loginUrl\":\"http://192.168.1.52:5678/rest/sso/oidc/login\"}},\"authCookie\":{\"secure\":false},\"previewMode\":false,\"ente",
+          "error_name": "",
+          "error_code": "",
+          "error_message_sanitized": ""
+        },
+        "node_http_request_healthz": {
+          "status": "ok",
+          "http_status": 200,
+          "ok": true,
+          "content_type": "application/json; charset=utf-8",
+          "body_preview": "{\"status\":\"ok\"}",
+          "error_name": "",
+          "error_code": "",
+          "error_message_sanitized": ""
+        },
+        "powershell_invoke_webrequest_healthz": {
+          "status": "ok",
+          "http_status": 200,
+          "ok": true,
+          "content_type": "",
+          "body_preview": "{\"status\":\"ok\"}",
+          "error_name": "",
+          "error_code": "",
+          "error_message_sanitized": ""
+        },
+        "curl_cli_healthz": {
+          "status": "ok",
+          "http_status": 200,
+          "ok": true,
+          "content_type": "application/json; charset=utf-8",
+          "body_preview": "{\"status\":\"ok\"}",
+          "error_name": "",
+          "error_code": "",
+          "error_message_sanitized": ""
+        }
+      },
+      "summary": {
+        "ok_count": 5,
+        "failure_count": 0,
+        "timeout_count": 0
+      },
+      "decision": "N8N_BASE_REACHABLE"
+    },
+    "healthz": {
+      "ok": true,
+      "status": 200,
+      "body_text": "{\"status\":\"ok\"}",
+      "body_preview": "{\"status\":\"ok\"}",
+      "content_type": "application/json; charset=utf-8"
+    },
+    "settings": {
+      "ok": true,
+      "status": 200,
+      "body_text": "{\"data\":{\"settingsMode\":\"public\",\"defaultLocale\":\"en\",\"userManagement\":{\"authenticationMethod\":\"email\",\"showSetupOnFirstLoad\":false,\"smtpSetup\":false,\"passwordMinLength\":8},\"sso\":{\"saml\":{\"loginEnabled\":false},\"ldap\":{\"loginEnabled\":false,\"loginLabel\":\"\"},\"oidc\":{\"loginEnabled\":false,\"loginUrl\":\"http://192.168.1.52:5678/rest/sso/oidc/login\"}},\"authCookie\":{\"secure\":false},\"previewMode\":false,\"enterprise\":{\"saml\":false,\"ldap\":false,\"oidc\":false},\"communityNodesEnabled\":true}}",
+      "body_preview": "{\"data\":{\"settingsMode\":\"public\",\"defaultLocale\":\"en\",\"userManagement\":{\"authenticationMethod\":\"email\",\"showSetupOnFirstLoad\":false,\"smtpSetup\":false,\"passwordMinLength\":8},\"sso\":{\"saml\":{\"loginEnabled\":false},\"ldap\":{\"loginEnabled\":false,\"loginLabel\":\"\"},\"oidc\":{\"loginEnabled\":false,\"loginUrl\":\"http://192.168.1.52:5678/rest/sso/oidc/login\"}},\"authCookie\":{\"secure\":false},\"previewMode\":false,\"enterprise\":{\"saml\":false,\"ldap\":false,\"oidc\":false},\"communityNodesEnabled\":true}}",
+      "content_type": "application/json; charset=utf-8"
+    },
+    "workflows_anonymous": {
+      "ok": false,
+      "status": 401,
+      "body_text": "{\"status\":\"error\",\"message\":\"Unauthorized\"}",
+      "body_preview": "{\"status\":\"error\",\"message\":\"Unauthorized\"}",
+      "content_type": "application/json; charset=utf-8"
+    },
+    "credentials_anonymous": {
+      "ok": false,
+      "status": 401,
+      "body_text": "{\"status\":\"error\",\"message\":\"Unauthorized\"}",
+      "body_preview": "{\"status\":\"error\",\"message\":\"Unauthorized\"}",
+      "content_type": "application/json; charset=utf-8"
+    }
+  },
+  "api_scan": {
+    "endpoint": "http://192.168.1.52:5678/api/v1/workflows",
+    "http_status": 0,
+    "notes": [
+      "N8N_API_KEY is not present in this shell session."
+    ],
+    "workflow_matches": 0,
+    "node_count": 0,
+    "ssh_nodes_count": 0,
+    "response_mode_confirmed": false,
+    "webhook_method_confirmed": false,
+    "webhook_path_confirmed": false
+  },
+  "workflow": {
+    "status": "UNKNOWN",
+    "name_expected": "Spec Kit OpenCode Proxmox Runner Orchestrator",
+    "id": "",
+    "active": false,
+    "source": "unknown"
+  },
+  "webhook": {
+    "webhook_url_status": "LOCAL_ONLY_DERIVED",
+    "webhook_url": "http://192.168.1.52:5678/webhook/spec-kit-opencode-proxmox-runner",
+    "webhook_url_type": "production",
+    "webhook_method": "POST",
+    "webhook_path": "spec-kit-opencode-proxmox-runner",
+    "source": "local_workflow_json",
+    "local_test_webhook_url": "http://192.168.1.52:5678/webhook-test/spec-kit-opencode-proxmox-runner"
+  },
+  "credential": {
+    "credential_status": "UNKNOWN",
+    "credential_name_expected": "Proxmox Docker Host SSH",
+    "ssh_nodes_checked": true,
+    "secret_values_accessed": false,
+    "metadata_only_accepted_by_env": false,
+    "ssh_node_credential_metadata": []
+  },
+  "payload": {
+    "safe": true,
+    "dry_run": true,
+    "live_dry_hop_only": true,
+    "enable_implement": false,
+    "enable_taskstoissues": false,
+    "enable_converge": false,
+    "secret_like_found": false
+  },
+  "playwright": {
+    "status": "PLAYWRIGHT_MCP_TOOL_GAP",
+    "reason": "No callable Playwright MCP tool was exposed in this session.",
+    "tool_available": false,
+    "used": false
+  },
+  "reasons": [
+    "N8N_API_KEY is missing, so authenticated workflow and credential evidence could not be collected.",
+    "Workflow import state is not confirmed by authenticated n8n API or UI evidence.",
+    "Exact webhook URL is not confirmed from n8n API or UI evidence.",
+    "SSH credential assignment is not confirmed by API or UI evidence."
+  ],
+  "decision": "GREEN_PARTIAL_TOOL_GAP",
+  "allowed_next_action": "STOP_AND_DOCUMENT"
+}
