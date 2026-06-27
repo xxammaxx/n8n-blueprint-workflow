@@ -1,5 +1,33 @@
 # Changelog
 
+## 2026-06-27 — End-to-End Canary Test After Guardrails Fix ✅
+
+### Tested
+- 🟢 **Canary Issue #5 created** with `agent:ready` + `test:canary` + `dispatcher:e2e` labels
+- 🟢 **Schedule Trigger fired** at 07:30 UTC (Execution #51, mode=trigger)
+- 🟢 **Guardrails passed** — trigger-agnostic code handled Schedule Trigger correctly
+- 🟢 **Full dispatch pipeline completed** (85.75s duration):
+  - GitHub Search → Pick Issue → Fetch → Guardrails → Labels → Runner → Evidence → Comment
+- 🟢 **Runner started** on lxc-dev-runner (192.168.1.53)
+- 🟢 **Evidence generated** at `/opt/dev-fabric/.../issue-5/gh-issue-5-20260627T073030Z`
+- 🟢 **GitHub comment posted** with evidence path
+- 🟢 **Labels transitioned:** `agent:ready` → `agent:needs-review` + `evidence:attached`
+
+### Protection Verified
+- ✅ **Issue #3 NOT re-processed** — All 5 protection layers intact
+- ✅ **Issue #4 NOT re-processed** — `isAlreadyProcessed` guard active
+- ✅ **No double-run** of Canary Issue #5
+
+### Documented
+- 🟡 **Format Final Result comment typo** — TOOL_GAP: n8n Public API v1 doesn't support workflow edits
+- 12 evidence files in `evidence/e2e-canary-issue-5-20260627T071248Z/`
+
+### Status
+- **GREEN_PARTIAL** — Dispatcher works end-to-end via Schedule Trigger
+- Next: Fix typo via n8n UI → full GREEN
+
+---
+
 ## 2026-06-27 — Guardrails Trigger-Agnostic Fix ✅
 
 ### Fixed
