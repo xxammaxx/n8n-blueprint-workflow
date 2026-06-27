@@ -1,7 +1,7 @@
 # Evidence Index — Latest
 
-**Last Updated:** `2026-06-27T13:25:00Z`
-**Current Status:** `GREEN_BASELINE_FROZEN`
+**Last Updated:** `2026-06-27T11:41:00Z`
+**Current Status:** `GREEN_BASELINE_VERIFIED`
 
 ---
 
@@ -9,23 +9,25 @@
 
 | Field | Value |
 |-------|-------|
-| Session | post-green-stabilization-20260627T131737Z |
-| Path | `evidence/post-green-stabilization-20260627T131737Z/` |
-| Status | `GREEN_WITH_NOTES` |
-| Date | 2026-06-27T13:17:37Z |
-| Purpose | Post-Green Stabilization — freeze green baseline |
+| Session | playwright-mcp-green-baseline-check-20260627T1131Z |
+| Path | `evidence/playwright-mcp-green-baseline-check-20260627T1131Z/` |
+| Status | `GREEN_BASELINE_VERIFIED` |
+| Date | 2026-06-27T11:41:00Z |
+| Purpose | Playwright MCP read-only verification of frozen green baseline |
 
 ### Files in Latest Session
 | File | Description |
 |------|-------------|
 | `preflight.md` | System reality check |
-| `workflow-green-export.md` | Workflow export evidence + SHA256 |
-| `workflow-green-export.sha256` | Checksum file |
-| `GREEN_BASELINE.md` | Complete baseline manifest |
-| `OPERATIONS_RUNBOOK.md` | Operations procedures |
-| `validation-report.md` | Final validation results |
-| `secret-hygiene-report.md` | Secret scan results |
-| `final-report.md` | Final session report |
+| `playwright-mcp-discovery.md` | Playwright MCP tool/browser availability |
+| `n8n-workflow-ui-check.md` | n8n UI page load and identity verification |
+| `workflow-structure-check.md` | Network intercept: 18 nodes, all critical nodes verified |
+| `n8n-executions-readonly-check.md` | Execution history: schedule cadence, error analysis |
+| `github-issues-3-7-readonly-check.md` | GitHub issue label verification, double-run check |
+| `dispatcher-health-check-run.md` | Health check script results (HEALTH_YELLOW → effectively GREEN) |
+| `secret-hygiene-playwright-check.md` | Secret hygiene scan (4 placeholder false-positives) |
+| `validation-report.md` | Cross-reference validation of all findings |
+| `final-report.md` | Final report with status decision and comparison |
 
 ---
 
@@ -33,6 +35,7 @@
 
 | Session | Path | Status | Date |
 |---------|------|--------|------|
+| Playwright MCP Green Baseline Check | `evidence/playwright-mcp-green-baseline-check-20260627T1131Z/` | 🟢 GREEN_BASELINE_VERIFIED | 2026-06-27 |
 | Post-Green Stabilization | `evidence/post-green-stabilization-20260627T131737Z/` | 🟢 GREEN_WITH_NOTES | 2026-06-27 |
 | Final Canary #7 Report | `evidence/final-execution-success-canary-issue-7-20260627T123611Z/` | 🟢 complete | 2026-06-27 |
 | Final Canary #7 Evidence (49 files) | `evidence/final-execution-success-canary-issue-7-20260627T085436Z/` | 🟢 complete | 2026-06-27 |

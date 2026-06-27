@@ -1,7 +1,7 @@
 # Project Status
 
-**Last Updated:** 2026-06-27T13:25:00Z
-**Current Status:** **GREEN_BASELINE_FROZEN** (Post-Green Stabilization: snapshot exported, runbook created, health check operational, secret hygiene confirmed, quad-protection verified)
+**Last Updated:** 2026-06-27T11:41:00Z
+**Current Status:** **GREEN_BASELINE_VERIFIED** (Playwright MCP verified: UI reachable + authenticated, 18 nodes confirmed, Schedule rock-solid, Issues #3-#7 guarded, Format Final Result fix confirmed via Network Intercept)
 
 ---
 
@@ -58,7 +58,7 @@
 | Healthz | 200 OK |
 | Public API v1 | ✅ Working (JWT Bearer token) |
 | REST API | ❌ 401 (email auth required) |
-| Playwright Access | ⚠️ Session expired (can't re-auth) |
+| Playwright Access | ✅ **VERIFIED** — Authenticated, browser operational, UI readable |
 
 ---
 
@@ -81,6 +81,26 @@
 | n8n API v1 no workflow write | Can't update nodes programmatically | Use n8n UI or REST API (needs email auth) |
 
 ---
+
+## ✅ Playwright MCP Green Baseline Verification (2026-06-27T11:41:00Z)
+
+| Deliverable | Status |
+|------------|--------|
+| Playwright MCP verfügbar & authentifiziert | ✅ Bestätigt |
+| n8n UI erreichbar | ✅ HTTP 200 |
+| Workflow sichtbar (18 Nodes) | ✅ Bestätigt |
+| Schedule Trigger (15 min) | ✅ Bestätigt (10/10 Executions) |
+| Format Final Result Fix (Network Intercept) | ✅ `// ====` + `return [{ json: result }];` vorhanden |
+| Issues #3-#7 geschützt | ✅ Keine Doppelstarts, kein `agent:ready` |
+| Health Check | 🟡 HEALTH_YELLOW (effektiv GREEN) |
+| Secret Hygiene | 🟡 4 Placeholder-False-Positives, 0 echte Secrets |
+| Zero prohibited actions | ✅ Keine Workflow-/GitHub-/Infra-Änderungen |
+
+### Verification Artifacts
+- **Evidence:** `evidence/playwright-mcp-green-baseline-check-20260627T1131Z/` (9 files)
+- **Final Report:** `evidence/.../final-report.md`
+- **Validation Report:** `evidence/.../validation-report.md`
+- **Playwright Screenshot:** `n8n-workflow-healthcheck.png`
 
 ## ✅ Post-Green Stabilization (2026-06-27T13:25:00Z)
 
