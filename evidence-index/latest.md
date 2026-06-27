@@ -1,7 +1,7 @@
 # Evidence Index — Latest
 
-**Last Updated:** `2026-06-27T12:05:00Z`
-**Current Status:** `GREEN_EXECUTION_SUCCESS_CONFIRMED`
+**Last Updated:** `2026-06-27T14:09:31Z`
+**Current Status:** `GREEN_EXECUTION_SUCCESS_CONFIRMED` (with `GREEN_WITH_UNPUSHED_COMMIT`)
 
 ---
 
@@ -9,30 +9,26 @@
 
 | Field | Value |
 |-------|-------|
-| Session | final-format-result-success-canary-issue-8-20260627T114642Z |
-| Path | `evidence/final-format-result-success-canary-issue-8-20260627T114642Z/` |
-| Status | `GREEN_EXECUTION_SUCCESS_CONFIRMED` |
-| Date | 2026-06-27T12:05:00Z |
-| Purpose | Fix Format Final Result typo → Verify n8n Execution success via Canary #8 |
+| Session | post-success-operations-hardening-20260627T140931Z |
+| Path | `evidence/post-success-operations-hardening-20260627T140931Z/` |
+| Status | `GREEN_EXECUTION_SUCCESS_CONFIRMED` (hardening round) |
+| Date | 2026-06-27T14:09:31Z |
+| Purpose | Post-success operations hardening — commit review, secret hygiene, push decision, operational planning |
 
 ### Files in Latest Session
 | File | Description |
 |------|-------------|
 | `preflight.md` | System reality check |
-| `format-final-result-before.md` | Code state before fix (from playwright-agent) |
-| `format-final-result-after.md` | Code state after fix (verified via API) |
-| `format-final-result-playwright-fix.md` | Fix operation summary (from playwright-agent) |
-| `workflow-json-after-fix-intercept.md` | API-extracted workflow JSON validation |
-| `canary-issue-8-created.md` | Canary Issue #8 creation record |
-| `schedule-execution-summary.md` | Execution #69 schedule trigger analysis |
-| `n8n-execution-detail.md` | Execution #69 detail (success, 86.3s) |
-| `canary-issue-8-after.md` | Issue #8 post-execution label status |
-| `issues-3-7-guard-after.md` | Guard verification for protected issues |
-| `runner-evidence-issue-8.md` | Runner evidence from GitHub comment |
-| `dispatcher-health-after-canary-8.md` | Health check results |
-| `secret-hygiene-after-canary-8.md` | Secret hygiene scan results |
-| `validation-report.md` | Cross-reference validation of all findings |
-| `final-report.md` | Final report with status classification |
+| `commit-4aa36d5-review.md` | Commit 4aa36d5 security + content review |
+| `git-status-before-push.md` | Git status at time of hardening |
+| `secret-hygiene-post-success.md` | Secret hygiene scan — all green |
+| `push-decision.md` | Push readiness assessment (awaiting authorization) |
+| `dispatcher-health-post-success.md` | Health check results + analysis |
+| `n8n-write-access-plan.md` | Plan for n8n REST API write configuration |
+| `opencode-runner-provider-plan.md` | Plan for OpenCode provider/API key |
+| `playwright-session-renewal-plan.md` | Plan for secure Playwright session renewal |
+| `reliability-observation-plan.md` | 3-day reliability monitoring plan |
+| `validation-report.md` | Cross-reference validation (38 criteria) |
 
 ---
 
@@ -40,6 +36,7 @@
 
 | Session | Path | Status | Date |
 |---------|------|--------|------|
+| **Post-Success Ops Hardening** | `evidence/post-success-operations-hardening-20260627T140931Z/` | 🛡️ GREEN_EXECUTION_SUCCESS_CONFIRMED | 2026-06-27 |
 | Format Final Result Fix + Canary #8 | `evidence/final-format-result-success-canary-issue-8-20260627T114642Z/` | 🟢 GREEN_EXECUTION_SUCCESS_CONFIRMED | 2026-06-27 |
 | Playwright MCP Green Baseline Check | `evidence/playwright-mcp-green-baseline-check-20260627T1131Z/` | 🟢 GREEN_BASELINE_VERIFIED | 2026-06-27 |
 | Post-Green Stabilization | `evidence/post-green-stabilization-20260627T131737Z/` | 🟢 GREEN_WITH_NOTES | 2026-06-27 |

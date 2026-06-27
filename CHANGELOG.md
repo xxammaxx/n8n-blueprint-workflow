@@ -1,5 +1,36 @@
 # Changelog
 
+## 2026-06-27 — Post-Success Operations Hardening 🛡️
+
+### Operations Hardening Run
+- 🛡️ **Preflight Reality Check** — System state captured and verified
+- 🛡️ **Commit 4aa36d5 Review** — 20 files, documentation/evidence only, 0 secrets found
+- 🛡️ **Secret Hygiene Gate** — GREEN (0 real secrets, 8 known placeholder false positives)
+- 🛡️ **Push Decision** — GREEN_WITH_UNPUSHED_COMMIT (safe to push, awaiting authorization)
+- 🛡️ **4 Operational Plans Created:**
+  - `n8n-write-access-plan.md` — Secure n8n REST API key configuration
+  - `opencode-runner-provider-plan.md` — OpenCode provider key for runner LXC
+  - `playwright-session-renewal-plan.md` — Secure Playwright session management
+  - `reliability-observation-plan.md` — 3-day reliability monitoring framework
+- 🛡️ **Health Check** — HEALTH_YELLOW (effective GREEN, 8/8 core checks PASS)
+- 🛡️ **Validation Report** — All 38 criteria met, 0 hard constraints violated
+
+### Hard Constraints Verified
+- ✅ No workflow logic changed
+- ✅ No n8n Workflow Edit
+- ✅ No Schedule Interval change
+- ✅ No secrets exposed
+- ✅ No Proxmox/Docker modifications
+- ✅ No GitHub Actions triggered
+- ✅ Issues #3-#8 not re-processed
+- ✅ No canary created without authorization
+
+### Artifacts
+- **Evidence:** `evidence/post-success-operations-hardening-20260627T140931Z/` (10+ files)
+- **Updated:** STATUS.md, CHANGELOG.md, evidence-index/latest.md
+
+---
+
 ## 2026-06-27 — GREEN_EXECUTION_SUCCESS_CONFIRMED: Format Final Result Fix + Canary #8 ✅
 
 ### Fix Applied
