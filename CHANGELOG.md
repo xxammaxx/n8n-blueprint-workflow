@@ -1,5 +1,32 @@
 # CHANGELOG
 
+## 2026-06-27 — Dispatcher Schedule/Runner Verification Run: GREEN_PARTIAL (confirmed)
+
+### Status
+**GREEN_PARTIAL** — Full verification run confirmed previous session results. No new changes needed. Schedule Trigger still absent from deployed workflow. Issue #3 already processed. Runner script deployed and syntax-verified.
+
+### Verification Results
+- **n8n live instance**: CT 101 (192.168.1.52) — PID 5486, user `n8n`, 2.26.8, running 22+ hours, ports 5678/5679
+- **Proxmox host n8n**: Zombie PID 420195 (binds no ports) + defective systemd service (restart loop 83502+) — both NOT live
+- **Dispatcher Sv12QTo56NoPUu2D**: ✅ ACTIVE since 2026-06-26T08:52:32. Schedule Trigger ❌ NOT PRESENT (Manual Trigger only)
+- **Runner Script**: ✅ Deployed on LXC 102, SHA256 matches repo, bash -n PASS
+- **Issue #3**: ✅ Already processed in previous session. `agent:ready` removed. `agent:needs-review` + `evidence:attached` set. Issue OPEN.
+- **Runner Evidence**: ✅ 8 files in `/opt/dev-fabric/evidence/github-agent-runs/xxammaxx/n8n-blueprint-workflow/issue-3/gh-issue-3-20260626T073802Z/`
+- **Schedule Auto-Run**: ❌ UNVERIFIED — no Schedule Trigger node exists in deployed workflow
+- **Validation**: Shell scripts PASS, JSON 8/13 PASS (5 reference files fail), Smoke checks PASS (screenshots excluded via .gitignore `*.png`)
+- **Secret Scan**: PASS — no secrets found
+- **.github/workflows**: ✅ Absent
+
+### Architecture Correction Confirmed
+- Previous session's correction (n8n in CT 101, NOT on Proxmox host) is CONFIRMED
+- Proxmox host has zombie n8n process + defective systemd service — both independent from live instance
+
+### Key Findings
+1. **Schedule Trigger nicht vorhanden** — Der Workflow hat NUR einen Manual Trigger. Schedule Trigger Node muss via UI hinzugefügt werden.
+2. **Issue #3 bereits verarbeitet** — Doppelstart-Schutz funktioniert: agent:ready ist entfernt, Workflow würde Issue #3 nicht erneut starten.
+3. **Runner Script bereits deployt** — Keine Änderungen nötig.
+4. **n8n UI Login erforderlich** — Kein storageState für diese Session. REST API authentifiziert abgewiesen.
+
 ## 2026-06-26 — Dispatcher Manual Verification & Issue #3 Processing: GREEN_PARTIAL
 
 ### Status

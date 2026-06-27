@@ -1,8 +1,8 @@
 # STATUS: GREEN_PARTIAL
 
-**Last Updated:** 2026-06-26T07:38:02Z
-**Session:** dispatcher-manual-verification-20260626
-**Previous Session:** dispatcher-ui-activation-20260626-v2
+**Last Updated:** 2026-06-27T03:54:00Z
+**Session:** dispatcher-schedule-runner-verification-20260627
+**Previous Session:** dispatcher-manual-verification-20260626
 
 ## Current State
 
@@ -69,6 +69,27 @@
 | **API Auth Requirements** | ✅ DOCUMENTED | API calls require browser-id header (SHA-256 hashed) + n8n-auth JWT cookie. StorageState contains these credentials. |
 | Git Repo (local) | ACTIVE | `C:\n8n-blueprint-workflow` |
 | Git Repo (GitHub) | LIVE | `https://github.com/xxammaxx/n8n-blueprint-workflow` — commit `89d896b` |
+
+## Verification Session 2026-06-27 — Runtime Verification
+
+This session confirmed the state from the previous dispatcher manual verification run:
+
+| Verification Check | Result | Detail |
+|-------------------|--------|--------|
+| **n8n Live Instance** | ✅ **CT 101 (192.168.1.52)** | PID 5486 as user `n8n`, running since 05:20:43 (22+ hours). `/healthz` returns OK. n8n 2.26.8. Ports: 5678 (web), 5679 (task broker). |
+| **Proxmox Host n8n (zombie)** | ⚠️ NOT LIVE | PID 420195 (UID 100999) runs `node /usr/bin/n8n start` but binds NO ports. Separate broken systemd `n8n.service` in restart loop (counter 83502+). Both are NOT the live instance. |
+| **Dispatcher Workflow (Sv12QTo56NoPUu2D)** | ✅ **ACTIVE** | Activated at 2026-06-26T08:52:32. No deactivation since. n8n PID 5486 has NOT restarted since activation. |
+| **Schedule Trigger Node** | ❌ **NOT PRESENT** | Confirmed via database strings: workflow uses `n8n-nodes-base.manualTrigger` only. No Schedule Trigger node in deployed workflow. |
+| **Runner Script (LXC 102)** | ✅ **DEPLOYED** | `/opt/dev-fabric/scripts/start_github_issue_run.sh` (16725 bytes, 755, bash -n PASS). SHA256 matches repo version: `94cb24f10ad3ded04f4b19166b98a9209518ce842b4a2d68b76e8eaba088fcd8`. |
+| **Issue #3** | ✅ **PROCESSED** | Labels: `agent:needs-review`, `evidence:attached`, `mode:manual-terminal`, `risk:low`. Issue OPEN. `agent:ready` removed — double-start protection verified. |
+| **Runner Evidence (Issue #3)** | ✅ **EXISTS** | 8 files under `gh-issue-3-20260626T073802Z/`. status.json: `GREEN_PARTIAL`, `source_of_truth=github`, `issue_number=3`. |
+| **Schedule Auto-Run** | ❌ **UNVERIFIED** | CANNOT be verified because Schedule Trigger node is absent from the deployed workflow. Only Manual Trigger exists. |
+| **n8n UI Login** | ⚠️ **REQUIRED** | No storageState available for this session. REST API returns `Unauthorized`. Manual login needed for UI operations. |
+| **MCP** | ✅ **No changes** | Not extended. Production workflows not exposed to MCP. |
+| **DB/SQL used** | ❌ **NO** | Read-only file inspection only (strings, journalctl, event logs). No SQL queries executed. |
+| **CLI publish** | ❌ **NO** | No `n8n publish:workflow` used. Not needed — workflow already active. |
+| **Secrets exposed** | ❌ **NONE** | Secret scan clean. No secrets in repo. |
+| **.github/workflows** | ✅ **ABSENT** | Confirmed. |
 
 ## UUID-Based Production URL
 

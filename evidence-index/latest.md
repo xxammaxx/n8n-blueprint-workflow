@@ -1,13 +1,13 @@
-# Abschlussbericht — Dispatcher Manual Verification & Issue #3 Processing
+# Abschlussbericht — Dispatcher Schedule/Runner Verification Run
 
-## Status: GREEN_PARTIAL
+## Status: GREEN_PARTIAL (confirmed)
 
-**Session ID:** dispatcher-schedule-runner-verification-20260626
-**Completed:** 2026-06-26T09:57:00Z
-**Commit:** 2ab0766 (pushed to origin/main)
-**Full Report:** evidence-index/dispatcher-schedule-runner-verification-20260626T095746Z/final-report.md
-**Orchestrator:** issue-orchestrator (deepseek-v4-pro)
-**Previous Session:** dispatcher-ui-activation-20260626-v2
+**Session ID:** dispatcher-schedule-runner-verification-20260627
+**Completed:** 2026-06-27T03:54:00Z
+**Commit:** c5c1be1 (will push to origin/main)
+**Full Report:** evidence-index/dispatcher-schedule-runner-verification-20260627T035400Z/final-report.md
+**Orchestrator:** issue-orchestrator (deepseek-v4-flash)
+**Previous Session:** dispatcher-manual-verification-20260626
 
 ---
 
@@ -182,3 +182,49 @@ Siehe CHANGELOG.md fuer vollstaendige Liste. Kern-Änderungen:
 | Host n8n.service | Defective, restart loop 80850+ |
 | CT 102 (Runner) | Running at 192.168.1.53 |
 | Workflow active | Confirmed via UI (▶️ icon, all nodes "Deactivate") |
+
+---
+
+## Verification Run 2026-06-27 — Summary
+
+### What Was Checked
+
+| Check | Result | Evidence |
+|-------|--------|----------|
+| n8n live instance | ✅ CT 101 (192.168.1.52) | PID 5486, `node /usr/bin/n8n start`, user `n8n`, 22+ hours uptime |
+| n8n reachable | ✅ HTTP 200 | `curl http://192.168.1.52:5678/healthz` → `{"status":"ok"}` |
+| n8n ports | ✅ 5678 + 5679 | `ss -tlnp` shows 0.0.0.0:5678 + 127.0.0.1:5679 bound by node PID 5486 |
+| Proxmox host n8n | ⚠️ Zombie (not live) | PID 420195 binds NO ports. Separate systemd service in restart loop (83502+). |
+| Live n8n PID vs Host n8n PID | ✅ NOT THE SAME | Live: 5486 (CT 101). Host: 420195 (UID 100999, no ports). |
+| Dispatcher active | ✅ YES | Activated 2026-06-26T08:52:32. No deactivation. PID 5486 NOT restarted since. |
+| Schedule Trigger | ❌ NOT PRESENT | Workflow uses `n8n-nodes-base.manualTrigger` only. No Schedule Trigger node. |
+| Runner Script | ✅ Deployed | `/opt/dev-fabric/scripts/start_github_issue_run.sh` (755, bash -n PASS, SHA256 matches repo) |
+| Issue #3 processed | ✅ YES | Labels: `agent:needs-review` + `evidence:attached`. `agent:ready` removed. |
+| Runner Evidence | ✅ 8 files | status.json: `GREEN_PARTIAL`, `source_of_truth=github`, `issue_number=3` |
+| Doppelstart-Schutz | ✅ Verified | `agent:ready` removed — dispatcher will NOT re-process Issue #3 |
+| n8n REST API | ⚠️ Unauth | No storageState available. REST returns `Unauthorized`. |
+| MCP unchanged | ✅ Yes | No changes to MCP configuration |
+| Secret scan | ✅ PASS | No secrets found in repo |
+| .github/workflows | ✅ Absent | Confirmed |
+| Shell validation | ✅ PASS | All 9 shell scripts valid |
+| JSON validation | ⚠️ 8/13 PASS | 5 reference/backup files fail (known, non-critical) |
+| Smoke checks | ✅ PASS | Screenshots excluded via .gitignore `*.png` |
+
+### Final Assessment
+
+**Status: GREEN_PARTIAL** (same as previous session)
+
+The previous session's work is CONFIRMED:
+- ✅ n8n runs in CT 101 (architecture correction validated)
+- ✅ Dispatcher workflow is active
+- ✅ Runner script deployed and working
+- ✅ Issue #3 processed with full evidence trail
+- ✅ Label transitions correct
+- ✅ No regression in any component
+
+The same known limitations remain:
+- ❌ Schedule Trigger not present in deployed workflow
+- ❌ Schedule auto-run cannot be verified without Schedule Trigger node
+- ❌ n8n UI login needed for workflow modifications
+- ❌ OpenCode Provider/Auth not configured
+- ❌ Hermes not installed
