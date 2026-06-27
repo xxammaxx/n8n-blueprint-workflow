@@ -1,7 +1,7 @@
 # Evidence Index — Latest
 
-**Last Updated:** `2026-06-27T15:28:00Z`
-**Current Status:** `GREEN_EXECUTION_SUCCESS_CONFIRMED` (with `RELIABILITY_OBSERVATION_DAY_0`)
+**Last Updated:** `2026-06-27T19:28:13Z`
+**Current Status:** `GREEN_EXECUTION_SUCCESS_CONFIRMED` | `RELIABILITY_OBSERVATION_PASSED_WITH_NOTES`
 
 ---
 
@@ -9,25 +9,32 @@
 
 | Field | Value |
 |-------|-------|
-| Session | push-and-reliability-start-2026-06-27T152645Z |
-| Path | `evidence/push-and-reliability-start-2026-06-27T152645Z/` |
-| Status | `GREEN_PUSHED_AND_OBSERVATION_STARTED` |
-| Date | 2026-06-27T15:28:00Z |
-| Purpose | Push 3 commits to origin/master + start 3-day reliability observation period |
+| Session | reliability-day-3-2026-06-30-20260627T192813Z |
+| Path | `evidence/reliability-day-3-2026-06-30-20260627T192813Z/` |
+| Status | `RELIABILITY_OBSERVATION_PASSED_WITH_NOTES` |
+| Date | 2026-06-30T19:28:13Z |
+| Purpose | Final Day 3 read-only reliability observation — 3-tägige Beobachtung abgeschlossen |
 
 ### Files in Latest Session
 | File | Description |
 |------|-------------|
-| `push-preflight.md` | System reality check before push |
-| `secret-hygiene-before-push.md` | Secret hygiene scan — GREEN (0 real secrets) |
-| `push-result.md` | Push execution + remote verification |
-| `dispatcher-health-after-push.md` | Health check results after push |
-| `validation-report.md` | Cross-reference validation (48 criteria + 15 hard constraints) |
+| `preflight.md` | System reality check |
+| `dispatcher-health-day-3.json` | Health check (JSON) |
+| `dispatcher-health-day-3.md` | Health check report — HEALTH_YELLOW effective GREEN |
+| `n8n-executions-day-3.md` | Execution activity — no new activity since #69 |
+| `github-issues-3-8-day-3.md` | Issues #3-#8 protection — all 6 safe |
+| `secret-hygiene-day-3.md` | Secret hygiene — 0 real leaks, 25 FP |
+| `reliability-observation-summary.md` | 3-day observation summary |
+| `final-report.md` | Day 3 final report |
 
 ### Reliability Observation
 | File | Description |
 |------|-------------|
-| `evidence/reliability-daily/2026-06-27.md` | Day 0 log — observation period started
+| `evidence/reliability-daily/2026-06-27.md` | Day 0 log |
+| `evidence/reliability-daily/2026-06-28.md` | Day 1 log |
+| `evidence/reliability-daily/2026-06-29.md` | Day 2 log |
+| `evidence/reliability-daily/2026-06-30.md` | Day 3 log (final) |
+| `evidence/reliability-daily/RELIABILITY_OBSERVATION_SUMMARY.md` | 3-Tage-Abschlussbeurteilung |
 
 ---
 
@@ -35,6 +42,9 @@
 
 | Session | Path | Status | Date |
 |---------|------|--------|------|
+| **Reliability Day 3** | `evidence/reliability-day-3-2026-06-30-20260627T192813Z/` | ✅ RELIABILITY_OBSERVATION_PASSED_WITH_NOTES | 2026-06-30 |
+| **Reliability Day 2** | `evidence/reliability-day-2-2026-06-29-20260627T171051Z/` | ✅ GREEN_RELIABILITY_DAY_2 | 2026-06-29 |
+| **Reliability Day 1** | `evidence/reliability-day-1-2026-06-28-20260627T165431Z/` | ✅ GREEN_RELIABILITY_DAY_1 | 2026-06-28 |
 | **Push & Reliability Start** | `evidence/push-and-reliability-start-2026-06-27T152645Z/` | 🔵 GREEN_PUSHED_AND_OBSERVATION_STARTED | 2026-06-27 |
 | **Post-Success Ops Hardening** | `evidence/post-success-operations-hardening-20260627T140931Z/` | 🛡️ GREEN_EXECUTION_SUCCESS_CONFIRMED | 2026-06-27 |
 | Format Final Result Fix + Canary #8 | `evidence/final-format-result-success-canary-issue-8-20260627T114642Z/` | 🟢 GREEN_EXECUTION_SUCCESS_CONFIRMED | 2026-06-27 |

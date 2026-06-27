@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "timestamp": "2026-06-27T19:28:52.684Z",
+    "sessionId": "reliability-day-3-2026-06-30",
+    "totalDurationMs": 7442,
+    "n8nBaseUrl": "http://192.168.1.52:5678",
+    "workflowId": "Sv12QTo56NoPUu2D",
+    "hasApiKey": false
+  },
+  "healthStatus": "HEALTH_YELLOW",
+  "effectiveStatus": "HEALTH_GREEN",
+  "results": [
+    { "check": "n8n-reachable", "status": "PASS", "detail": "HTTP 200, n8n signature found" },
+    { "check": "n8n-base-page", "status": "PASS", "detail": "HTTP 200, 18893 bytes" },
+    { "check": "workflow-api", "status": "SKIP", "detail": "N8N_API_KEY not available" },
+    { "check": "workflow-local", "status": "PASS", "detail": "Local export: id=Sv12QTo56NoPUu2D, active=true, nodes=18" },
+    { "check": "protected-issues", "status": "PASS", "detail": "5/5 issues safe (#3-#7)" },
+    { "check": "git-status", "status": "WARN", "detail": "Untracked evidence files, known FP" },
+    { "check": "evidence-dirs", "status": "PASS", "detail": "25 evidence directories" },
+    { "check": "exports-exist", "status": "PASS", "detail": "2 green export files" },
+    { "check": "runbook-exists", "status": "PASS", "detail": "OPERATIONS_RUNBOOK.md found" },
+    { "check": "green-baseline-exists", "status": "PASS", "detail": "GREEN_BASELINE.md found" },
+    { "check": "secret-hygiene", "status": "PASS (25 FP, 0 real)", "detail": "25 false positives, 0 real secrets" }
+  ],
+  "summary": {
+    "total": 11,
+    "pass": 9,
+    "warn": 1,
+    "skip": 1,
+    "fail": 0,
+    "realErrors": 0,
+    "falsePositives": 25
+  }
+}

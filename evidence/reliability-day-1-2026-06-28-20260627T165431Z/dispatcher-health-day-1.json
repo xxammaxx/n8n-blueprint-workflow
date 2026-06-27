@@ -1,0 +1,215 @@
+{
+  "meta": {
+    "timestamp": "2026-06-27T16:55:11.941Z",
+    "sessionId": "post-green-stabilization-2026-06-27T16-5",
+    "totalDurationMs": 7266,
+    "n8nBaseUrl": "http://192.168.1.52:5678",
+    "workflowId": "Sv12QTo56NoPUu2D",
+    "hasApiKey": false
+  },
+  "healthStatus": "HEALTH_YELLOW",
+  "results": [
+    {
+      "check": "n8n-reachable",
+      "status": "PASS",
+      "detail": "HTTP 200, 15 bytes, n8n signature: found",
+      "evidence": {
+        "statusCode": 200,
+        "contentLength": 15,
+        "n8nSignatureFound": true
+      },
+      "durationMs": 119
+    },
+    {
+      "check": "n8n-base-page",
+      "status": "PASS",
+      "detail": "HTTP 200, content: 18893 bytes",
+      "evidence": {
+        "statusCode": 200,
+        "hasN8nSignature": true
+      },
+      "durationMs": 17
+    },
+    {
+      "check": "workflow-api",
+      "status": "SKIP",
+      "detail": "N8N_API_KEY not available — API check skipped",
+      "evidence": {
+        "reason": "auth_missing"
+      },
+      "durationMs": 0
+    },
+    {
+      "check": "workflow-local",
+      "status": "PASS",
+      "detail": "Local export: id=Sv12QTo56NoPUu2D, active=true, nodes=18",
+      "evidence": {
+        "exportPath": "C:\\Spec-kit_n8n\\exports\\green\\dispatcher-green-20260627T131737Z.json",
+        "workflowId": "Sv12QTo56NoPUu2D",
+        "workflowName": "GitHub Ready Issue -> Runner Agent Dispatch",
+        "active": true,
+        "nodeCount": 18,
+        "scheduleTriggerPresent": true,
+        "manualTriggerPresent": true,
+        "guardrailsPresent": true,
+        "exportHash": "0101cdef2a8c6ba54de47993f9d1e28ed1fb7d50941601d73f62085e494830c1"
+      },
+      "durationMs": 0
+    },
+    {
+      "check": "protected-issues",
+      "status": "PASS",
+      "detail": "5/5 issues safe",
+      "evidence": {
+        "issues": [
+          {
+            "issue": "#3",
+            "state": "OPEN",
+            "hasAgentReady": false,
+            "hasAgentRunning": false,
+            "hasNeedsReview": true,
+            "hasEvidenceAttached": true,
+            "safe": true,
+            "labels": [
+              "agent:needs-review",
+              "evidence:attached",
+              "mode:manual-terminal",
+              "risk:low"
+            ]
+          },
+          {
+            "issue": "#4",
+            "state": "OPEN",
+            "hasAgentReady": false,
+            "hasAgentRunning": false,
+            "hasNeedsReview": true,
+            "hasEvidenceAttached": true,
+            "safe": true,
+            "labels": [
+              "agent:needs-review",
+              "evidence:attached",
+              "mode:manual-terminal",
+              "risk:low"
+            ]
+          },
+          {
+            "issue": "#5",
+            "state": "OPEN",
+            "hasAgentReady": false,
+            "hasAgentRunning": false,
+            "hasNeedsReview": true,
+            "hasEvidenceAttached": true,
+            "safe": true,
+            "labels": [
+              "agent:needs-review",
+              "evidence:attached",
+              "test:canary",
+              "dispatcher:e2e"
+            ]
+          },
+          {
+            "issue": "#6",
+            "state": "OPEN",
+            "hasAgentReady": false,
+            "hasAgentRunning": false,
+            "hasNeedsReview": true,
+            "hasEvidenceAttached": true,
+            "safe": true,
+            "labels": [
+              "agent:needs-review",
+              "evidence:attached",
+              "test:canary",
+              "dispatcher:e2e"
+            ]
+          },
+          {
+            "issue": "#7",
+            "state": "OPEN",
+            "hasAgentReady": false,
+            "hasAgentRunning": false,
+            "hasNeedsReview": true,
+            "hasEvidenceAttached": true,
+            "safe": true,
+            "labels": [
+              "agent:needs-review",
+              "evidence:attached",
+              "test:canary"
+            ]
+          }
+        ],
+        "allSafe": true,
+        "anyReady": false
+      },
+      "durationMs": 4309
+    },
+    {
+      "check": "git-status",
+      "status": "WARN",
+      "detail": "Branch: master, Commit: 342f6a0, Green: false",
+      "evidence": {
+        "branch": "master",
+        "commit": "342f6a0d4e1d2e08cfa97b0d00569c48d784e935",
+        "commitMessage": "docs(ops): add final report for push and reliability start",
+        "isGreenCommit": false
+      },
+      "durationMs": 0
+    },
+    {
+      "check": "evidence-dirs",
+      "status": "PASS",
+      "detail": "21 evidence directories found",
+      "evidence": {
+        "count": 21,
+        "latest": "reliability-day-1-2026-06-28-20260627T165431Z"
+      },
+      "durationMs": 0
+    },
+    {
+      "check": "exports-exist",
+      "status": "PASS",
+      "detail": "2 green export files",
+      "evidence": {
+        "exportsGreenExists": true,
+        "fileCount": 2
+      },
+      "durationMs": 0
+    },
+    {
+      "check": "runbook-exists",
+      "status": "PASS",
+      "detail": "OPERATIONS_RUNBOOK.md found",
+      "evidence": {
+        "runbookExists": true,
+        "path": "C:\\Spec-kit_n8n\\evidence\\post-green-stabilization-20260627T131737Z\\OPERATIONS_RUNBOOK.md"
+      },
+      "durationMs": 0
+    },
+    {
+      "check": "green-baseline-exists",
+      "status": "PASS",
+      "detail": "GREEN_BASELINE.md found",
+      "evidence": {
+        "baselineExists": true,
+        "path": "C:\\Spec-kit_n8n\\evidence\\post-green-stabilization-20260627T131737Z\\GREEN_BASELINE.md"
+      },
+      "durationMs": 0
+    },
+    {
+      "check": "secret-hygiene",
+      "status": "FAIL",
+      "detail": "Secret hygiene script failed: Command failed: node scripts/validate-secret-hygiene.mjs",
+      "evidence": {
+        "passed": false,
+        "error": "Command failed: node scripts/validate-secret-hygiene.mjs"
+      },
+      "durationMs": 0
+    }
+  ],
+  "summary": {
+    "total": 11,
+    "pass": 8,
+    "warn": 1,
+    "skip": 1,
+    "fail": 1
+  }
+}
