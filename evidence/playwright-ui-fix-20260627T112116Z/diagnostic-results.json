@@ -1,0 +1,26 @@
+{
+  "timestamp": "2026-06-27T09:32:04.174Z",
+  "url": "http://192.168.1.52:5678/workflow/Sv12QTo56NoPUu2D",
+  "login": "authenticated",
+  "nodePanel": {
+    "exists": false
+  },
+  "cmCount": 0,
+  "codeNodeEditor": {
+    "exists": false
+  },
+  "textareaDetails": [
+    {
+      "visible": false,
+      "valueLen": 0,
+      "valuePreview": "",
+      "placeholder": "What would you like to modify or add?",
+      "className": "_textarea_cfb2m_159 ignore-key-press-node-creator ignore-key-press-canvas"
+    }
+  ],
+  "codeExtracted": false,
+  "codeLength": 0,
+  "extractionMethod": "",
+  "codePreview": "",
+  "allExtractionResults": {}
+}

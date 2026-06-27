@@ -1,0 +1,6 @@
+{
+  "timestamp": "2026-06-27T09:54:49.330Z",
+  "steps": [],
+  "code_before": "// ============================================================================\n// Final Result / Log Output\n// ===========================================================================\n\nconst prepData = $('Prepare RUN_INPUT.json').first().json;\n\nconst result = {\n  status: 'GREEN_PARTIAL_PLUS',\n  issue_number: prepData.issue_number,\n  issue_url: prepData.issue_url,\n  run_id: prepData.run_id,\n  evidence_dir: prepData.evidence_dir,\n  dispatch_mode: 'manual-terminal',\n  guardrail_passed: true,\n  labels_updated: true,\n  comment_posted: true,\n  next_action: 'Issue remains open. Human review required. Labels: agent:needs-review + evidence:attached set. OpenCode Provider/Auth + Hermes continue pending.'\n};\n\nreturn [{ json: result }];",
+  "fix_needed": false
+}

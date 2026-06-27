@@ -1,0 +1,31 @@
+{
+  "timestamp": "2026-06-27T09:40:06.965Z",
+  "steps": [
+    {
+      "step": "final",
+      "panelOpen": false,
+      "panelSelector": null,
+      "codeEditorVisible": false,
+      "codeEditorSelector": null,
+      "nodeBox": {
+        "x": 1723.1478271484375,
+        "y": 470.5579833984375,
+        "width": 40.85221481323242,
+        "height": 40.8521728515625,
+        "inViewport": true,
+        "transform": "none"
+      },
+      "labelClicked": {
+        "cx": 1743.5740585327148,
+        "cy": 518.5025634765625,
+        "width": 81.70426940917969,
+        "height": 8.5108642578125,
+        "element": "DIV._label_9txz0_177"
+      },
+      "programmaticResult": {
+        "storeKeys": [],
+        "piniaAvailable": true
+      }
+    }
+  ]
+}

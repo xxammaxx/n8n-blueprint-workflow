@@ -1,0 +1,2970 @@
+{
+  "allRequests": [
+    {
+      "type": "request",
+      "url": "/workflow/Sv12QTo56NoPUu2D",
+      "method": "GET",
+      "resourceType": "document"
+    },
+    {
+      "type": "response",
+      "url": "/workflow/Sv12QTo56NoPUu2D",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8"
+    },
+    {
+      "type": "request",
+      "url": "/static/base-path.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/static/posthog.init.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/index-bBXjuLUV.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/_plugin-vue_export-helper-9FgSCGor.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/chunk-3UFtDEV3.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/vue.runtime.esm-bundler-DuFGT1Fr.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/_MapCache-CdwsrB90.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/get-DWDypR4b.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/CalendarDate-BfaSinSW.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/empty-iHGzbY1V.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/sanitize-html-C39TTfk2.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/en-pO07VyBQ.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/src-oh8blvtE.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/dist-CMbNUlzx.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/expressions-BpPUU5HE.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/merge-DOI7tY0R.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/expression-runtime-stub-Bls_ZrzX.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/constants-TbFZZKqz.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/dist-fMlqQunW.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/src-dzQaDTXp.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/core-JIfNJcow.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useRootStore-BalFpebZ.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/settings.store-CNcLLas4.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/_baseOrderBy-Dx9eWkK9.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useDebounce-km5--bPe.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useDocumentTitle-CVURASg-.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/users.store-WT_ubBI-.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/dateformat-C8dk2U8h.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/workflowsList.store-CPmOjE05.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/workflows.store-BR1d10XW.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useExternalHooks-DBAwppkf.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useStyles-8X0NUYPL.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useToast-Cqi4YROO.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/FileSaver.min-C0XNgK_i.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/uniqBy-Bh9Zn-Q6.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/NDVEmptyState-IqiPvlZw.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/vue-json-pretty-CI2z17W8.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/core-Bw0B59A2.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/core-D5Szmuh8.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/xml-BspIzXju.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/_virtual_node-popularity-data-Dxyhx5VK.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/nodeIcon-DSRQRAfR.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/cloudPlan.store-BAecrGfR.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/utils-DUaGCHkY.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/templates.store-BvBtQN9m.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/canvas.eventBus-ChQF0M1N.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/VueMarkdown-BonrTJKw.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/overlay-_72TS99J.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useMessage-DFlR433Q.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/dist-B8-9NRTA.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/event-bus-D0NRaDYr.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useCodeDiff-jEFnL1xa.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/focusPanel.store-BLf-2w1b.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/builder.store-BKLNAmsw.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/usePinnedData-WYGggFek.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/executions.store-BFSwOYBs.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/setupPanel.store-CudfH87B.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/templateTransforms-DZ_g9jpE.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useCanvasOperations-Cy_lPYAI.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/retry-CzfqVVSx.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/pushConnection.store-C225n2Iu.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useRunWorkflow-B4twqRlN.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/collaboration.store-CG7YKMOf.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useClipboard-D0EluSUh.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useInjectWorkflowId-BkIIfJW3.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/assistant.store-fYp5Oz56.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/chatPanel.store-DCo_fzy8.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/dateFormatter-CpWA0gTj.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useExecutionHelpers-DpJVg1--.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/externalSecrets.ee.store-IWWzwsaj.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/RunDataHtml-D6BmAQnx.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/RunData-BtQjdN5n.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/exports-CDV5VDQW.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/comlink-Bo21i83-.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/flatten-pJxuiUZS.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/date-picker-0Cj8Q2Uw.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/dialog-BZZV4Bpq.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/Draggable-DvAqW_Kk.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/NodeIcon-68IXkznM.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useCalloutHelpers-DEZmjwIj.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useTelemetryContext-BVXuEBKI.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/TextWithHighlights-DYljHnXl.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/VirtualSchema-CgzgCmmP.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/vuedraggable-DZ2J2yeQ.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useAiGateway-9dRT4q5x.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/CredentialIcon-g4cc0vEg.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useCredentialOAuth-DFkeNufu.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useQuickConnect-DFSMBKSf.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/NodeCredentials-BDyKrs3J.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/RedactedDataState-CrRp7aav.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/ParameterInputList-TTTsjrD9.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/chart-CXpAN74o.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/col-BRsf_PRg.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useFreeAiCredits-L50T8A7c.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/dataTable.store-BngJGMsk.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/semver-DckOHdpC.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/communityNodes.store-pbPwRSf8.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/CommunityNodeUpdateInfo-DbyXtD-2.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/ContactAdministratorToInstall-DuV3LxrE.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useActions-CKpXv_Xi.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/NodeSettings-DvIaZ5wc.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/banners.store-CHK0sMHW.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/sso.store-Z4qNrEzq.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/roles.store-BkcaJVRb.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/versions.store-Dq1h7olY.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/constants-BdMc1IoT.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/constants-BVA5gDt1.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/constants-C_s5uiud.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/mcp.constants-ChiKIcFq.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/insights.constants-CRJsa6y9.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/insights.utils-DblLJCAk.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/insights.store-B7utmDmv.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/router-Bz_iTsPU.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/_initCloneObject-CmrWHBAu.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/table-B92qllLT.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/radio-DRVVXh0N.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/values-BhDkthjo.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/shuffle-BXBvsdDW.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/orderBy-BwLZt8gn.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/TimeAgo-8DX4TgdO.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/KeyboardShortcutTooltip-CJAiKzf8.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useKeybindings-DyOIDatg.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/chatHubPanel.store-BBnvTLbO.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useNodeCreatorShortcutCoachmark-BZ65qFDd.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useWorkflowDocumentRenderData-Cugc76J-.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/WorkflowDiffView-BQDBNBno.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/fileUtils-BCeTrfHA.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/chat.utils-BNZszrnb.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/chat.store-DpsM5aHF.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/ProjectIcon-Bao5Zhos.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/apiKeys.store-BXbYqlDu.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/logStreaming.store-BYVVWkiU.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useBugReporting-BhFtKD5e.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/security-settings-CpQNzvdU.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/usage.store-Bud3kOEN.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/CopyInput-DM_tjvrb.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/EnterpriseEdition.ee-bfnSZxtL.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/Modal-Btfca2fP.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/sortByProperty-DDwcbHZX.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/usePageRedirectionHelper-C4V3SzwN.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useGlobalEntityCreation-D3xYLWd2.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/CanvasRunWorkflowButton-DiHNZJHw.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useActivationError-DSySAwEp.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useWorkflowActivate-B9qNQoWI.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/BaseLayout-MAAP6zXQ.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/CredentialsDropdown-Z_bKgYSJ.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/CredentialPicker-CmwIlUve.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/SetupTemplateFormStep-CsNRJX5J.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/LoadingView-esYyF5Hk.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/CreditWarningBanner-C4YrBLaF.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/instanceAiSettings.store-QJLQnepc.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/instanceAi.store-BIaRCs92.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useMcp-BGN436SU.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/ProjectCardBadge-BAVzoA1i.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useMoveResourceToProjectToast-4U-IPxNH.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/ProjectSharing-lhezQrIm.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/auth.eventBus-3KH5S_4d.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/folders.store-9rxerXBR.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/one-password-kgWHQWvA.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/ExternalSecretsProviderConnectionSwitch.ee-BkhsTWbV.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/SecretsProviderImage.ee-B8UKtoM0.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useSecretsProviderConnection.ee-BFDxIbom.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/sourceControl.eventBus-CU5ot3tY.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useCredentialResolvers-CH1NDr9b.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/TagsDropdown-5XgstTtk.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/WorkflowTagsDropdown-lGrftdkV.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/utils-CiCUnvOa.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "response",
+      "url": "/static/base-path.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/static/posthog.init.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/_plugin-vue_export-helper-9FgSCGor.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/vue.runtime.esm-bundler-DuFGT1Fr.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/index-bBXjuLUV.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/_MapCache-CdwsrB90.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/CalendarDate-BfaSinSW.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/get-DWDypR4b.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/en-pO07VyBQ.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/empty-iHGzbY1V.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/chunk-3UFtDEV3.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/expression-runtime-stub-Bls_ZrzX.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/expressions-BpPUU5HE.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/merge-DOI7tY0R.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/sanitize-html-C39TTfk2.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/dist-CMbNUlzx.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/constants-TbFZZKqz.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/dist-fMlqQunW.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/core-JIfNJcow.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useRootStore-BalFpebZ.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/settings.store-CNcLLas4.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/src-dzQaDTXp.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/_baseOrderBy-Dx9eWkK9.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useDocumentTitle-CVURASg-.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useDebounce-km5--bPe.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useStyles-8X0NUYPL.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/workflowsList.store-CPmOjE05.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/dateformat-C8dk2U8h.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useExternalHooks-DBAwppkf.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useToast-Cqi4YROO.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/FileSaver.min-C0XNgK_i.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/uniqBy-Bh9Zn-Q6.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/workflows.store-BR1d10XW.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/users.store-WT_ubBI-.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/vue-json-pretty-CI2z17W8.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/core-Bw0B59A2.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/core-D5Szmuh8.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/xml-BspIzXju.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/nodeIcon-DSRQRAfR.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/cloudPlan.store-BAecrGfR.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/utils-DUaGCHkY.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/_virtual_node-popularity-data-Dxyhx5VK.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/VueMarkdown-BonrTJKw.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/canvas.eventBus-ChQF0M1N.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/templates.store-BvBtQN9m.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/src-oh8blvtE.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/NDVEmptyState-IqiPvlZw.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/event-bus-D0NRaDYr.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/overlay-_72TS99J.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/dist-B8-9NRTA.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useMessage-DFlR433Q.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useCodeDiff-jEFnL1xa.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/focusPanel.store-BLf-2w1b.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/setupPanel.store-CudfH87B.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/executions.store-BFSwOYBs.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/usePinnedData-WYGggFek.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/builder.store-BKLNAmsw.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/templateTransforms-DZ_g9jpE.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/retry-CzfqVVSx.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/pushConnection.store-C225n2Iu.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useInjectWorkflowId-BkIIfJW3.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useClipboard-D0EluSUh.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useCanvasOperations-Cy_lPYAI.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useExecutionHelpers-DpJVg1--.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/collaboration.store-CG7YKMOf.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/assistant.store-fYp5Oz56.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/chatPanel.store-DCo_fzy8.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/externalSecrets.ee.store-IWWzwsaj.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/dateFormatter-CpWA0gTj.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/RunDataHtml-D6BmAQnx.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/comlink-Bo21i83-.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useRunWorkflow-B4twqRlN.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/exports-CDV5VDQW.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/flatten-pJxuiUZS.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/dialog-BZZV4Bpq.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useCalloutHelpers-DEZmjwIj.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/NodeIcon-68IXkznM.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/Draggable-DvAqW_Kk.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useTelemetryContext-BVXuEBKI.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/TextWithHighlights-DYljHnXl.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/date-picker-0Cj8Q2Uw.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/RunData-BtQjdN5n.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useAiGateway-9dRT4q5x.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/CredentialIcon-g4cc0vEg.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useCredentialOAuth-DFkeNufu.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useQuickConnect-DFSMBKSf.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/VirtualSchema-CgzgCmmP.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/RedactedDataState-CrRp7aav.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/NodeCredentials-BDyKrs3J.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/col-BRsf_PRg.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/vuedraggable-DZ2J2yeQ.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/chart-CXpAN74o.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/dataTable.store-BngJGMsk.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useFreeAiCredits-L50T8A7c.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/semver-DckOHdpC.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/communityNodes.store-pbPwRSf8.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/CommunityNodeUpdateInfo-DbyXtD-2.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useActions-CKpXv_Xi.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/ContactAdministratorToInstall-DuV3LxrE.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/banners.store-CHK0sMHW.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/sso.store-Z4qNrEzq.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/NodeSettings-DvIaZ5wc.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/roles.store-BkcaJVRb.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/constants-BdMc1IoT.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/constants-C_s5uiud.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/constants-BVA5gDt1.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/versions.store-Dq1h7olY.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/insights.constants-CRJsa6y9.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/mcp.constants-ChiKIcFq.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/insights.utils-DblLJCAk.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/insights.store-B7utmDmv.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/_initCloneObject-CmrWHBAu.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/orderBy-BwLZt8gn.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/radio-DRVVXh0N.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/router-Bz_iTsPU.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/values-BhDkthjo.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/shuffle-BXBvsdDW.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/KeyboardShortcutTooltip-CJAiKzf8.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/TimeAgo-8DX4TgdO.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/table-B92qllLT.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useNodeCreatorShortcutCoachmark-BZ65qFDd.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/chatHubPanel.store-BBnvTLbO.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useKeybindings-DyOIDatg.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/ParameterInputList-TTTsjrD9.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/fileUtils-BCeTrfHA.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/chat.utils-BNZszrnb.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/chat.store-DpsM5aHF.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/ProjectIcon-Bao5Zhos.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/apiKeys.store-BXbYqlDu.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/WorkflowDiffView-BQDBNBno.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/logStreaming.store-BYVVWkiU.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/security-settings-CpQNzvdU.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/sortByProperty-DDwcbHZX.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useBugReporting-BhFtKD5e.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/EnterpriseEdition.ee-bfnSZxtL.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/usage.store-Bud3kOEN.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/CopyInput-DM_tjvrb.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/Modal-Btfca2fP.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useActivationError-DSySAwEp.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/usePageRedirectionHelper-C4V3SzwN.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/BaseLayout-MAAP6zXQ.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useWorkflowActivate-B9qNQoWI.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useGlobalEntityCreation-D3xYLWd2.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/SetupTemplateFormStep-CsNRJX5J.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/CredentialPicker-CmwIlUve.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/LoadingView-esYyF5Hk.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/CreditWarningBanner-C4YrBLaF.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/instanceAiSettings.store-QJLQnepc.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useMcp-BGN436SU.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/ProjectCardBadge-BAVzoA1i.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/CredentialsDropdown-Z_bKgYSJ.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useWorkflowDocumentRenderData-Cugc76J-.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/CanvasRunWorkflowButton-DiHNZJHw.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/auth.eventBus-3KH5S_4d.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/instanceAi.store-BIaRCs92.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useMoveResourceToProjectToast-4U-IPxNH.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/folders.store-9rxerXBR.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/one-password-kgWHQWvA.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/SecretsProviderImage.ee-B8UKtoM0.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/ExternalSecretsProviderConnectionSwitch.ee-BkhsTWbV.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/sourceControl.eventBus-CU5ot3tY.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/ProjectSharing-lhezQrIm.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useSecretsProviderConnection.ee-BFDxIbom.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/utils-CiCUnvOa.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/WorkflowTagsDropdown-lGrftdkV.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/TagsDropdown-5XgstTtk.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useCredentialResolvers-CH1NDr9b.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "request",
+      "url": "/assets/en-DeojryoA.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/rest/settings",
+      "method": "GET",
+      "resourceType": "xhr"
+    },
+    {
+      "type": "response",
+      "url": "/assets/en-DeojryoA.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "request",
+      "url": "/rest/login",
+      "method": "GET",
+      "resourceType": "xhr"
+    },
+    {
+      "type": "response",
+      "url": "/rest/settings",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "type": "request",
+      "url": "/rest/settings",
+      "method": "GET",
+      "resourceType": "xhr"
+    },
+    {
+      "type": "request",
+      "url": "/types/nodes.json",
+      "method": "GET",
+      "resourceType": "xhr"
+    },
+    {
+      "type": "request",
+      "url": "/rest/module-settings",
+      "method": "GET",
+      "resourceType": "xhr"
+    },
+    {
+      "type": "response",
+      "url": "/rest/login",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/rest/settings",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "type": "request",
+      "url": "/rest/data-tables-global/limits",
+      "method": "GET",
+      "resourceType": "xhr"
+    },
+    {
+      "type": "request",
+      "url": "/rest/projects/my-projects",
+      "method": "GET",
+      "resourceType": "xhr"
+    },
+    {
+      "type": "request",
+      "url": "/rest/projects/personal",
+      "method": "GET",
+      "resourceType": "xhr"
+    },
+    {
+      "type": "request",
+      "url": "/rest/projects/count",
+      "method": "GET",
+      "resourceType": "xhr"
+    },
+    {
+      "type": "request",
+      "url": "/rest/roles?withUsageCount=true",
+      "method": "GET",
+      "resourceType": "xhr"
+    },
+    {
+      "type": "response",
+      "url": "/rest/module-settings",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/rest/data-tables-global/limits",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/rest/projects/my-projects",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/rest/projects/count",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "type": "request",
+      "url": "/rest/favorites",
+      "method": "GET",
+      "resourceType": "xhr"
+    },
+    {
+      "type": "request",
+      "url": "/assets/NodeView-gBSIEY2X.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/NodeView-CjKf3Xma.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/usePostMessageHandler-Bl6Ex8eG.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/emptyStateBuilderPrompt.store-Fa0OpOxf.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useEvaluationsLicense-6uSGKwxE.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/evaluation.constants-CDdEVMjY.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/evaluation.utils-BEgMM5vA.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useExecutionData-ejzc6-sT.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "response",
+      "url": "/rest/roles?withUsageCount=true",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/rest/projects/personal",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/NodeView-gBSIEY2X.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/emptyStateBuilderPrompt.store-Fa0OpOxf.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/usePostMessageHandler-Bl6Ex8eG.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/rest/favorites",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/evaluation.constants-CDdEVMjY.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useEvaluationsLicense-6uSGKwxE.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/evaluation.utils-BEgMM5vA.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useExecutionData-ejzc6-sT.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/NodeView-CjKf3Xma.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "request",
+      "url": "/assets/WorkflowLayout-DR83YWwl.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/MainHeader-DIYt8QIr.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/usePushConnection-C17Z8KO4.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/aiTemplatesStarterCollection.store-wSGlD49B.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/readyToRun.store-CzbUkoxH.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/ConnectionTracker-FR8YcByO.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/usePushConnection-BBh2N05C.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useWorkflowEvaluationState-5MWIo39a.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/FolderBreadcrumbs-DFncyJpP.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/ProjectBreadcrumb-DCwVv9fd.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useWorkflowInitialization-DZV0z3zF.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/LogsOverviewRow-B3KMwlDa.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/AnimatedSpinner-DeuS4n3B.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/ChatFile-Cr89bp5k.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useLogsTreeExpand-ye4vZPvi.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useResizablePanel-26o5vy7v.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/readyToRunWorkflows.store-CWGJTLZe.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useExecutionDebugging-5YoIrwFS.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/AppSidebar-D4w4IdAU.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/MainSidebarHeader-CiW_mDtg.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useSettingsItems--PmCNuxV.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/useSidebarLayout-CLnwN5TS.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/resourceCenter.store-CXndoO2s.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/ChatAgentAvatar-DAXLcjWI.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/ChatGreetings-CfUQHcyu.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/ChatMarkdownChunk-5n7aIwS2.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/CopyButton-Dy3h_sPd.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/ToolsSelector-Dg4ejSbu.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "response",
+      "url": "/assets/readyToRun.store-CzbUkoxH.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/aiTemplatesStarterCollection.store-wSGlD49B.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/usePushConnection-C17Z8KO4.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/WorkflowLayout-DR83YWwl.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/MainHeader-DIYt8QIr.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/usePushConnection-BBh2N05C.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/ConnectionTracker-FR8YcByO.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useWorkflowEvaluationState-5MWIo39a.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/FolderBreadcrumbs-DFncyJpP.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/ProjectBreadcrumb-DCwVv9fd.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useWorkflowInitialization-DZV0z3zF.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/ChatFile-Cr89bp5k.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/LogsOverviewRow-B3KMwlDa.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/AnimatedSpinner-DeuS4n3B.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useResizablePanel-26o5vy7v.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/AppSidebar-D4w4IdAU.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useExecutionDebugging-5YoIrwFS.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/MainSidebarHeader-CiW_mDtg.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/readyToRunWorkflows.store-CWGJTLZe.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useSettingsItems--PmCNuxV.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/resourceCenter.store-CXndoO2s.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/ChatAgentAvatar-DAXLcjWI.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useSidebarLayout-CLnwN5TS.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/CopyButton-Dy3h_sPd.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/ToolsSelector-Dg4ejSbu.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/ChatMarkdownChunk-5n7aIwS2.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/ChatGreetings-CfUQHcyu.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/useLogsTreeExpand-ye4vZPvi.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "request",
+      "url": "/rest/users?take=2&skip=0&filter=%7B%22isPending%22%3Afalse%7D",
+      "method": "GET",
+      "resourceType": "xhr"
+    },
+    {
+      "type": "request",
+      "url": "/rest/active-workflows",
+      "method": "GET",
+      "resourceType": "xhr"
+    },
+    {
+      "type": "request",
+      "url": "/types/credentials.json",
+      "method": "GET",
+      "resourceType": "xhr"
+    },
+    {
+      "type": "request",
+      "url": "/rest/credentials/for-workflow?workflowId=Sv12QTo56NoPUu2D",
+      "method": "GET",
+      "resourceType": "xhr"
+    },
+    {
+      "type": "request",
+      "url": "/types/nodes.json",
+      "method": "GET",
+      "resourceType": "xhr"
+    },
+    {
+      "type": "request",
+      "url": "/rest/community-node-types",
+      "method": "GET",
+      "resourceType": "xhr"
+    },
+    {
+      "type": "response",
+      "url": "/rest/users?take=2&skip=0&filter=%7B%22isPending%22%3Afalse%7D",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/rest/active-workflows",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "type": "request",
+      "url": "/rest/workflows/Sv12QTo56NoPUu2D",
+      "method": "GET",
+      "resourceType": "xhr"
+    },
+    {
+      "type": "request",
+      "url": "/rest/tags?withUsageCount=false",
+      "method": "GET",
+      "resourceType": "xhr"
+    },
+    {
+      "type": "response",
+      "url": "/types/nodes.json",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/types/credentials.json",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/rest/credentials/for-workflow?workflowId=Sv12QTo56NoPUu2D",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/rest/tags?withUsageCount=false",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/rest/workflows/Sv12QTo56NoPUu2D",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/rest/community-node-types",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "type": "request",
+      "url": "/rest/workflows/Sv12QTo56NoPUu2D",
+      "method": "GET",
+      "resourceType": "xhr"
+    },
+    {
+      "type": "request",
+      "url": "/rest/workflow-history/workflow/Sv12QTo56NoPUu2D/version/8e0fbbf0-2b6d-4528-b73c-932e78c3736e",
+      "method": "GET",
+      "resourceType": "xhr"
+    },
+    {
+      "type": "response",
+      "url": "/types/nodes.json",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "type": "request",
+      "url": "/rest/workflows/Sv12QTo56NoPUu2D",
+      "method": "GET",
+      "resourceType": "xhr"
+    },
+    {
+      "type": "request",
+      "url": "/rest/workflows/Sv12QTo56NoPUu2D/collaboration/write-lock",
+      "method": "GET",
+      "resourceType": "xhr"
+    },
+    {
+      "type": "request",
+      "url": "/rest/workflows/Sv12QTo56NoPUu2D/executions/last-successful",
+      "method": "GET",
+      "resourceType": "xhr"
+    },
+    {
+      "type": "request",
+      "url": "/assets/SetupWorkflowCredentialsButton-D5At0FjJ.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/NodeCreation-DzNMjU_s.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/NodeDetailsViewV2-ChN8S5wa.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/TriggerPanel-B6FeOYO8.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/RunDataParsedAiContent-DX9kZP_0.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/rest/license",
+      "method": "GET",
+      "resourceType": "xhr"
+    },
+    {
+      "type": "request",
+      "url": "/assets/node-icons-BPf0TA8N.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "response",
+      "url": "/rest/workflows/Sv12QTo56NoPUu2D",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/SetupWorkflowCredentialsButton-D5At0FjJ.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/NodeCreation-DzNMjU_s.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/RunDataParsedAiContent-DX9kZP_0.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/NodeDetailsViewV2-ChN8S5wa.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/TriggerPanel-B6FeOYO8.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/node-icons-BPf0TA8N.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/rest/workflow-history/workflow/Sv12QTo56NoPUu2D/version/8e0fbbf0-2b6d-4528-b73c-932e78c3736e",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/rest/workflows/Sv12QTo56NoPUu2D",
+      "status": 401,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "type": "request",
+      "url": "/rest/workflows/Sv12QTo56NoPUu2D",
+      "method": "GET",
+      "resourceType": "fetch"
+    },
+    {
+      "type": "response",
+      "url": "/rest/workflows/Sv12QTo56NoPUu2D/collaboration/write-lock",
+      "status": 401,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/rest/workflows/Sv12QTo56NoPUu2D/executions/last-successful",
+      "status": 401,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/rest/license",
+      "status": 401,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "type": "request",
+      "url": "/rest/workflows/Sv12QTo56NoPUu2D",
+      "method": "GET",
+      "resourceType": "fetch"
+    },
+    {
+      "type": "request",
+      "url": "/rest/workflows/Sv12QTo56NoPUu2D",
+      "method": "GET",
+      "resourceType": "fetch"
+    },
+    {
+      "type": "request",
+      "url": "/assets/NodeCreator-D4boe1np.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "request",
+      "url": "/assets/shield-alt-BFhrD83R.js",
+      "method": "GET",
+      "resourceType": "script"
+    },
+    {
+      "type": "response",
+      "url": "/assets/NodeCreator-D4boe1np.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "type": "response",
+      "url": "/assets/shield-alt-BFhrD83R.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8"
+    }
+  ],
+  "xhrResult": {
+    "status": 401
+  },
+  "fetchResults": {
+    "include": {
+      "status": 401,
+      "ok": false
+    },
+    "sameOrigin": {
+      "status": 401,
+      "ok": false
+    },
+    "default_": {
+      "status": 401,
+      "ok": false
+    }
+  },
+  "htmlData": [],
+  "nodeNames": [
+    {
+      "dataId": "85e67e06",
+      "label": "Manual Trigger (Smoke Test)"
+    },
+    {
+      "dataId": "2d16d3af",
+      "label": "Fetch Issue from GitHub"
+    },
+    {
+      "dataId": "848355a6",
+      "label": "Guardrails & Validate"
+    },
+    {
+      "dataId": "d0a66aea",
+      "label": "Remove agent:ready Label"
+    },
+    {
+      "dataId": "f75e4581",
+      "label": "Add agent:running Label"
+    },
+    {
+      "dataId": "0e03bd83",
+      "label": "Prepare RUN_INPUT.json"
+    },
+    {
+      "dataId": "bbc6efd4",
+      "label": "SSH Write RUN_INPUT to Runner"
+    },
+    {
+      "dataId": "4f5b0160",
+      "label": "SSH Start Runner Script"
+    },
+    {
+      "dataId": "c7411679",
+      "label": "Wait (5s)"
+    },
+    {
+      "dataId": "592fc2b2",
+      "label": "SSH Read status.json"
+    },
+    {
+      "dataId": "25d2cbd3",
+      "label": "Format Evidence Comment"
+    },
+    {
+      "dataId": "d2de1066",
+      "label": "Create GitHub Comment on Issue"
+    },
+    {
+      "dataId": "5f7ff1c9",
+      "label": "Add Labels (agent:needs-review, evidence:attached)"
+    },
+    {
+      "dataId": "9d09319e",
+      "label": "Remove agent:running Label (404-tolerant)"
+    },
+    {
+      "dataId": "f1aedb55",
+      "label": "Format Final Result"
+    },
+    {
+      "dataId": "39db5918",
+      "label": "Schedule Trigger (15 min)"
+    },
+    {
+      "dataId": "53e03f46",
+      "label": "GitHub Search Issues (agent:ready)"
+    },
+    {
+      "dataId": "39e824f8",
+      "label": "Pick First Ready Issue"
+    }
+  ]
+}

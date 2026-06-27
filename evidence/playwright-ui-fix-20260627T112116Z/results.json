@@ -1,0 +1,23 @@
+{
+  "phase": "playwright-ui-fix",
+  "timestamp": "2026-06-27T09:27:49.577Z",
+  "playwright_available": true,
+  "browser_launched": true,
+  "n8n_reachable": true,
+  "login_status": "already_authenticated",
+  "secrets_visible": false,
+  "workflow_url_reachable": true,
+  "deep_link_reachable": false,
+  "node_opened": true,
+  "code_editor_visible": false,
+  "comment_line_found": false,
+  "fix_applied": false,
+  "logic_changed": false,
+  "workflow_saved": true,
+  "execute_step_clicked": false,
+  "errors": [
+    "Code content too short or empty - cannot analyze."
+  ],
+  "code_before": "",
+  "code_after": null
+}

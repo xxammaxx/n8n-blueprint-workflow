@@ -1,0 +1,27 @@
+{
+  "timestamp": "2026-06-27T09:36:01.157Z",
+  "panelOpened": false,
+  "panelSelector": null,
+  "modalCount": 0,
+  "finalState": {
+    "panelOpen": false,
+    "codeMirror": false,
+    "codeNodeEditor": false,
+    "textareas": [
+      {
+        "visible": false,
+        "valLen": 0,
+        "preview": "",
+        "placeholder": "What would you like to modify or add?"
+      }
+    ],
+    "nodeNameInPanel": false
+  },
+  "box": {
+    "x": 1723.1478271484375,
+    "y": 470.5579833984375,
+    "width": 40.8521728515625,
+    "height": 40.8521728515625
+  },
+  "url": "http://192.168.1.52:5678/workflow/Sv12QTo56NoPUu2D"
+}
