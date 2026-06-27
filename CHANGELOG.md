@@ -1,5 +1,40 @@
 # Changelog
 
+## 2026-06-27 — GREEN_BASELINE_FROZEN: Post-Green Stabilization 🧊
+
+### Stabilization Run
+- 🟢 **Green Workflow Snapshot** exported to `exports/green/` (SHA256 verified)
+- 🟢 **GREEN_BASELINE.md** created — complete system state documentation
+- 🟢 **OPERATIONS_RUNBOOK.md** created — incident response, label reference, health checks
+- 🟢 **Health Check Script** created — `scripts/dispatcher-health-check.mjs` (read-only)
+- 🟢 **Secret Hygiene** confirmed clean (0 real leaks, 1 documented false positive)
+- 🟢 **Quadruple Protection** verified for Issues #3-#7
+
+### Health Check Results
+- ✅ n8n reachable (HTTP 200)
+- ✅ Workflow active (Sv12QTo56NoPUu2D, 18 nodes)
+- ✅ Schedule Trigger present (15-min interval)
+- ✅ Manual Trigger present
+- ✅ Guardrails node present + trigger-agnostic
+- ✅ All protected issues safe (no re-processing)
+- ⏭️ API workflow check skipped (no API key — expected)
+
+### Artifacts Created
+| Artifact | Path |
+|----------|------|
+| Green Snapshot | `exports/green/dispatcher-green-20260627T131737Z.json` |
+| Baseline Manifest | `evidence/post-green-stabilization-20260627T131737Z/GREEN_BASELINE.md` |
+| Operations Runbook | `evidence/post-green-stabilization-20260627T131737Z/OPERATIONS_RUNBOOK.md` |
+| Health Script | `scripts/dispatcher-health-check.mjs` |
+| Validation Report | `evidence/post-green-stabilization-20260627T131737Z/validation-report.md` |
+| Secret Hygiene Report | `evidence/post-green-stabilization-20260627T131737Z/secret-hygiene-report.md` |
+| Final Report | `evidence/post-green-stabilization-20260627T131737Z/final-report.md` |
+
+### Status
+- **GREEN_BASELINE_FROZEN** — System betriebsbereit, dokumentiert, gesichert.
+
+---
+
 ## 2026-06-27 — GREEN_EXECUTION_SUCCESS: Playwright Code Verifikation + Canary #7 Schedule Test ✅
 
 ### Code Verification

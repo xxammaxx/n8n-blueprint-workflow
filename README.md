@@ -1,8 +1,8 @@
 # Spec Kit / OpenCode / n8n / Proxmox Runner Orchestrator
 
-Status: `REAL_E2E_READY_PREPARED`
+Status: `GREEN_BASELINE_FROZEN`
 
-Aktueller Laufstatus am `2026-06-26 09:47`: `GREEN_PARTIAL_TOOL_GAP`
+Aktueller Laufstatus am `2026-06-27 13:25Z`: `GREEN_BASELINE_FROZEN` (Post-Green Stabilization abgeschlossen: Snapshot exportiert, Runbook erstellt, Health Check operational, Secret Hygiene bestätigt)
 
 Dieses Projekt ist ein n8n-Orchestrator fuer `Blueprint -> OpenCode -> Spec Kit` ueber SSH und `docker exec`. Der bekannte Proxmox-Host ist `192.168.1.136`. Proxmox wird dabei nicht veraendert; der Workflow nutzt SSH nur fuer einen kontrollierten Docker-Hop zum Runner-Host.
 

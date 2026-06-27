@@ -1,0 +1,215 @@
+{
+  "meta": {
+    "timestamp": "2026-06-27T11:22:58.183Z",
+    "sessionId": "post-green-stabilization-2026-06-27T11-2",
+    "totalDurationMs": 6333,
+    "n8nBaseUrl": "http://192.168.1.52:5678",
+    "workflowId": "Sv12QTo56NoPUu2D",
+    "hasApiKey": false
+  },
+  "healthStatus": "HEALTH_YELLOW",
+  "results": [
+    {
+      "check": "n8n-reachable",
+      "status": "PASS",
+      "detail": "HTTP 200, 15 bytes, n8n signature: found",
+      "evidence": {
+        "statusCode": 200,
+        "contentLength": 15,
+        "n8nSignatureFound": true
+      },
+      "durationMs": 129
+    },
+    {
+      "check": "n8n-base-page",
+      "status": "PASS",
+      "detail": "HTTP 200, content: 18893 bytes",
+      "evidence": {
+        "statusCode": 200,
+        "hasN8nSignature": true
+      },
+      "durationMs": 65
+    },
+    {
+      "check": "workflow-api",
+      "status": "SKIP",
+      "detail": "N8N_API_KEY not available — API check skipped",
+      "evidence": {
+        "reason": "auth_missing"
+      },
+      "durationMs": 0
+    },
+    {
+      "check": "workflow-local",
+      "status": "PASS",
+      "detail": "Local export: id=Sv12QTo56NoPUu2D, active=true, nodes=18",
+      "evidence": {
+        "exportPath": "C:\\Spec-kit_n8n\\exports\\green\\dispatcher-green-20260627T131737Z.json",
+        "workflowId": "Sv12QTo56NoPUu2D",
+        "workflowName": "GitHub Ready Issue -> Runner Agent Dispatch",
+        "active": true,
+        "nodeCount": 18,
+        "scheduleTriggerPresent": true,
+        "manualTriggerPresent": true,
+        "guardrailsPresent": true,
+        "exportHash": "0101cdef2a8c6ba54de47993f9d1e28ed1fb7d50941601d73f62085e494830c1"
+      },
+      "durationMs": 0
+    },
+    {
+      "check": "protected-issues",
+      "status": "PASS",
+      "detail": "5/5 issues safe",
+      "evidence": {
+        "issues": [
+          {
+            "issue": "#3",
+            "state": "OPEN",
+            "hasAgentReady": false,
+            "hasAgentRunning": false,
+            "hasNeedsReview": true,
+            "hasEvidenceAttached": true,
+            "safe": true,
+            "labels": [
+              "agent:needs-review",
+              "evidence:attached",
+              "mode:manual-terminal",
+              "risk:low"
+            ]
+          },
+          {
+            "issue": "#4",
+            "state": "OPEN",
+            "hasAgentReady": false,
+            "hasAgentRunning": false,
+            "hasNeedsReview": true,
+            "hasEvidenceAttached": true,
+            "safe": true,
+            "labels": [
+              "agent:needs-review",
+              "evidence:attached",
+              "mode:manual-terminal",
+              "risk:low"
+            ]
+          },
+          {
+            "issue": "#5",
+            "state": "OPEN",
+            "hasAgentReady": false,
+            "hasAgentRunning": false,
+            "hasNeedsReview": true,
+            "hasEvidenceAttached": true,
+            "safe": true,
+            "labels": [
+              "agent:needs-review",
+              "evidence:attached",
+              "test:canary",
+              "dispatcher:e2e"
+            ]
+          },
+          {
+            "issue": "#6",
+            "state": "OPEN",
+            "hasAgentReady": false,
+            "hasAgentRunning": false,
+            "hasNeedsReview": true,
+            "hasEvidenceAttached": true,
+            "safe": true,
+            "labels": [
+              "agent:needs-review",
+              "evidence:attached",
+              "test:canary",
+              "dispatcher:e2e"
+            ]
+          },
+          {
+            "issue": "#7",
+            "state": "OPEN",
+            "hasAgentReady": false,
+            "hasAgentRunning": false,
+            "hasNeedsReview": true,
+            "hasEvidenceAttached": true,
+            "safe": true,
+            "labels": [
+              "agent:needs-review",
+              "evidence:attached",
+              "test:canary"
+            ]
+          }
+        ],
+        "allSafe": true,
+        "anyReady": false
+      },
+      "durationMs": 4014
+    },
+    {
+      "check": "git-status",
+      "status": "PASS",
+      "detail": "Branch: master, Commit: 869fa69, Green: true",
+      "evidence": {
+        "branch": "master",
+        "commit": "869fa69e8c33562bb58af74c333f67b4c09fc305",
+        "commitMessage": "test(n8n): confirm dispatcher execution success canary",
+        "isGreenCommit": true
+      },
+      "durationMs": 0
+    },
+    {
+      "check": "evidence-dirs",
+      "status": "PASS",
+      "detail": "9 evidence directories found",
+      "evidence": {
+        "count": 9,
+        "latest": "post-green-stabilization-20260627T131737Z"
+      },
+      "durationMs": 0
+    },
+    {
+      "check": "exports-exist",
+      "status": "PASS",
+      "detail": "2 green export files",
+      "evidence": {
+        "exportsGreenExists": true,
+        "fileCount": 2
+      },
+      "durationMs": 0
+    },
+    {
+      "check": "runbook-exists",
+      "status": "PASS",
+      "detail": "OPERATIONS_RUNBOOK.md found",
+      "evidence": {
+        "runbookExists": true,
+        "path": "C:\\Spec-kit_n8n\\evidence\\post-green-stabilization-20260627T131737Z\\OPERATIONS_RUNBOOK.md"
+      },
+      "durationMs": 0
+    },
+    {
+      "check": "green-baseline-exists",
+      "status": "PASS",
+      "detail": "GREEN_BASELINE.md found",
+      "evidence": {
+        "baselineExists": true,
+        "path": "C:\\Spec-kit_n8n\\evidence\\post-green-stabilization-20260627T131737Z\\GREEN_BASELINE.md"
+      },
+      "durationMs": 0
+    },
+    {
+      "check": "secret-hygiene",
+      "status": "FAIL",
+      "detail": "Secret hygiene script failed: Command failed: node scripts/validate-secret-hygiene.mjs",
+      "evidence": {
+        "passed": false,
+        "error": "Command failed: node scripts/validate-secret-hygiene.mjs"
+      },
+      "durationMs": 0
+    }
+  ],
+  "summary": {
+    "total": 11,
+    "pass": 9,
+    "warn": 0,
+    "skip": 1,
+    "fail": 1
+  }
+}
