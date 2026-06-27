@@ -1,5 +1,34 @@
 # Changelog
 
+## 2026-06-27 — Guardrails Trigger-Agnostic Fix ✅
+
+### Fixed
+- 🔴 **Guardrails & Validate node BUG:** Hard `$('Manual Trigger (Smoke Test)')` dependency removed
+- Node now uses `$input.first().json` — fully trigger-agnostic
+- Issue #3 hard block added (`isIssue3` check)
+- Already-processed detection added (`isAlreadyProcessed` check)
+- No Error object mutation (creates new Error via constructor)
+
+### Verified
+- Execution #48 (Schedule Trigger, ~06:45 UTC): Guardrails → SUCCESS
+- Full dispatch pipeline completed: Guardrails → Labels → Runner → Evidence → Comment
+- Issue #4 processed: `agent:ready` → `agent:needs-review` + `evidence:attached`
+- Issue #3 NOT re-processed (5-layer protection intact)
+- Runner evidence generated on lxc-dev-runner (192.168.1.53)
+
+### Updated
+- STATUS.md: YELLOW → GREEN_PARTIAL
+- 15 evidence files in `evidence/guardrails-trigger-agnostic-fix-20260627T062657Z/`
+- Git repo re-initialized
+
+### Known Issue
+- Format Final Result comment typo (cosmetic, pre-existing, unrelated to Guardrails fix)
+
+### Status
+- **GREEN_PARTIAL** — Dispatcher end-to-end works, Schedule Trigger verified
+
+---
+
 ## 2026-06-27 — Schedule Auto-Run Verification
 
 ### Verified

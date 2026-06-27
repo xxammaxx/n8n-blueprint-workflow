@@ -1,0 +1,17 @@
+﻿{
+    "id":  "44",
+    "finished":  false,
+    "mode":  "manual",
+    "retryOf":  null,
+    "retrySuccessId":  null,
+    "status":  "error",
+    "createdAt":  "2026-06-26T07:37:59.942Z",
+    "startedAt":  "2026-06-26T07:37:59.947Z",
+    "stoppedAt":  "2026-06-26T07:39:28.441Z",
+    "deletedAt":  null,
+    "workflowId":  "Sv12QTo56NoPUu2D",
+    "waitTill":  null,
+    "storedAt":  "db",
+    "tracingContext":  null,
+    "deduplicationKey":  null
+}

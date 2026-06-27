@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Guardrails Node Update - Evidence</title>
+<style>
+  body { font-family: Consolas, monospace; background: #1a1a2e; color: #e0e0e0; padding: 20px; max-width: 1200px; margin: 0 auto; }
+  h1 { color: #00d4aa; border-bottom: 2px solid #00d4aa; padding-bottom: 10px; }
+  h2 { color: #4fc3f7; }
+  .card { background: #16213e; border: 1px solid #0f3460; border-radius: 8px; padding: 20px; margin: 15px 0; }
+  .pass { color: #00e676; }
+  .fail { color: #ff5252; }
+  .warn { color: #ffab40; }
+  .code { background: #0d1117; padding: 15px; border-radius: 6px; border-left: 4px solid #00d4aa; overflow-x: auto; white-space: pre-wrap; font-size: 13px; line-height: 1.5; }
+  .code .keyword { color: #ff79c6; }
+  .code .string { color: #f1fa8c; }
+  .code .comment { color: #6272a4; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 8px 12px; text-align: left; border: 1px solid #0f3460; }
+  th { background: #0f3460; color: #4fc3f7; }
+  .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+  .badge-success { background: #00c853; color: #000; }
+  .badge-info { background: #2196f3; color: #fff; }
+  .check { color: #00e676; font-weight: bold; }
+  pre { margin: 0; }
+</style>
+</head>
+<body>
+<h1>Guardrails & Validate Node Update</h1>
+<p>Workflow: <strong>GitHub Ready Issue -> Runner Agent Dispatch</strong> (ID: Sv12QTo56NoPUu2D)</p>
+<p>Timestamp: 2026-06-27T06:37:00Z</p>
+
+<div class="card">
+  <h2>Update Summary</h2>
+  <table>
+    <tr><th>Check</th><th>Result</th></tr>
+    <tr><td>API Update Status</td><td><span class="badge badge-success">200 OK</span></td></tr>
+    <tr><td>Old Code Length</td><td>2,372 characters</td></tr>
+    <tr><td>New Code Length</td><td>3,181 characters</td></tr>
+    <tr><td>Code Verified After Update</td><td><span class="check">PASS</span> (3,181 chars)</td></tr>
+    <tr><td>Workflow Still Active</td><td><span class="badge badge-success">YES - ACTIVE</span></td></tr>
+    <tr><td>Trigger-Agnostic Marker</td><td><span class="check">FIXED: Trigger-agnostic found</span></td></tr>
+    <tr><td>No Manual Trigger Dependency</td><td><span class="check">PASS</span> (no reference to Manual Trigger)</td></tr>
+    <tr><td>Issue #3 Hard Block</td><td><span class="check">PASS</span> (HARD BLOCK present)</td></tr>
+    <tr><td>Already-Processed Detection</td><td><span class="check">PASS</span> (agent:needs-review + evidence:attached)</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2>Key Changes (Before -> After)</h2>
+  <table>
+    <tr><th>Aspect</th><th>Before</th><th>After</th></tr>
+    <tr>
+      <td>owner/repo source</td>
+      <td><span class="fail">$('Manual Trigger (Smoke Test)').first().json</span></td>
+      <td><span class="pass">Static: 'xxammaxx' / 'n8n-blueprint-workflow'</span></td>
+    </tr>
+    <tr>
+      <td>Trigger dependency</td>
+      <td><span class="fail">Direct reference to Manual Trigger node</span></td>
+      <td><span class="pass">$input.first().json (trigger-agnostic)</span></td>
+    </tr>
+    <tr>
+      <td>Issue #3 protection</td>
+      <td><span class="fail">None</span></td>
+      <td><span class="pass">HARD BLOCK: isIssue3 check</span></td>
+    </tr>
+    <tr>
+      <td>Already-processed check</td>
+      <td><span class="fail">None</span></td>
+      <td><span class="pass">agent:needs-review + evidence:attached</span></td>
+    </tr>
+    <tr>
+      <td>Error handling</td>
+      <td><span class="warn">Simple throw</span></td>
+      <td><span class="pass">Explicit blockError with guardrail_reason</span></td>
+    </tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2>New Code Preview</h2>
+  <div class="code"><pre>// ============================================================================
+// Guardrails: Validate issue state before dispatch
+// Check: issue open, agent:ready present, no running/blocked/done
+// <span style="color:#00d4aa;">FIXED: Trigger-agnostic — works with BOTH Manual Trigger AND Schedule Trigger</span>
+// ============================================================================
+
+const issueData = $input.first().json;
+
+// Static values for single-repo dispatcher (no dependency on any specific trigger)
+const owner = 'xxammaxx';
+const repo = 'n8n-blueprint-workflow';
+const issueNumber = issueData.number || 0;
+const issueTitle = issueData.title || '';
+const issueBody = issueData.body || '';
+const issueState = issueData.state || 'unknown';
+const labels = issueData.labels || [];
+
+const labelNames = labels.map(function(l) { return typeof l === 'string' ? l : l.name; }).filter(Boolean);
+const hasReady = labelNames.includes('agent:ready');
+const hasRunning = labelNames.includes('agent:running');
+const hasBlocked = labelNames.includes('agent:blocked');
+const hasDone = labelNames.includes('agent:done');
+const needsReview = labelNames.includes('agent:needs-review');
+const evidenceAttached = labelNames.includes('evidence:attached');
+
+var mode = 'manual-terminal';
+if (labelNames.includes('mode:opencode-run')) mode = 'opencode-run';
+else if (labelNames.includes('mode:hermes-review')) mode = 'hermes-review';
+
+var risk = 'medium';
+if (labelNames.includes('risk:low')) risk = 'low';
+else if (labelNames.includes('risk:high')) risk = 'high';
+
+const isOpen = issueState === 'open';
+
+// HARD BLOCK: Issue #3 is a completed smoke test — never re-process
+const isIssue3 = issueNumber === 3;
+
+// Detect already-processed issues (agent:needs-review + evidence:attached = done)
+const isAlreadyProcessed = needsReview && evidenceAttached;
+
+const canStart = isOpen && hasReady && !hasRunning && !hasBlocked 
+    && !hasDone && !isIssue3 && !isAlreadyProcessed;
+
+// ... (full code deployed, 3181 characters)</pre></div>
+</div>
+
+<div class="card">
+  <h2>Notes</h2>
+  <ul>
+    <li><span class="check">✓</span> Code updated successfully via n8n Public API (PUT /api/v1/workflows/Sv12QTo56NoPUu2D)</li>
+    <li><span class="check">✓</span> Workflow remains ACTIVE after update</li>
+    <li><span class="check">✓</span> No other nodes modified - only Guardrails & Validate node changed</li>
+    <li><span class="check">✓</span> Both triggers preserved: Manual Trigger (Smoke Test) + Schedule Trigger (15 min)</li>
+    <li><span class="warn">⚠</span> UI screenshots unavailable - n8n session expired (requires re-authentication)</li>
+    <li><span class="warn">⚠</span> API-based verification confirms the update is in place</li>
+  </ul>
+</div>
+</body>
+</html>

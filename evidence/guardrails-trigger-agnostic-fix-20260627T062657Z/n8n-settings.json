@@ -1,0 +1,35 @@
+﻿{
+    "data":  {
+                 "settingsMode":  "public",
+                 "defaultLocale":  "en",
+                 "userManagement":  {
+                                        "authenticationMethod":  "email",
+                                        "showSetupOnFirstLoad":  false,
+                                        "smtpSetup":  false,
+                                        "passwordMinLength":  8
+                                    },
+                 "sso":  {
+                             "saml":  {
+                                          "loginEnabled":  false
+                                      },
+                             "ldap":  {
+                                          "loginEnabled":  false,
+                                          "loginLabel":  ""
+                                      },
+                             "oidc":  {
+                                          "loginEnabled":  false,
+                                          "loginUrl":  "http://192.168.1.52:5678/rest/sso/oidc/login"
+                                      }
+                         },
+                 "authCookie":  {
+                                    "secure":  false
+                                },
+                 "previewMode":  false,
+                 "enterprise":  {
+                                    "saml":  false,
+                                    "ldap":  false,
+                                    "oidc":  false
+                                },
+                 "communityNodesEnabled":  true
+             }
+}
