@@ -1,7 +1,7 @@
 # Evidence Index — Latest
 
-**Last Updated:** `2026-06-27T14:09:31Z`
-**Current Status:** `GREEN_EXECUTION_SUCCESS_CONFIRMED` (with `GREEN_WITH_UNPUSHED_COMMIT`)
+**Last Updated:** `2026-06-27T15:28:00Z`
+**Current Status:** `GREEN_EXECUTION_SUCCESS_CONFIRMED` (with `RELIABILITY_OBSERVATION_DAY_0`)
 
 ---
 
@@ -9,26 +9,25 @@
 
 | Field | Value |
 |-------|-------|
-| Session | post-success-operations-hardening-20260627T140931Z |
-| Path | `evidence/post-success-operations-hardening-20260627T140931Z/` |
-| Status | `GREEN_EXECUTION_SUCCESS_CONFIRMED` (hardening round) |
-| Date | 2026-06-27T14:09:31Z |
-| Purpose | Post-success operations hardening — commit review, secret hygiene, push decision, operational planning |
+| Session | push-and-reliability-start-2026-06-27T152645Z |
+| Path | `evidence/push-and-reliability-start-2026-06-27T152645Z/` |
+| Status | `GREEN_PUSHED_AND_OBSERVATION_STARTED` |
+| Date | 2026-06-27T15:28:00Z |
+| Purpose | Push 3 commits to origin/master + start 3-day reliability observation period |
 
 ### Files in Latest Session
 | File | Description |
 |------|-------------|
-| `preflight.md` | System reality check |
-| `commit-4aa36d5-review.md` | Commit 4aa36d5 security + content review |
-| `git-status-before-push.md` | Git status at time of hardening |
-| `secret-hygiene-post-success.md` | Secret hygiene scan — all green |
-| `push-decision.md` | Push readiness assessment (awaiting authorization) |
-| `dispatcher-health-post-success.md` | Health check results + analysis |
-| `n8n-write-access-plan.md` | Plan for n8n REST API write configuration |
-| `opencode-runner-provider-plan.md` | Plan for OpenCode provider/API key |
-| `playwright-session-renewal-plan.md` | Plan for secure Playwright session renewal |
-| `reliability-observation-plan.md` | 3-day reliability monitoring plan |
-| `validation-report.md` | Cross-reference validation (38 criteria) |
+| `push-preflight.md` | System reality check before push |
+| `secret-hygiene-before-push.md` | Secret hygiene scan — GREEN (0 real secrets) |
+| `push-result.md` | Push execution + remote verification |
+| `dispatcher-health-after-push.md` | Health check results after push |
+| `validation-report.md` | Cross-reference validation (48 criteria + 15 hard constraints) |
+
+### Reliability Observation
+| File | Description |
+|------|-------------|
+| `evidence/reliability-daily/2026-06-27.md` | Day 0 log — observation period started
 
 ---
 
@@ -36,6 +35,7 @@
 
 | Session | Path | Status | Date |
 |---------|------|--------|------|
+| **Push & Reliability Start** | `evidence/push-and-reliability-start-2026-06-27T152645Z/` | 🔵 GREEN_PUSHED_AND_OBSERVATION_STARTED | 2026-06-27 |
 | **Post-Success Ops Hardening** | `evidence/post-success-operations-hardening-20260627T140931Z/` | 🛡️ GREEN_EXECUTION_SUCCESS_CONFIRMED | 2026-06-27 |
 | Format Final Result Fix + Canary #8 | `evidence/final-format-result-success-canary-issue-8-20260627T114642Z/` | 🟢 GREEN_EXECUTION_SUCCESS_CONFIRMED | 2026-06-27 |
 | Playwright MCP Green Baseline Check | `evidence/playwright-mcp-green-baseline-check-20260627T1131Z/` | 🟢 GREEN_BASELINE_VERIFIED | 2026-06-27 |
