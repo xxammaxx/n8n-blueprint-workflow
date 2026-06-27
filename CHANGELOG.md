@@ -1,5 +1,37 @@
 # Changelog
 
+## 2026-06-27 — Final GREEN Dispatcher Schedule E2E Test ✅
+
+### Tested
+- 🟢 **Canary Issue #6 created** with `agent:ready` + `test:canary` + `dispatcher:e2e` labels
+- 🟢 **Schedule Trigger fired** at 08:00 UTC (Execution #53, mode=trigger)
+- 🟢 **Guardrails passed** — trigger-agnostic code handled Schedule Trigger correctly
+- 🟢 **Full dispatch pipeline completed** (89.5s duration):
+  - GitHub Search → Pick Issue → Fetch → Guardrails → Labels → Runner → Evidence → Comment
+- 🟢 **Runner started** on lxc-dev-runner (192.168.1.53)
+- 🟢 **Evidence generated** at `/opt/dev-fabric/.../issue-6/gh-issue-6-20260627T080031Z`
+- 🟢 **GitHub comment posted** with evidence path
+- 🟢 **Labels transitioned:** `agent:ready` → `agent:needs-review` + `evidence:attached`
+
+### Protection Verified (Triple Confirmed)
+- ✅ **Issue #3 NOT re-processed** — Triple-confirmed across Canary #5 and #6
+- ✅ **Issue #4 NOT re-processed** — Double-confirmed across Canary #5 and #6
+- ✅ **Issue #5 NOT re-processed** — Confirmed in Canary #6
+- ✅ **No double-run** of Canary Issue #6 — Single execution only
+- ✅ **Schedule Trigger alignment** — Consistent at :00:28 within each 15-min window
+
+### Known Issue
+- 🟡 **Format Final Result comment typo** — TOOL_GAP (documented, 2 sessions)
+  - Line 3: `====` → should be `// ====`
+  - Fix requires manual n8n UI edit (1-line change)
+  - All functional work unaffected (cosmetic only)
+
+### Status
+- **GREEN** — Schedule Dispatcher verified end-to-end. Double-run protection confirmed.
+- 17 evidence files in `evidence/final-green-canary-issue-6-20260627T073906Z/`
+
+---
+
 ## 2026-06-27 — End-to-End Canary Test After Guardrails Fix ✅
 
 ### Tested
