@@ -1,7 +1,7 @@
 # Project Status
 
-**Last Updated:** 2026-06-28T06:18:00Z
-**Current Status:** **GREEN_PARTIAL_CREDENTIAL_NOT_FOUND** 🟡 | **DISCOVERY_COMPLETE** | **PROVIDER_SMOKE_BLOCKED** | **DUMMY_TEST_BLOCKED** | **SECRET_HYGIENE_GREEN** ✅
+**Last Updated:** 2026-06-28T09:20:00Z
+**Current Status:** **DEEPSEEK_PROVIDER_SMOKE_GREEN** 🟢 | **PROVIDER_VERIFIED** | **DUMMY_TEST_BLOCKED_BY_POLICY** 🟡 | **SECRET_HYGIENE_GREEN** ✅
 
 ---
 
@@ -259,44 +259,48 @@
 
 ---
 
-## 🟡 OpenCode Provider Configuration Setup (2026-06-28T05:58:00Z)
+## 🟢 DeepSeek Direct Provider Configuration (2026-06-28T09:20:00Z)
 
 | Deliverable | Status |
 |------------|--------|
-| Runner Discovery | ✅ Completed — OpenCode v1.17.9, Debian 12, all tools verified |
-| Provider Model Identified | ✅ Env vars (`OPENCODE_PROVIDER`, `OPENCODE_API_KEY`, `OPENCODE_MODEL`) or `opencode providers login` |
-| Secret File (Runner) | ✅ `/opt/dev-fabric/secrets/opencode-provider.env` (600, runner:runner) |
-| **Local Secret File** | ✅ `secrets/opencode-provider.env` (Placeholder, .gitignored) |
-| Secret Loader Script | ✅ `/opt/dev-fabric/bin/load-opencode-provider-env.sh` — working |
-| Smoke Test Script | ✅ `/opt/dev-fabric/bin/opencode-provider-smoke-test.sh` — working |
-| **Copy Script** | ✅ `scripts/copy-opencode-provider-credentials.ps1` — VerifyOnly PASS |
-| Secret Hygiene | ✅ GREEN — 0 real secrets, all false positives verified |
-| Readiness Decision | 🟡 **`GREEN_PARTIAL_SECRET_PLACEHOLDER`** |
-| Provider Call | ❌ Blocked — API key still placeholder |
-| Dummy Agent Test | ❌ Blocked — `GREEN_PROVIDER_READY_DUMMY_BLOCKED_BY_POLICY` |
+| Runner Discovery | ✅ OpenCode v1.17.9, Debian 12 |
+| **Provider** | ✅ `deepseek` (built-in provider, NOT opencode-go) |
+| **API Key** | ✅ Real DeepSeek API key present |
+| **Model** | ✅ `deepseek-v4-pro` (validated via api-docs.deepseek.com) |
+| **Provider Smoke Test** | ✅ **DEEPSEEK_PROVIDER_SMOKE_GREEN** — model listing + agent run confirmed |
+| Secret File (Runner) | ✅ 600 perms, runner:runner, LF endings |
+| Secret Loader Script | ✅ 7 vars + DEEPSEEK_API_KEY mapping |
+| Smoke Test Script | ✅ Provider type detection for deepseek |
+| Copy Script | ✅ Working |
+| Secret Hygiene | ✅ GREEN — 0 real leaks |
+| Readiness Decision | ✅ **READY_FOR_DEEPSEEK_SMOKE** |
+| Dummy Agent Test | 🟡 **GREEN_PROVIDER_READY_DUMMY_BLOCKED_BY_POLICY** |
 
-### Credential Copy Workflow
-1. ❌ **API Key, Provider, Model:** PLACEHOLDER — User must edit local file
-2. User edits: `notepad C:\Spec-kit_n8n\secrets\opencode-provider.env`
-3. Set `OPENCODE_ALLOW_PROVIDER_CALL=true` (if provider test desired)
-4. Copy: `.\scripts\copy-opencode-provider-credentials.ps1`
-5. Verify only: `.\scripts\copy-opencode-provider-credentials.ps1 -VerifyOnly`
-6. On runner: `/opt/dev-fabric/bin/opencode-provider-smoke-test.sh`
+### Key Architecture Discovery
+- OpenCode 1.17.9 ships DeepSeek as a **built-in provider** — no custom config needed
+- Authenticates via `DEEPSEEK_API_KEY` env var
+- **CRITICAL:** `opencode-go` rejects direct DeepSeek keys (requires OpenCode Platform keys)
+- **CRITICAL:** Built-in `deepseek` provider requires direct DeepSeek API keys (rejects OpenCode Platform keys)
 
-### What's Missing
-- **OPENCODE_PROVIDER:** PASTE_PROVIDER_NAME_HERE
-- **OPENCODE_API_KEY:** PASTE_PROVIDER_API_KEY_HERE
-- **OPENCODE_MODEL:** PASTE_MODEL_NAME_HERE
+### Working Configuration
+```env
+OPENCODE_PROVIDER=deepseek
+OPENCODE_MODEL=deepseek-v4-pro
+# OPENCODE_API_KEY → mapped to DEEPSEEK_API_KEY by loader
+```
 
 ### Evidence
-- `evidence/opencode-runner-provider-setup-2026-06-27T194133/` (12+ files — previous run)
-- `evidence/opencode-provider-credential-copy-20260628T055024Z/` (current run)
+- `evidence/deepseek-direct-provider-setup-20260628T103512Z/` (15+ files)
+
+### Previous State (OBSOLETE)
+- ~~`opencode-go` provider with DeepSeek key — Invalid API key~~
+- ~~`GREEN_PARTIAL_SECRET_PLACEHOLDER` — now resolved with real key~~
 
 ---
 
 ## Next Actions
 
-**Priority 1:** ✅ Format Final Result Fix — DONE (Published via API, verified via Canary #8)
+**Priority 1:** ✅ DeepSeek Provider Smoke — DONE (DEEPSEEK_PROVIDER_SMOKE_GREEN)
 **Priority 2:** ✅ Execution Success Confirmed — DONE (Exec #69 = `success`)
 **Priority 3:** ✅ Operations Hardening — DONE (All 4 operational plans created, gates verified)
 **Priority 4:** ✅ Push completed — DONE (f062182, 4aa36d5, e7e6465 on origin/master)

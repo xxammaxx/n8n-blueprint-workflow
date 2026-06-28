@@ -1,0 +1,29 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "deepseek-direct": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "DeepSeek Direct",
+      "options": {
+        "baseURL": "https://api.deepseek.com/v1"
+      },
+      "models": {
+        "deepseek-v4-pro": {
+          "name": "DeepSeek V4 Pro (thinking)",
+          "limit": {
+            "context": 131072,
+            "output": 32768
+          }
+        },
+        "deepseek-v4-flash": {
+          "name": "DeepSeek V4 Flash (fast)",
+          "limit": {
+            "context": 131072,
+            "output": 32768
+          }
+        }
+      }
+    }
+  },
+  "model": "deepseek-direct/deepseek-v4-pro"
+}

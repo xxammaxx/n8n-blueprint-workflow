@@ -1,5 +1,45 @@
 # Changelog
 
+## 2026-06-28 — DeepSeek Direct Provider Setup ✅ DEEPSEEK_PROVIDER_SMOKE_GREEN
+
+### Provider Fix
+- ✅ **Root Cause Identified:** `opencode-go` provider was rejecting direct DeepSeek API key. opencode-go requires OpenCode Platform keys (from opencode.ai/auth), not direct DeepSeek keys.
+- ✅ **Solution:** Switched to built-in `deepseek` provider in OpenCode 1.17.9. Direct DeepSeek API keys accepted via `DEEPSEEK_API_KEY` env var.
+- ✅ **Smoke Test PASSED:** Model listing works (4 models), agent run returns "OK".
+
+### Configuration Changes
+- ✅ **Secret File:** Provider changed from `opencode-go` → `deepseek`. Added `OPENCODE_BASE_URL`.
+- ✅ **Loader:** Extended with `DEEPSEEK_API_KEY` mapping, `OPENCODE_BASE_URL`, `OPENCODE_ALLOW_PROVIDER_CALL` checks.
+- ✅ **Smoke Script:** Updated to distinguish provider types (opencode-go vs deepseek), detects `deepseek` as built-in provider.
+- ✅ **Runner Config:** `opencode.json` created at `/home/runner/.config/opencode/opencode.json` (fallback custom provider config).
+
+### Key Architecture Discovery
+- OpenCode 1.17.9 has DeepSeek as a **built-in provider** — no custom config needed
+- Built-in providers authenticate via standard env vars (`DEEPSEEK_API_KEY`)
+- No `/connect` interactive login needed for headless operation
+- **CRITICAL:** `opencode-go` ≠ DeepSeek — different key types, different endpoints
+
+### Files Changed
+- `secrets/opencode-provider.env` — provider switch (secrets, not committed)
+- `scripts/opencode-provider-smoke-test.sh` — provider type detection, policy gate
+- `scripts/load-opencode-provider-env.sh` — extended loader
+- `scripts/test-deepseek-provider.sh` — standalone verification script (new)
+- `scripts/opencode-runner-config.json` — custom provider config fallback (new)
+- Runner: `load-opencode-provider-env.sh`, `opencode-provider-smoke-test.sh`, `opencode.json`
+
+### Gates
+- ✅ **Dispatcher unchanged**
+- ✅ **Issues #3–#8 protected**
+- ✅ **Secret Hygiene GREEN** (0 real leaks)
+- ✅ **Provider Smoke GREEN**
+- 🟡 **Dummy Agent Test BLOCKED** (awaiting user authorization)
+
+### Next
+- Dummy agent test after explicit user approval
+- Smoke script Stage 5 timeout fix (low priority — standalone test works)
+
+---
+
 ## 2026-06-28 — Local OpenCode Credential Discovery & Transfer Scripts 🟡
 
 ### Credential Discovery
