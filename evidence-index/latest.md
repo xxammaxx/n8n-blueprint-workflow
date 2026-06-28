@@ -1,7 +1,7 @@
 # Evidence Index — Latest
 
-**Last Updated:** `2026-06-27T19:28:13Z`
-**Current Status:** `GREEN_EXECUTION_SUCCESS_CONFIRMED` | `RELIABILITY_OBSERVATION_PASSED_WITH_NOTES`
+**Last Updated:** `2026-06-28T05:58:00Z`
+**Current Status:** `GREEN_EXECUTION_SUCCESS_CONFIRMED` | `RELIABILITY_OBSERVATION_PASSED_WITH_NOTES` | `GREEN_PARTIAL_SECRET_PLACEHOLDER`
 
 ---
 
@@ -9,23 +9,26 @@
 
 | Field | Value |
 |-------|-------|
-| Session | reliability-day-3-2026-06-30-20260627T192813Z |
-| Path | `evidence/reliability-day-3-2026-06-30-20260627T192813Z/` |
-| Status | `RELIABILITY_OBSERVATION_PASSED_WITH_NOTES` |
-| Date | 2026-06-30T19:28:13Z |
-| Purpose | Final Day 3 read-only reliability observation — 3-tägige Beobachtung abgeschlossen |
+| Session | opencode-provider-credential-copy-20260628T055024Z |
+| Path | `evidence/opencode-provider-credential-copy-20260628T055024Z/` |
+| Status | `GREEN_PARTIAL_SECRET_PLACEHOLDER` |
+| Date | 2026-06-28T05:58:00Z |
+| Purpose | Secure credential copy script creation, VerifyOnly validation, provider readiness check |
 
 ### Files in Latest Session
 | File | Description |
 |------|-------------|
-| `preflight.md` | System reality check |
-| `dispatcher-health-day-3.json` | Health check (JSON) |
-| `dispatcher-health-day-3.md` | Health check report — HEALTH_YELLOW effective GREEN |
-| `n8n-executions-day-3.md` | Execution activity — no new activity since #69 |
-| `github-issues-3-8-day-3.md` | Issues #3-#8 protection — all 6 safe |
-| `secret-hygiene-day-3.md` | Secret hygiene — 0 real leaks, 25 FP |
-| `reliability-observation-summary.md` | 3-day observation summary |
-| `final-report.md` | Day 3 final report |
+| `preflight.md` | System reality check, runner connectivity, dispatcher status |
+| `local-secret-file-check.md` | Local secret file and .gitignore verification |
+| `credential-copy-script.md` | Copy script architecture and security guarantees |
+| `credential-copy-script-validation.md` | Static validation of copy script |
+| `runner-credential-copy-result.md` | VerifyOnly result and copy decision |
+| `opencode-local-readiness.md` | Runner non-destructive checks (opencode, node, git, bash) |
+| `provider-smoke-decision.md` | Provider smoke test blocked — placeholder credentials |
+| `secret-hygiene-after-credential-copy.md` | Post-copy secret hygiene audit |
+| `dummy-agent-test-readiness.md` | Dummy agent test blocked by policy |
+| `validation-report.md` | Full validation report |
+| `final-report.md` | Final report with all decisions |
 
 ### Reliability Observation
 | File | Description |
@@ -42,6 +45,7 @@
 
 | Session | Path | Status | Date |
 |---------|------|--------|------|
+| **Credential Copy Script** | `evidence/opencode-provider-credential-copy-20260628T055024Z/` | 🟡 GREEN_PARTIAL_SECRET_PLACEHOLDER | 2026-06-28 |
 | **Reliability Day 3** | `evidence/reliability-day-3-2026-06-30-20260627T192813Z/` | ✅ RELIABILITY_OBSERVATION_PASSED_WITH_NOTES | 2026-06-30 |
 | **Reliability Day 2** | `evidence/reliability-day-2-2026-06-29-20260627T171051Z/` | ✅ GREEN_RELIABILITY_DAY_2 | 2026-06-29 |
 | **Reliability Day 1** | `evidence/reliability-day-1-2026-06-28-20260627T165431Z/` | ✅ GREEN_RELIABILITY_DAY_1 | 2026-06-28 |

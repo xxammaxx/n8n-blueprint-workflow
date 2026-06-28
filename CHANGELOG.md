@@ -1,5 +1,37 @@
 # Changelog
 
+## 2026-06-28 — OpenCode Provider Credential Copy Script 🟡
+
+### Credential Copy Infrastructure
+- 🟡 **GREEN_PARTIAL_SECRET_PLACEHOLDER** — Copy Script erstellt und validiert. VerifyOnly PASS.
+- ✅ **Local Secret Template:** `secrets/opencode-provider.env` erstellt (Platzhalter, .gitignored)
+- ✅ **Copy Script:** `scripts/copy-opencode-provider-credentials.ps1` — 3 Modi: VerifyOnly, Normal, AllowPlaceholderCopy
+- ✅ **Transfer Path:** Lokal → Proxmox (scp) → LXC Container (RootFS cp) → pct exec (chown/chmod)
+- ✅ **VerifyOnly:** Alle Checks bestanden (Proxmox, Container, RootFS, Zielverzeichnis)
+- ✅ **Secret Hygiene:** GREEN — 0 echte Secrets in Script oder Evidence
+- ⏳ **API Key:** Platzhalter — 3 Keys (OPENCODE_PROVIDER, OPENCODE_API_KEY, OPENCODE_MODEL) müssen vom Nutzer gesetzt werden
+- ⏳ **Provider Call:** Blockiert — OPENCODE_ALLOW_PROVIDER_CALL=false
+- ⏳ **Dummy Agent Test:** Blockiert — GREEN_PROVIDER_READY_DUMMY_BLOCKED_BY_POLICY
+
+### Hard Constraints
+- ✅ Dispatcher Workflow unverändert
+- ✅ Schedule Trigger unverändert
+- ✅ Issues #3-#8 geschützt — nicht erneut gestartet
+- ✅ Keine Proxmox/Docker destruktiven Änderungen
+- ✅ Keine GitHub Actions
+- ✅ Kein Auto-Merge
+- ✅ Keine neuen Canary-Issues
+- ✅ Keine Secrets exponiert
+- ✅ Keine API-Keys ausgegeben
+
+### Artifacts
+- **Evidence:** `evidence/opencode-provider-credential-copy-20260628T055024Z/` (11+ files)
+- **Script:** `scripts/copy-opencode-provider-credentials.ps1`
+- **Template:** `secrets/opencode-provider.env` (Platzhalter, .gitignored)
+- **Updated:** STATUS.md, CHANGELOG.md, evidence-index/latest.md
+
+---
+
 ## 2026-06-27 — OpenCode Runner Provider Configuration Scaffold 🟡
 
 ### Runner Provider Setup

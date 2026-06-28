@@ -1,7 +1,7 @@
 # Project Status
 
-**Last Updated:** 2026-06-27T19:28:13Z
-**Current Status:** **GREEN_EXECUTION_SUCCESS_CONFIRMED** ✅ | **RELIABILITY_OBSERVATION_PASSED_WITH_NOTES** — 3-Tage-Beobachtung abgeschlossen (Day 0–3). Alle Kernchecks stabil. n8n erreichbar, Workflow active, Schedule Trigger vorhanden, Issues #3-#8 geschützt, 0 echte Secret-Leaks, 0 Doppelstarts. Einzige Note: `N8N_API_KEY fehlt` (Plan existiert).
+**Last Updated:** 2026-06-28T05:58:00Z
+**Current Status:** **GREEN_EXECUTION_SUCCESS_CONFIRMED** ✅ | **RELIABILITY_OBSERVATION_PASSED_WITH_NOTES** | **GREEN_PARTIAL_SECRET_PLACEHOLDER** 🟡 — Credential Copy Script erstellt, VerifyOnly bestanden. Echte API-Keys fehlen noch (3 Platzhalter).
 
 ---
 
@@ -259,33 +259,38 @@
 
 ---
 
-## 🟡 OpenCode Provider Configuration Setup (2026-06-27T20:00:00Z)
+## 🟡 OpenCode Provider Configuration Setup (2026-06-28T05:58:00Z)
 
 | Deliverable | Status |
 |------------|--------|
 | Runner Discovery | ✅ Completed — OpenCode v1.17.9, Debian 12, all tools verified |
 | Provider Model Identified | ✅ Env vars (`OPENCODE_PROVIDER`, `OPENCODE_API_KEY`, `OPENCODE_MODEL`) or `opencode providers login` |
-| Secret File Created | ✅ `/opt/dev-fabric/secrets/opencode-provider.env` (600, runner:runner) |
+| Secret File (Runner) | ✅ `/opt/dev-fabric/secrets/opencode-provider.env` (600, runner:runner) |
+| **Local Secret File** | ✅ `secrets/opencode-provider.env` (Placeholder, .gitignored) |
 | Secret Loader Script | ✅ `/opt/dev-fabric/bin/load-opencode-provider-env.sh` — working |
 | Smoke Test Script | ✅ `/opt/dev-fabric/bin/opencode-provider-smoke-test.sh` — working |
+| **Copy Script** | ✅ `scripts/copy-opencode-provider-credentials.ps1` — VerifyOnly PASS |
 | Secret Hygiene | ✅ GREEN — 0 real secrets, all false positives verified |
 | Readiness Decision | 🟡 **`GREEN_PARTIAL_SECRET_PLACEHOLDER`** |
 | Provider Call | ❌ Blocked — API key still placeholder |
-| Dummy Agent Test Plan | ✅ Created — NOT executed |
+| Dummy Agent Test | ❌ Blocked — `GREEN_PROVIDER_READY_DUMMY_BLOCKED_BY_POLICY` |
+
+### Credential Copy Workflow
+1. ❌ **API Key, Provider, Model:** PLACEHOLDER — User must edit local file
+2. User edits: `notepad C:\Spec-kit_n8n\secrets\opencode-provider.env`
+3. Set `OPENCODE_ALLOW_PROVIDER_CALL=true` (if provider test desired)
+4. Copy: `.\scripts\copy-opencode-provider-credentials.ps1`
+5. Verify only: `.\scripts\copy-opencode-provider-credentials.ps1 -VerifyOnly`
+6. On runner: `/opt/dev-fabric/bin/opencode-provider-smoke-test.sh`
 
 ### What's Missing
-- API Key: **PLACEHOLDER** — User must replace `PASTE_PROVIDER_API_KEY_HERE`
-- Provider Name: **PLACEHOLDER** — User must replace `PASTE_PROVIDER_NAME_HERE`
-- Model Name: **PLACEHOLDER** — User must replace `PASTE_MODEL_NAME_HERE`
-
-### How to Complete
-1. Edit `/opt/dev-fabric/secrets/opencode-provider.env` on the runner
-2. Set `OPENCODE_ALLOW_PROVIDER_CALL=true`
-3. Run `/opt/dev-fabric/bin/opencode-provider-smoke-test.sh`
-4. Status advances to `READY_FOR_PROVIDER_SMOKE`
+- **OPENCODE_PROVIDER:** PASTE_PROVIDER_NAME_HERE
+- **OPENCODE_API_KEY:** PASTE_PROVIDER_API_KEY_HERE
+- **OPENCODE_MODEL:** PASTE_MODEL_NAME_HERE
 
 ### Evidence
-- `evidence/opencode-runner-provider-setup-2026-06-27T194133/` (12+ files)
+- `evidence/opencode-runner-provider-setup-2026-06-27T194133/` (12+ files — previous run)
+- `evidence/opencode-provider-credential-copy-20260628T055024Z/` (current run)
 
 ---
 
