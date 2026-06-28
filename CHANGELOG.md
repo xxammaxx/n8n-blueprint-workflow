@@ -1,5 +1,33 @@
 # Changelog
 
+## 2026-06-28 — Local OpenCode Credential Discovery & Transfer Scripts 🟡
+
+### Credential Discovery
+- 🟡 **GREEN_PARTIAL_CREDENTIAL_NOT_FOUND** — Comprehensive local discovery completed. No real credentials found.
+- ✅ **Discovery Script:** `scripts/discover-local-opencode-credentials.ps1` — scans 9 env vars, 4 config paths, 2 project paths. Never outputs values.
+- ✅ **Export Script:** `scripts/export-local-opencode-credentials.ps1` — normalizes credentials with -DiscoverOnly/-WriteLocalSecret modes.
+- ✅ **Placeholder Detection FIXED:** Added PASTE_YOUR_* and PASTE_* patterns to all placeholder detection functions.
+- ✅ **Sources Scanned:** Environment (Process/User/Machine), %USERPROFILE%\.config\opencode, .env.local, secrets/opencode-provider.env
+- ❌ **Result:** All credential values in secrets/opencode-provider.env are PASTE_* placeholders. No real API key available.
+
+### Runner Verification
+- ✅ **Runner Reachable:** OpenCode v1.17.9, Node v22.23.0, Git 2.39.5, Bash 5.2.15
+- ✅ **Loader Present:** /opt/dev-fabric/bin/load-opencode-provider-env.sh
+- ✅ **Smoke Script Present:** /opt/dev-fabric/bin/opencode-provider-smoke-test.sh
+- ✅ **Proxmox Connectivity:** VerifyOnly PASS (Container 102 running, RootFS accessible)
+
+### Provider Smoke Decision
+- ⛔ **BLOCKED:** GREEN_PARTIAL_CREDENTIAL_NOT_FOUND — no real API key to test with
+- ⛔ **Dummy Test:** GREEN_PROVIDER_READY_DUMMY_BLOCKED_BY_POLICY
+
+### .gitignore Update
+- ✅ Added `credential-sync.sources.local.json` to protected patterns
+
+### Evidence
+- `evidence/local-opencode-credential-transfer-20260628T060908Z/` (12 files: preflight, discovery, export-script, gitignore, normalized-secret, copy-result, readiness, smoke-decision, hygiene, dummy-decision, validation, final-report)
+
+---
+
 ## 2026-06-28 — OpenCode Provider Credential Copy Script 🟡
 
 ### Credential Copy Infrastructure

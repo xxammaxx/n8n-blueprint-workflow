@@ -5,6 +5,7 @@
 .env.*.local
 *.secret.env
 secrets/
+credential-sync.sources.local.json
 
 # But DO allow the example template
 !.env.example

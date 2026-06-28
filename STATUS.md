@@ -1,7 +1,7 @@
 # Project Status
 
-**Last Updated:** 2026-06-28T05:58:00Z
-**Current Status:** **GREEN_EXECUTION_SUCCESS_CONFIRMED** ✅ | **RELIABILITY_OBSERVATION_PASSED_WITH_NOTES** | **GREEN_PARTIAL_SECRET_PLACEHOLDER** 🟡 — Credential Copy Script erstellt, VerifyOnly bestanden. Echte API-Keys fehlen noch (3 Platzhalter).
+**Last Updated:** 2026-06-28T06:18:00Z
+**Current Status:** **GREEN_PARTIAL_CREDENTIAL_NOT_FOUND** 🟡 | **DISCOVERY_COMPLETE** | **PROVIDER_SMOKE_BLOCKED** | **DUMMY_TEST_BLOCKED** | **SECRET_HYGIENE_GREEN** ✅
 
 ---
 
@@ -304,3 +304,35 @@
 **Priority 6:** 🔜 Configure n8N REST API key for full programmatic access (plan created)
 **Priority 7:** 🟡 **OpenCode Provider Config SCAFFOLDED** — Secret file, loader, smoke test ready. API key needed from user.
 **Priority 8:** 🔜 Refresh Playwright n8n UI session for UI-based operations (plan created)
+
+---
+
+## Local OpenCode Credential Transfer (2026-06-28T06:09Z)
+
+### Discovery Result
+- 🟡 **GREEN_PARTIAL_CREDENTIAL_NOT_FOUND** — No real OpenCode credentials found locally
+- ✅ **All sources scanned:** 9 env vars, 4 config paths, 2 project paths
+- ✅ **Placeholder detection FIXED:** Added PASTE_* patterns to detection
+- ❌ **No real credentials:** All 3 credential values in `secrets/opencode-provider.env` are PASTE_* placeholders
+- ✅ **Model found:** OpenCode config has model set (no provider, no key)
+
+### Scripts Created
+- ✅ `scripts/discover-local-opencode-credentials.ps1` — safe discovery, never outputs values
+- ✅ `scripts/export-local-opencode-credentials.ps1` — normalizes credentials, -DiscoverOnly/-WriteLocalSecret modes
+- ✅ `scripts/copy-opencode-provider-credentials.ps1` — existing, VerifyOnly PASS
+
+### Runner Readiness
+- ✅ OpenCode 1.17.9 on runner
+- ✅ Node v22.23.0, Git 2.39.5, Bash 5.2.15
+- ✅ Loader and Smoke scripts present
+- ✅ Proxmox/Container connectivity verified
+
+### Gates
+- ✅ Dispatcher unchanged
+- ✅ Issues #3–#8 protected
+- ✅ Secret Hygiene GREEN
+- ⛔ Provider Smoke BLOCKED (no real credentials)
+- ⛔ Dummy Agent Test BLOCKED (by policy)
+
+### Evidence
+- `evidence/local-opencode-credential-transfer-20260628T060908Z/` (12 files)
