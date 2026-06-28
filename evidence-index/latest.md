@@ -1,7 +1,7 @@
 # Evidence Index — Latest
 
-**Last Updated:** `2026-06-28T05:58:00Z`
-**Current Status:** `GREEN_EXECUTION_SUCCESS_CONFIRMED` | `RELIABILITY_OBSERVATION_PASSED_WITH_NOTES` | `GREEN_PARTIAL_SECRET_PLACEHOLDER`
+**Last Updated:** `2026-06-28T06:20:00Z`
+**Current Status:** `GREEN_PARTIAL_CREDENTIAL_NOT_FOUND` 🟡 | `DISCOVERY_COMPLETE` | `PROVIDER_SMOKE_BLOCKED` | `DUMMY_TEST_BLOCKED`
 
 ---
 
@@ -9,11 +9,33 @@
 
 | Field | Value |
 |-------|-------|
+| Session | local-opencode-credential-transfer-20260628T060908Z |
+| Path | `evidence/local-opencode-credential-transfer-20260628T060908Z/` |
+| Status | `GREEN_PARTIAL_CREDENTIAL_NOT_FOUND` |
+| Date | 2026-06-28T06:09Z |
+| Purpose | Local OpenCode credential discovery, export scripts, runner transfer preparation |
+
+### Files in Latest Session
+| File | Description |
+|------|-------------|
+| `preflight.md` | System reality check, runner connectivity |
+| `local-opencode-credential-discovery.md` | Discovery results (corrected — all placeholders) |
+| `local-opencode-credential-export-script.md` | Export script architecture and discovery run |
+| `gitignore-secret-protection.md` | .gitignore verification and update |
+| `local-normalized-secret-result.md` | Normalized file status (placeholders only) |
+| `runner-copy-result.md` | Copy script VerifyOnly result |
+| `runner-opencode-readiness.md` | Runner tool/version verification |
+| `provider-smoke-decision.md` | Provider smoke blocked — no credentials |
+| `secret-hygiene-after-local-opencode-transfer.md` | Secret hygiene audit — all clean |
+| `dummy-agent-test-readiness.md` | Dummy test blocked by policy |
+| `validation-report.md` | Full validation report (26/26 gates passed) |
+| `final-report.md` | Final report with status decisions |
+
+## Previous Session
+
+| Field | Value |
+|-------|-------|
 | Session | opencode-provider-credential-copy-20260628T055024Z |
-| Path | `evidence/opencode-provider-credential-copy-20260628T055024Z/` |
-| Status | `GREEN_PARTIAL_SECRET_PLACEHOLDER` |
-| Date | 2026-06-28T05:58:00Z |
-| Purpose | Secure credential copy script creation, VerifyOnly validation, provider readiness check |
 
 ### Files in Latest Session
 | File | Description |
