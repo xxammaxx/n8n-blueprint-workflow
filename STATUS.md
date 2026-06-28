@@ -1,7 +1,7 @@
 # Project Status
 
 **Last Updated:** 2026-06-28T09:20:00Z
-**Current Status:** **DEEPSEEK_PROVIDER_SMOKE_GREEN** 🟢 | **PROVIDER_VERIFIED** | **DUMMY_TEST_BLOCKED_BY_POLICY** 🟡 | **SECRET_HYGIENE_GREEN** ✅
+**Current Status:** **DEEPSEEK_PROVIDER_SMOKE_GREEN** 🟢 | **DUMMY_AGENT_TEST_GREEN_PARTIAL** 🟡 | **PROVIDER_DISPATCH_GAP_IDENTIFIED** | **SECRET_HYGIENE_GREEN** ✅
 
 ---
 
@@ -298,6 +298,35 @@ OPENCODE_MODEL=deepseek-v4-pro
 
 ---
 
+## 🟡 DeepSeek Dummy Agent Test (2026-06-28T09:20:00Z)
+
+| Deliverable | Status |
+|------------|--------|
+| Dummy Issue #9 Created | ✅ `agent:ready` + `test:dummy` + `opencode:smoke` + `deepseek:direct` |
+| Dispatcher Detection | ✅ Picked up in 59s (Schedule Trigger) |
+| Runner Started | ✅ Exactly once |
+| Runner Completed | ✅ `GREEN_PARTIAL` (84s execution) |
+| Label Transition | ✅ ready → running → needs-review + evidence:attached |
+| Runner Evidence | ✅ 8 files in `gh-issue-9-20260628T091530Z/` |
+| Issues #3-#8 Protected | ✅ 0 re-processed, 0 label drift |
+| OpenCode/DeepSeek Used | 🟡 Provider configured on system but NOT sourced in dispatch script |
+| Secret Hygiene | ✅ GREEN — 0 leaks |
+| Productive Changes | ✅ 0 |
+
+### Key Finding: Provider Dispatch Gap
+
+The DeepSeek provider IS fully configured and smoke-tested on the runner (`DEEPSEEK_PROVIDER_SMOKE_GREEN`), but the runner's `start_github_issue_run.sh` dispatch script does NOT source the provider environment file. The agent ran in `manual-terminal` mode (safe fallback) instead of using OpenCode with the DeepSeek provider.
+
+**Root Cause:** Dispatch script does not load `opencode-provider.env` before agent run.
+**Impact:** DeepSeek provider not utilized during agent dispatch (provider itself is operational).
+**Fix Needed:** Add optional provider-env sourcing to dispatch script.
+
+### Evidence
+- `evidence/deepseek-dummy-agent-test-20260628T090301Z/` (9+ files)
+- Runner: `/opt/dev-fabric/evidence/github-agent-runs/.../issue-9/gh-issue-9-20260628T091530Z/`
+
+---
+
 ## Next Actions
 
 **Priority 1:** ✅ DeepSeek Provider Smoke — DONE (DEEPSEEK_PROVIDER_SMOKE_GREEN)
@@ -306,8 +335,9 @@ OPENCODE_MODEL=deepseek-v4-pro
 **Priority 4:** ✅ Push completed — DONE (f062182, 4aa36d5, e7e6465 on origin/master)
 **Priority 5:** ✅ **Reliability Observation COMPLETED** — Day 0-3 abgeschlossen mit `RELIABILITY_OBSERVATION_PASSED_WITH_NOTES`
 **Priority 6:** 🔜 Configure n8N REST API key for full programmatic access (plan created)
-**Priority 7:** 🟡 **OpenCode Provider Config SCAFFOLDED** — Secret file, loader, smoke test ready. API key needed from user.
-**Priority 8:** 🔜 Refresh Playwright n8n UI session for UI-based operations (plan created)
+**Priority 7:** ✅ **DeepSeek Dummy Agent Test** — DONE (`GREEN_PARTIAL`: dispatcher+runner OK, provider not in dispatch path)
+**Priority 8:** 🔜 **Integrate Provider into Runner Dispatch** — Source `opencode-provider.env` in `start_github_issue_run.sh` for DeepSeek-powered agent runs
+**Priority 9:** 🔜 Refresh Playwright n8n UI session for UI-based operations (plan created)
 
 ---
 

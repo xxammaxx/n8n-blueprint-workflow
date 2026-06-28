@@ -1,5 +1,36 @@
 # Changelog
 
+## 2026-06-28 — DeepSeek Dummy Agent Test 🟡 GREEN_PARTIAL
+
+### Test Execution
+- ✅ **Dummy Issue #9 Created:** `[Dummy] OpenCode DeepSeek provider runner test` with `agent:ready`, `test:dummy`, `opencode:smoke`, `deepseek:direct` labels
+- ✅ **Dispatcher Detection:** Schedule Trigger picked up issue in 59 seconds
+- ✅ **Runner Execution:** Started exactly once, completed in 84 seconds, `GREEN_PARTIAL` status
+- ✅ **Label Transition:** `agent:ready` → `agent:running` → `agent:needs-review` + `evidence:attached`
+- ✅ **Evidence Generated:** 8 files in runner evidence directory
+- ✅ **Issues #3-#8 Protected:** 0 re-processed, 0 label drift, guardrails fully operational
+- ✅ **Secret Hygiene:** GREEN — 0 real leaks across all artifacts (evidence, comments, logs, git diff)
+
+### Key Finding: Provider Dispatch Gap
+- 🟡 DeepSeek provider is **configured and smoke-tested** (DEEPSEEK_PROVIDER_SMOKE_GREEN) but the runner dispatch script (`start_github_issue_run.sh`) does **NOT** source the provider environment file
+- 🟡 Agent ran in `manual-terminal` mode (safe fallback) instead of using OpenCode with DeepSeek
+- 🔜 **Next:** Integrate `opencode-provider.env` sourcing into dispatch script
+
+### New Labels Created
+- `test:dummy` — Dummy/canary agent test issues
+- `opencode:smoke` — OpenCode smoke tests
+- `deepseek:direct` — Direct DeepSeek provider tests
+
+### Evidence
+- `evidence/deepseek-dummy-agent-test-20260628T090301Z/` (9+ files)
+- Runner: `/opt/dev-fabric/evidence/github-agent-runs/xxammaxx/n8n-blueprint-workflow/issue-9/gh-issue-9-20260628T091530Z/`
+
+### Status Classification
+- **Overall:** `GREEN_PARTIAL_DEEPSEEK_NOT_DISPATCHED`
+- Dispatcher: GREEN ✅ | Runner: GREEN ✅ | Evidence: GREEN ✅ | DeepSeek in Dispatch: 🟡 NOT YET | Secrets: GREEN ✅
+
+---
+
 ## 2026-06-28 — DeepSeek Direct Provider Setup ✅ DEEPSEEK_PROVIDER_SMOKE_GREEN
 
 ### Provider Fix

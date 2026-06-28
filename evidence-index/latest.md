@@ -1,7 +1,7 @@
 # Evidence Index — Latest
 
-**Last Updated:** `2026-06-28T06:20:00Z`
-**Current Status:** `GREEN_PARTIAL_CREDENTIAL_NOT_FOUND` 🟡 | `DISCOVERY_COMPLETE` | `PROVIDER_SMOKE_BLOCKED` | `DUMMY_TEST_BLOCKED`
+**Last Updated:** `2026-06-28T09:20:00Z`
+**Current Status:** `GREEN_PARTIAL_DEEPSEEK_NOT_DISPATCHED` 🟡 | `DUMMY_AGENT_TEST_COMPLETE` | `DISPATCHER_GREEN` | `RUNNER_GREEN` | `PROVIDER_DISPATCH_GAP`
 
 ---
 
@@ -9,10 +9,37 @@
 
 | Field | Value |
 |-------|-------|
-| Session | local-opencode-credential-transfer-20260628T060908Z |
-| Path | `evidence/local-opencode-credential-transfer-20260628T060908Z/` |
-| Status | `GREEN_PARTIAL_CREDENTIAL_NOT_FOUND` |
-| Date | 2026-06-28T06:09Z |
+| Session | deepseek-dummy-agent-test-20260628T090301Z |
+| Path | `evidence/deepseek-dummy-agent-test-20260628T090301Z/` |
+| Status | `GREEN_PARTIAL_DEEPSEEK_NOT_DISPATCHED` |
+| Date | 2026-06-28T09:03Z |
+| Purpose | Controlled dummy agent test with direct DeepSeek provider via dispatcher pipeline |
+| Issue | #9 (`[Dummy] OpenCode DeepSeek provider runner test`) |
+
+### Files in Latest Session
+| File | Description |
+|------|-------------|
+| `preflight.md` | Environment status, git, n8n, runner, provider checks |
+| `runner-provider-readiness.md` | DeepSeek provider verification on runner |
+| `dummy-issue-created.md` | Issue #9 creation details and initial labels |
+| `n8n-execution-summary.md` | n8n execution timeline (59s dispatch, 84s run) |
+| `dispatcher-run-summary.md` | Dispatcher behavior and label transitions |
+| `dummy-issue-after.md` | Post-run issue #9 state verification |
+| `issues-3-8-guard-after.md` | Issues #3-#8 protection verification |
+| `runner-evidence-dummy-issue.md` | Runner evidence analysis |
+| `secret-hygiene-after-dummy-test.md` | Secret scan results (0 leaks) |
+| `validation-report.md` | Full constraint and objective validation |
+| `final-report.md` | Comprehensive final report |
+
+### Previous Sessions
+- `deepseek-direct-provider-setup-20260628T103512Z/` — DEEPSEEK_PROVIDER_SMOKE_GREEN
+- `local-opencode-credential-transfer-20260628T060908Z/` — GREEN_PARTIAL_CREDENTIAL_NOT_FOUND
+- `reliability-day-3-2026-06-30-20260627T192813Z/` — RELIABILITY_OBSERVATION_PASSED_WITH_NOTES
+- `reliability-day-2-2026-06-29-20260627T171051Z/` — Day 2 observation
+- `reliability-day-1-2026-06-28-20260627T165431Z/` — Day 1 observation
+- `push-and-reliability-start-2026-06-27T152645Z/` — Push + Day 0 start
+- `final-format-result-success-canary-issue-8-20260627T114642Z/` — GREEN_EXECUTION_SUCCESS_CONFIRMED
+- `post-green-stabilization-20260627T131737Z/` — Green stabilization baseline
 | Purpose | Local OpenCode credential discovery, export scripts, runner transfer preparation |
 
 ### Files in Latest Session
