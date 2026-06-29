@@ -1,7 +1,7 @@
 # Project Status
 
-**Last Updated:** 2026-06-29T09:06:31Z
-**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **COMMENT_SYNC_24H_OBSERVATION_GREEN** 🟢✅ | **SECRET_HYGIENE_GREEN** ✅ | **BRANCH_GOVERNANCE_DEFAULT_MASTER_APPLIED** 🟢✅ | **DUMMY_ISSUES_CLEANUP_GREEN** 🟢✅ | **FINAL_OPERATIONS_BASELINE_GREEN** 🟢✅ | **REPO_HYGIENE_GREEN** 🟢✅
+**Last Updated:** 2026-06-29T12:22:20Z
+**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **COMMENT_SYNC_24H_OBSERVATION_GREEN** 🟢✅ | **BRANCH_GOVERNANCE_DEFAULT_MASTER_APPLIED** 🟢✅ | **DUMMY_ISSUES_CLEANUP_GREEN** 🟢✅ | **FINAL_OPERATIONS_BASELINE_GREEN** 🟢✅ | **REPO_HYGIENE_GREEN** 🟢✅ | **SECRET_HYGIENE: RED_SECRET_LEAK** 🔴⚠️ | **SECRET_REMEDIATION: TOKEN_ROTATION_PENDING** 🟡⏳ | **MIGRATION_HANDOFF_PREPARED** 🟢📦
 
 ---
 
@@ -521,7 +521,127 @@ The GitHub comment now correctly reads real Runner Evidence from `status.json` i
 ### Evidence
 - `evidence/repo-hygiene-root-docs-gitignore-20260629T090631Z/` (12 files)
 
-## Next Steps
-1. Continue periodic monitoring
-2. Consider closing issues #3-#8 if/when they are no longer needed as protected baseline
-3. Consider `git rm --cached` for historical `.playwright-mcp/` tracked files (manual review)
+## 🔴 RED_SECRET_LEAK — `.playwright-mcp/` Index Cleanup Halted (2026-06-29T09:24:47Z)
+
+### Finding: Real n8n JWT Tokens in Tracked Console Log
+- 🔴 **Status:** `RED_SECRET_LEAK` — Real n8n API authentication tokens (JWT format) found in tracked `.playwright-mcp/` console log
+- 🔴 **File:** `.playwright-mcp/console-2026-06-27T06-36-53-859Z.log` (lines 15-23)
+- 🔴 **Secret Type:** n8n API key / authentication tokens in URL query parameters (redacted in report)
+- 🔴 **Context:** Browser console logs captured during Playwright-automated n8n session — local IP `192.168.1.52:5678`, workflow `Sv12QTo56NoPUu2D`
+- 🔴 **Response:** `401 Unauthorized` (tokens may be expired)
+- 🔴 **Action:** Index cleanup **HALTED** — per protocol, automatic removal blocked when real secrets detected
+- 🟡 **Other 47 files:** No secrets detected (UI labels, docs URLs, API error messages)
+
+### Evidence
+- `evidence/playwright-mcp-index-cleanup-20260629T092447Z/` (4 files: preflight.md, playwright-mcp-tracked-inventory.md, secret-hygiene-before-playwright-index-cleanup.md, final-report.md)
+
+### Secret Values
+- **No secret values output** — all JWT tokens redacted in reports
+- **Only path and redacted finding locations documented**
+
+---
+
+## 🟡 SECRET REMEDIATION — Playwright MCP n8n Token Leak Remediation Plan (2026-06-29T09:40:13Z)
+
+### Remediation Plan Complete
+- 🟡 **Status:** `SECRET_REMEDIATION_IN_PROGRESS` → `REMEDIATION_PLAN_COMPLETE` — Wartet auf Nutzerentscheidung
+- 🔴 **Remote Exposure:** `REMOTE_SECRET_EXPOSURE_CONFIRMED` — Datei ist in Commit `485dc18` auf `origin/master`
+- 🔴 **Token Rotation:** `TOKEN_ROTATION_PENDING` — Nutzer muss n8n Tokens manuell rotieren
+- 🟡 **Empfehlung:** Option A — History Rewrite mit `git filter-repo` (nach Token Rotation)
+- 🟡 **Alternativ:** Option B — Nur Index Cleanup (wenn Risiko akzeptiert)
+- 🟢 **Secret Hygiene Evidence:** `REDACTED_EVIDENCE_GREEN` — Alle Dokumentationsdateien secret-clean
+- 🟢 **Keine Cleanup-Aktionen** durchgeführt — kein `git rm --cached`, kein History Rewrite, kein Force Push
+
+### Remote Exposure Details
+- **Commit:** `485dc18` — `docs: add guardrails fix evidence and final report` (27.06.2026)
+- **Auf origin/master:** JA
+- **48 `.playwright-mcp/` Dateien auf Remote:** Nur 1 mit Secrets (7 JWT-Matches in Zeilen 15-23)
+- **Andere 47 Dateien:** Clean
+
+### Remediation Evidence
+- `evidence/secret-remediation-playwright-mcp-n8n-token-20260629T094013Z/` (9+ files)
+  - `incident-preflight.md` — Phase 1: Git-Status, Datei-Info, Constraints
+  - `local-leak-structure.md` — Phase 2: Strukturelle Analyse (redacted)
+  - `remote-history-exposure.md` — Phase 3: Remote Exposure bestätigt
+  - `redacted-evidence-secret-hygiene.md` — Phase 4: Evidence-Clean-Scan
+  - `n8n-token-rotation-plan.md` — Phase 5: Manuelle Rotations-Schritte
+  - `history-remediation-options.md` — Phase 6: Option A/B/C
+  - `secret-remediation-apply-plan.md` — Phase 7: Freigabegates
+  - `validation-report.md` — Phase 10: 18/18 Constraints PASS
+  - `final-report.md` — Phase 12: Zusammenfassung + Entscheidung
+
+### Next Steps
+1. 🔴 **URGENT:** Rotate the n8n API tokens in n8n UI (`http://192.168.1.52:5678`)
+2. 🟡 Choose remediation option (A: History Rewrite, B: Index Cleanup only)
+3. 🟡 After rotation: execute chosen remediation
+4. 🟡 Harden: exclude console log URL query parameters from Playwright session captures
+5. Continue periodic monitoring
+
+---
+
+## 🟡⏳ SECRET REMEDIATION — Token Rotation Checkpoint (2026-06-29T11:09:37Z)
+
+### Remediation Status
+- 🟡 **Status:** `TOKEN_ROTATION_PENDING` — Token-Rotation noch nicht bestätigt
+- 🟡 **Sub-Status:** `TOKEN_ROTATION_CONFIRMATION_MISSING` — Keine Nutzerbestätigung in diesem Lauf
+- 🔴 **Remote Exposure:** `REMOTE_SECRET_EXPOSURE_CONFIRMED` — Datei in Commit `485dc18` auf `origin/master`
+- 🟡 **Blocked:** Keine Cleanup-Fortsetzung, kein Commit, kein Push, kein History Rewrite
+- 🟡 **Next:** Nutzer muss Token-Rotation bestätigen (siehe `rotation-pending-next-steps.md`)
+- 🟢 **Secret Hygiene:** `REDACTED_EVIDENCE_GREEN` — Alle Docs und Evidence secret-clean
+- 🟢 **No Premature Actions:** Kein Commit, kein Push, kein Cleanup, kein History Rewrite
+
+### Current Remediation Evidence
+- `evidence/secret-remediation-after-token-rotation-20260629T110937Z/` (7+ files):
+  - `preflight.md` — Git-Status, Datei-Info, Constraints
+  - `token-rotation-status.md` — TOKEN_ROTATION_PENDING / CONFIRMATION_MISSING
+  - `rotation-pending-next-steps.md` — Nutzer-Handlungsschritte
+  - `redacted-evidence-secret-hygiene.md` — Secret-Hygiene-Scan (GREEN)
+  - `index-cleanup-deferred.md` — Index-Cleanup aufgeschoben
+  - `validation-report.md` — 20/20 Constraints PASS
+  - `final-report.md` — Zusammenfassung + Entscheidung
+
+### Required User Action
+1. 🔴 n8n UI offnen: `http://192.168.1.52:5678`
+2. 🔴 Sessions/API-Tokens widerrufen oder neu erzeugen
+3. 🔴 Danach bestatigen:
+   ```
+   Ich bestatige: n8n Tokens wurden rotiert. Ich autorisiere die Vorbereitung eines
+   History-Rewrite-Plans mit git filter-repo, aber noch keinen Force Push.
+   ```
+4. 🟡 Danach: Remediation wird fortgesetzt (History-Rewrite-Plan, Doku-Commit)
+
+### Unchanged from Previous Session
+- Betroffene Datei: `.playwright-mcp/console-2026-06-27T06-36-53-859Z.log` (Zeilen 15-23)
+- 48 `.playwright-mcp/` Dateien getrackt, 47 clean
+- Remote Exposure in Commit `485dc18`
+- Empfehlung: Option A — History Rewrite mit `git filter-repo`
+
+---
+
+## 📦 MIGRATION HANDOFF — New Machine Preparation (2026-06-29T12:22:20Z)
+
+### Handoff Status
+- 🟢 **Status:** `MIGRATION_HANDOFF_PREPARED` — Migration Handoff vollständig vorbereitet
+- 🟢 **Dokumente erstellt:** `MIGRATION_HANDOFF.md`, `docs/NEW_MACHINE_SETUP.md`
+- 🟢 **Evidence:** `evidence/migration-handoff-old-machine-2026-06-29_12-22-20/` (4 Dateien)
+- 🟢 **Secret Hygiene:** GREEN — Keine Secrets im Handoff
+- 🟡 **Token-Rotation:** Bleibt offen (Nutzeraufgabe auf altem ODER neuem Rechner)
+- 🟡 **History-Rewrite:** Noch nicht ausgeführt (spätere Entscheidung)
+
+### Über GitHub übertragen
+- Repository-Zustand (Commit `ecc1fc7`)
+- Dokumentation (Handoff-Dokumente, Setup-Anleitung)
+- Evidence-Verzeichnisse (secret-clean, redacted)
+
+### NICHT über GitHub übertragen
+- Secrets (`secrets/`, `.env.local`)
+- Playwright-Sitzungen (`.playwright-mcp/`)
+- SQLite/DB-Backups
+- n8n API Keys
+- Browser-Sessions
+
+### Nächster Schritt
+1. Neuer Rechner klont Repository und führt Setup-Prompt aus
+2. Token-Rotation auf altem oder neuem Rechner finalisieren
+3. History-Rewrite später entscheiden
+4. Alte Maschine deaktivieren nach vollständiger Validierung

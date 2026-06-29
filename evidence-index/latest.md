@@ -1,17 +1,34 @@
 # Evidence Index — Latest
 
-**Last Updated:** 2026-06-29T09:06:31Z
+**Last Updated:** 2026-06-29T12:22:20Z
 
 ## Active Evidence Directory
 
-`evidence/repo-hygiene-root-docs-gitignore-20260629T090631Z/`
+**Current:** `evidence/migration-handoff-old-machine-2026-06-29_12-22-20/` 🟢📦
+
+**Previous:** `evidence/secret-remediation-after-token-rotation-20260629T110937Z/` 🟡⏳
 
 ## Status
 
-🟢✅ **REPO_HYGIENE_GREEN** — 10-phase repository hygiene run completed. `.gitignore` hardened with 14 new patterns (DB/backup artifacts + Playwright session artifacts). Root documentation pointers (`GREEN_BASELINE.md`, `OPERATIONS_RUNBOOK.md`) created. 0 tracked DB/backup files. Secret Hygiene GREEN (0 real leaks). 19 hard constraints met — no runtime changes. Previous baseline: FINAL_OPERATIONS_BASELINE_GREEN.
+🟢📦 **MIGRATION_HANDOFF_PREPARED** — Migration Handoff vollständig vorbereitet. Repository bereit für Clone auf neuem Rechner. Keine Secrets im Handoff. Token-Rotation bleibt offen (Nutzeraufgabe). History-Rewrite nicht ausgeführt.
 
-## Key Files
+## Key Files (Current Session: Migration Handoff)
 
+| File | Description |
+|------|-------------|
+| `preflight.md` | Phase 1 — System info, git status, .gitignore, secret hygiene preflight |
+| `git-remote-sync-check.md` | Phase 2 — Remote-Sync-Validierung, Statusentscheidung |
+| `secret-hygiene-before-migration-handoff.md` | Phase 3 — Secret-Scan-Ergebnisse, GREEN |
+
+### Previous: RED_SECRET_LEAK Evidence
+| File | Description |
+|------|-------------|
+| `preflight.md` | Phase 1 — Git status, branch, commit, .gitignore status |
+| `playwright-mcp-tracked-inventory.md` | Phase 2 — Inventory of 48 tracked .playwright-mcp/ files |
+| `secret-hygiene-before-playwright-index-cleanup.md` | Phase 3 — RED_SECRET_LEAK finding (real JWT tokens, redacted) |
+| `final-report.md` | Phase 4 — Final report on halted index cleanup |
+
+### Previous: REPO_HYGIENE_GREEN Evidence
 | File | Description |
 |------|-------------|
 | `preflight.md` | Phase 1 — System info, git status, n8n health |
@@ -54,3 +71,7 @@
 - `evidence/deepseek-dispatch-integration-issue-10-20260628T092632Z/` — Provider dispatch integration
 - `evidence/deepseek-dummy-agent-test-20260628T090301Z/` — Issue #9 test (GREEN_PARTIAL)
 - `evidence/deepseek-direct-provider-setup-20260628T103512Z/` — Provider smoke test
+- `evidence/playwright-mcp-index-cleanup-20260629T092447Z/` — RED_SECRET_LEAK (index cleanup halted)
+- `evidence/secret-remediation-playwright-mcp-n8n-token-20260629T094013Z/` — REMEDIATION_PLAN_COMPLETE (previous session)
+- `evidence/secret-remediation-after-token-rotation-20260629T110937Z/` 🟡⏳ — TOKEN_ROTATION_PENDING (previous session)
+- `evidence/migration-handoff-old-machine-2026-06-29_12-22-20/` 🟢📦 — MIGRATION_HANDOFF_PREPARED (current session)

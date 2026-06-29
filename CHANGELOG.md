@@ -1,5 +1,115 @@
 # Changelog
 
+## 2026-06-29 — Migration Handoff: New Machine Preparation 🟢📦 MIGRATION_HANDOFF_PREPARED
+
+### Migration Handoff Completed
+- 🟢 **MIGRATION_HANDOFF_PREPARED** — Migration Handoff vollstandig vorbereitet
+- 🟢 **MIGRATION_HANDOFF.md** erstellt — Projektkontext, Security-Status, Setup-Hinweise
+- 🟢 **docs/NEW_MACHINE_SETUP.md** erstellt — Schritt-fur-Schritt-Anleitung fur neuen Rechner
+- 🟢 **evidence/migration-handoff-old-machine-2026-06-29_12-22-20/** — 4 Evidence-Dokumente (preflight, git-remote-sync, secret-hygiene)
+- 🟢 **STATUS.md** aktualisiert — MIGRATION_HANDOFF_PREPARED Status hinzugefugt
+- 🟢 **evidence-index/latest.md** aktualisiert — Neue Evidence verlinkt
+- 🟢 **Secret Hygiene:** GREEN — Keine Secrets im Handoff
+- 🟢 **Keine Runtime-Änderung** — Reine Dokumentation
+- 🟡 **Token-Rotation:** Offen (Nutzeraufgabe)
+- 🟡 **History-Rewrite:** Nicht ausgefuhrt
+
+### Über GitHub übertragen
+- Repository-Zustand (Commit `ecc1fc7` → `origin/master`)
+- Handoff-Dokumente: `MIGRATION_HANDOFF.md`, `docs/NEW_MACHINE_SETUP.md`
+- Evidence: `evidence/migration-handoff-old-machine-2026-06-29_12-22-20/`
+
+### NICHT übertragen
+- Secrets, `.env.local`, `.playwright-mcp/`, SQLite/DB-Backups, API Keys
+
+## 2026-06-29 — Secret Remediation: Token Rotation Checkpoint 🟡⏳ TOKEN_ROTATION_PENDING
+
+### Token Rotation Checkpoint
+- 🟡 **TOKEN_ROTATION_PENDING** — Token-Rotation noch nicht bestätigt
+- 🟡 **TOKEN_ROTATION_CONFIRMATION_MISSING** — Keine Nutzerbestätigung in diesem Lauf
+- 🔴 **REMOTE_SECRET_EXPOSURE_CONFIRMED** — Betroffene Datei weiterhin auf origin/master (Commit `485dc18`)
+- 🟡 **Blocked:** Keine Cleanup-Fortsetzung ohne bestätigte Rotation
+- 🟢 **Secret Hygiene:** `REDACTED_EVIDENCE_GREEN` — Alle Docs und Evidence 0 echte Leaks
+- 🟢 **20/20 Hard Constraints** — Alle eingehalten, keine premature Actions
+- 🟡 **Next:** Nutzer muss Token-Rotation in n8n UI (`http://192.168.1.52:5678`) durchfuhren und bestatigen
+
+### Phases Completed
+- Phase 1: Incident Preflight (git status, remote exposure confirmed)
+- Phase 2: Token Rotation Status Decision (TOKEN_ROTATION_PENDING)
+- Phase 3: Rotation Pending Next Steps (Nutzer-Handlungsschritte dokumentiert)
+- Phase 4: Redacted Evidence Secret Hygiene (GREEN — 0 echte Leaks)
+- Phase 7: Index Cleanup Deferred (aufgeschoben bis Rotation bestatigt)
+- Phase 9: Validation Report (20/20 Constraints PASS)
+- Phase 10: Final Report (Zusammenfassung + Entscheidungsaufforderung)
+
+### Blocks Phases (Deferred)
+- Phase 5: ❌ Incident-Doku commit/push — Blocked by missing rotation
+- Phase 6: ❌ History-Rewrite-Plan — Blocked by missing rotation
+- Phase 8: ✅ STATUS.md, CHANGELOG.md, evidence-index/latest.md — Updated (local only)
+
+### Evidence
+- `evidence/secret-remediation-after-token-rotation-20260629T110937Z/` (7 files: preflight, token-rotation-status, rotation-pending-next-steps, redacted-evidence-secret-hygiene, index-cleanup-deferred, validation-report, final-report)
+
+### Updated Documents (Local Only — Not Committed)
+- STATUS.md, CHANGELOG.md, evidence-index/latest.md
+
+### Next
+- User must confirm n8n token rotation before any remediation continues
+
+---
+
+## 2026-06-29 — Secret Remediation: Playwright MCP Token Leak — Remediation Plan Complete 🟡
+
+### Incident Analysis & Remediation Planning
+- 🟡 **REMEDIATION_PLAN_COMPLETE** — Full incident analysis, documentation, and remediation planning completed
+- 🔴 **REMOTE_SECRET_EXPOSURE_CONFIRMED** — Affected file `.playwright-mcp/console-2026-06-27T06-36-53-859Z.log` is on `origin/master` (commit `485dc18`)
+- 🔴 **TOKEN_ROTATION_PENDING** — n8n JWT tokens must be rotated by user before cleanup
+- 🟡 **Recommendation:** Option A — History Rewrite with `git filter-repo` (after token rotation)
+- 🟢 **Secret Hygiene:** GREEN — all evidence files scanned, 0 real leaks in new or existing documentation
+- 🟢 **No premature actions:** No `git rm --cached`, no history rewrite, no force push
+- 🟢 **18/18 Hard Constraints:** All passed — no secrets output, no runtime changes, no workflow changes
+
+### Phases Completed
+- Phase 1: Incident Preflight (git status, file metadata, constraints)
+- Phase 2: Local Leak Structure (7 JWT matches, lines 15-23, redacted)
+- Phase 3: Remote History Exposure (confirmed on origin/master)
+- Phase 4: Redacted Evidence Secret Hygiene (all evidence files GREEN)
+- Phase 5: n8n Token Rotation Plan (manual steps documented)
+- Phase 6: History Remediation Options (Option A/B/C with recommendation)
+- Phase 7: Secret Remediation Apply Plan (user authorization gates)
+- Phase 10: Validation Report (18/18 constraints PASS)
+- Phase 12: Final Report (summary + decision required)
+
+### Evidence
+- `evidence/secret-remediation-playwright-mcp-n8n-token-20260629T094013Z/` (9 files: preflight, structure, remote, hygiene, rotation plan, remediation options, apply plan, validation, final report)
+
+### Updated Documents
+- STATUS.md, CHANGELOG.md, evidence-index/latest.md
+
+### Next
+- User must rotate n8n tokens → choose remediation option → execute cleanup
+
+---
+
+## 2026-06-29 — `.playwright-mcp/` Index Cleanup: HALTED — RED_SECRET_LEAK 🔴⚠️
+
+### Pre-Cleanup Secret Hygiene Scan
+- 🔴 **RED_SECRET_LEAK** — Real n8n JWT authentication tokens found in tracked `.playwright-mcp/` console log
+- 🔴 **File:** `.playwright-mcp/console-2026-06-27T06-36-53-859Z.log` — n8n API tokens in browser console URL query parameters
+- 🔴 **Index Cleanup HALTED** — Per security protocol, automatic `git rm --cached` blocked when real secrets detected
+- 🟢 **Inventory completed:** 48 tracked `.playwright-mcp/` files cataloged (19 console logs, 29 page snapshots)
+- 🟢 **47 of 48 files clean:** Only UI labels, docs URLs, and API error messages — harmless artifacts
+- 🔴 **No secret values output** — All JWT tokens redacted in evidence reports
+- 🔴 **Next steps:** Token rotation required before cleanup can proceed; Git history exposure assessment needed
+
+### Evidence
+- `evidence/playwright-mcp-index-cleanup-20260629T092447Z/` (3 files: preflight, inventory, secret hygiene)
+
+### Updated Documents
+- STATUS.md, CHANGELOG.md, evidence-index/latest.md
+
+---
+
 ## 2026-06-29 — Repository Hygiene: Root Docs & Gitignore Hardening 🟢✅ REPO_HYGIENE_GREEN
 
 ### Hygiene Run Completed
