@@ -455,7 +455,31 @@ The GitHub comment now correctly reads real Runner Evidence from `status.json` i
 ### Evidence
 - `evidence/comment-sync-24h-observation-20260629T074032Z/` (13 files: preflight, git, n8n health, executions, issue guard, comment-sync validation, SQLite, backup, dispatcher health, secret hygiene, observation summary, validation report, final report)
 
-### Next Steps
-1. Branch Governance: Align `master` to `main` (separate task)
+### Branch Drift Governance Analysis (2026-06-29)
+
+### Analysis Results
+- **Status:** `RED_BRANCH_CONFLICT` — unrelated histories (kein gemeinsamer Vorfahre)
+- **Default Branch (GitHub):** `main`
+- **Source of Truth (Operations):** `master`
+- **main HEAD:** `3687959` (27.06.2026) — 28 unique commits, Root `9e41bba`
+- **master HEAD:** `1c9a68b` (29.06.2026) — 26 unique commits, Root `5088845`
+- **Diff:** 591 files, +61,743 / -10,300
+- **Gemeinsame Commits:** 0 (unrelated histories)
+- **Branch Protection:** Keine (weder main noch master)
+- **Offene PRs:** Keine
+- **GitHub Actions:** Keine
+
+### Recommendation
+- **Option A (Empfohlen):** `master` als GitHub Default Branch setzen
+- **Keine Änderung durchgeführt** — wartet auf Nutzer-Freigabe
+
+### Evidence
+- `evidence/branch-drift-governance-20260629T080206Z/` (8 files)
+
+### Secret Hygiene
+- **GREEN** — 0 echte Leaks in Analyse und Evidence
+
+## Next Steps
+1. Branch Governance: Freigabe für Option A/B/C einholen (Apply-Plan in `evidence/branch-drift-governance-20260629T080206Z/branch-governance-apply-plan.md`)
 2. Dummy Issue Cleanup: Close Issues #9-#16 (separate task)
 3. Continue periodic monitoring

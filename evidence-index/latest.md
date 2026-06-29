@@ -37,6 +37,27 @@
 
 - Backup: `database.sqlite.bak.20260629T0600Z` (on CT 101: `/opt/dev-fabric/n8n/data/.n8n/`)
 
+## Branch Drift Governance Evidence
+
+`evidence/branch-drift-governance-20260629T080206Z/`
+
+### Status
+🔴 **RED_BRANCH_CONFLICT** — `main` and `master` have completely unrelated histories. Default Branch (`main`) shows outdated content. Source of Truth (`master`) contains all current operational documentation. Recommendation: Option A — set `master` as GitHub Default Branch. **No changes applied** — awaiting user authorization.
+
+### Key Files
+| File | Description |
+|------|-------------|
+| `preflight.md` | System environment, git status, initial drift detection |
+| `branch-comparison.md` | Detailed comparison: commit counts, diff stats, content differences |
+| `github-default-branch-reality.md` | GitHub settings, branch protection, README comparison |
+| `branch-drift-risk-analysis.md` | Risk assessment (7 risks evaluated) |
+| `branch-governance-options.md` | Three options: A (set default), B (sync to main), C (document only) |
+| `branch-governance-recommendation.md` | Clear recommendation: Option A |
+| `branch-governance-apply-plan.md` | Step-by-step apply instructions with authorization gates |
+| `secret-hygiene-branch-governance.md` | Secret hygiene scan — GREEN, 0 leaks |
+
+---
+
 ## Previous Evidence
 
 - `evidence/post-comment-sync-stabilization-20260629T065737Z/` — COMMENT_SYNC_GREEN_BASELINE_FROZEN

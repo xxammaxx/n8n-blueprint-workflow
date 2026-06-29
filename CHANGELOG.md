@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-06-29 — Branch Drift Governance Analysis 🔴 RED_BRANCH_CONFLICT
+
+### Governance Analysis (Read-Only)
+- 🔴 **RED_BRANCH_CONFLICT** — `main` and `master` have completely unrelated histories
+- 🔍 **Default Branch:** `main` (GitHub) — outdated content, HEAD `3687959` (2026-06-27)
+- 🔍 **Source of Truth:** `master` — current operations, HEAD `1c9a68b` (2026-06-29)
+- 🔍 **Unique Commits:** `main` has 28, `master` has 26 — 0 common ancestors
+- 🔍 **Diff:** 591 files changed, +61,743 insertions, -10,300 deletions
+- 🛡️ **Recommendation:** Option A — set `master` as GitHub Default Branch (zero-risk, no git operations)
+- ⚠️ **No changes applied** — awaiting user authorization
+- 🟢 **Secret Hygiene:** GREEN — no leaks in analysis
+
+### Evidence
+- `evidence/branch-drift-governance-20260629T080206Z/` (8 files: preflight, comparison, github reality, risk analysis, options, recommendation, apply plan, secret hygiene)
+
+---
+
 ## 2026-06-29 — 24h Read-Only Observation 🟢✅ COMMENT_SYNC_24H_OBSERVATION_GREEN
 
 ### Observation Run (Strictly Read-Only)
