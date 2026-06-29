@@ -1,32 +1,29 @@
 # Evidence Index — Latest
 
-**Last Updated:** 2026-06-29T08:20:00Z
+**Last Updated:** 2026-06-29T10:31:14Z
 
 ## Active Evidence Directory
 
-`evidence/branch-default-master-apply-20260629T081907Z/`
+`evidence/dummy-issues-cleanup-9-16-20260629T103114Z/`
 
 ## Status
 
-🟢✅ **BRANCH_GOVERNANCE_DEFAULT_MASTER_APPLIED** — GitHub Default Branch ist jetzt `master`. Keine Branches gelöscht, kein Merge, kein Force Push. Commit `4670add` (Branch-Drift-Analyse) nach origin/master gepusht. Source of Truth jetzt auf GitHub-Projektseite sichtbar. `main` als historischer Branch erhalten.
+🟢✅ **DUMMY_ISSUES_CLEANUP_GREEN** — All 8 dummy/test/canary issues (#9–#16) safely closed as `completed`. No workflow, SQLite, runner, or branch changes. Issues #3–#8 protected. Secret hygiene GREEN. Closing comments posted on all 8 issues.
 
 ## Key Files
 
 | File | Description |
 |------|-------------|
-| `preflight.md` | Phase 1 — Reality refresh, constraint check |
-| `git-branch-remote-observation.md` | Phase 2 — Git, branch, remote status |
-| `n8n-health-observation.md` | Phase 3 — n8n health, workflow verification |
-| `n8n-executions-24h.md` | Phase 4 — Execution history 24h |
-| `issues-3-16-guard-observation.md` | Phase 5 — Protected issues guard check |
-| `issue-16-comment-sync-observation.md` | Phase 6 — Comment-Sync validation |
-| `sqlite-state-24h-observation.md` | Phase 7 — SQLite state verification |
-| `backup-rollback-observation.md` | Phase 8 — Backup and rollback status |
-| `dispatcher-health-24h.md` | Phase 9 — Dispatcher health check |
-| `secret-hygiene-24h-observation.md` | Phase 10 — Secret hygiene scan |
-| `observation-summary.md` | Phase 11 — Overall summary |
-| `validation-report.md` | Phase 13 — Hard constraint validation |
-| `final-report.md` | Phase 15 — Final report |
+| `preflight.md` | Phase 1 — System info, git status, authorization check |
+| `issues-9-16-inventory.md` | Phase 2 — Per-issue inventory (labels, comments, evidence) |
+| `cleanup-safety-gate.md` | Phase 3 — Safety gate classification (all GREEN) |
+| `cleanup-comments-prepared.md` | Phase 4 — Standardized closing comments |
+| `cleanup-apply-result.md` | Phase 5 — Applied results (8 closed, 0 skipped) |
+| `issues-9-16-after-cleanup.md` | Phase 6 — Post-cleanup state verification |
+| `issues-3-8-guard-after-cleanup.md` | Phase 6 — Guard issues #3–#8 protection check |
+| `dispatcher-after-cleanup-check.md` | Phase 7 — n8n/dispatcher read-only check |
+| `secret-hygiene-dummy-cleanup.md` | Phase 8 — Secret hygiene (GREEN, 0 real leaks) |
+
 
 ## Live Workflow Export
 
@@ -60,6 +57,8 @@
 
 ## Previous Evidence
 
+- `evidence/branch-default-master-apply-20260629T081907Z/` — BRANCH_GOVERNANCE_DEFAULT_MASTER_APPLIED
+- `evidence/comment-sync-24h-observation-20260629T074032Z/` — COMMENT_SYNC_24H_OBSERVATION_GREEN
 - `evidence/post-comment-sync-stabilization-20260629T065737Z/` — COMMENT_SYNC_GREEN_BASELINE_FROZEN
 - `evidence/dispatcher-comment-sync-status-json-20260629T055645Z/` — Comment sync fix run (COMMENT_SYNC_GREEN)
 - `evidence/dispatcher-comment-sync-status-json-20260629T053028Z/` — Root cause analysis + patch design
