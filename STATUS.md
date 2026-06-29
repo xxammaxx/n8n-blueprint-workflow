@@ -1,7 +1,7 @@
 # Project Status
 
-**Last Updated:** 2026-06-28T12:37:00Z
-**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **DEEPSEEK_PROVIDER_SMOKE_GREEN** 🟢 | **SECRET_HYGIENE_GREEN** ✅
+**Last Updated:** 2026-06-29T05:52:00Z
+**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_FIX_PREPARED** 🟡 | **SECRET_HYGIENE_GREEN** ✅
 
 ---
 
@@ -397,3 +397,42 @@ manual_reason=none
 
 ### Evidence
 - `evidence/local-opencode-credential-transfer-20260628T060908Z/` (12 files)
+
+---
+
+## 🟡 Comment Sync Fix — status.json Integration (2026-06-29T05:52:00Z)
+
+### Root Cause Identified
+- 🟡 **Bug:** Der "SSH Read status.json" Node (ID `592fc2b2-...`) gibt SSH-Output als Wrapper zurück: `{ stdout, success, exitCode }`
+- 🟡 **Impact:** Der "Format Evidence Comment" Node (ID `25d2cbd3-...`) sucht nach `.status` im Wrapper-Objekt statt in `.stdout`
+- 🟡 **Result:** GitHub-Kommentar zeigt `Status: UNKNOWN`, `Mode: manual-terminal`, `Provider configured: NO` — immer Stale-Werte aus RUN_INPUT.json
+
+### Fix Prepared
+- 🟢 **Node 11 ("Format Evidence Comment"):** Code aktualisiert — Extrahiert `stdout`, parsed als JSON, liest alle Felder aus `status.json`
+- 🟢 **Node 15 ("Format Final Result"):** dispatch_mode und status aus evidenceFormat statt hardcoded
+- 🟢 **Fallback Chain:** status.json → SSH raw → RUN_INPUT.json → hardcoded defaults
+- 🟢 **Evidence Source Label:** Explizit `Evidence source: status.json` im Kommentar
+- 🟢 **Neue Kommentarfelder:** `Provider`, `Model`, `OpenCode`, `Evidence source`
+
+### Deployment Status
+- ⏳ **Patch vorbereitet:** `exports/comment-sync-after/` — JSON validiert, SHA256 verified
+- ⏳ **Deployment:** Erfordert n8n UI-Zugriff (derzeit nicht authentifiziert)
+- 🟢 **2 Nodes geändert, 16 unverändert** (Trigger, Schedule, Guardrails, Credentials intakt)
+
+### Issue #13 Verification
+- ✅ Dispatch Pipeline: Issue #13 via Schedule Trigger verarbeitet
+- ✅ Label Transition: `agent:ready` → `agent:needs-review` + `evidence:attached`
+- ✅ Runner Evidence Path: `/opt/dev-fabric/.../issue-13/gh-issue-13-20260629T054530Z`
+- ✅ Issues #3-#12 Protected: Alle 10 geschützt, 0 re-processed
+- 🟡 GitHub Comment: Weiterhin Stale-Werte (erwartet — Patch noch nicht deployed)
+- ✅ Secret Hygiene: GREEN — 0 echte Leaks
+- ✅ Neues Label: `comment-sync:test` (#0066FF)
+
+### Evidence
+- `evidence/dispatcher-comment-sync-status-json-20260629T053028Z/` (18 files)
+- Patch: `exports/comment-sync-after/dispatcher-Sv12QTo56NoPUu2D-after-comment-sync-20260629T053028Z.json`
+
+### Next
+1. n8n UI-Zugriff herstellen
+2. Patch manuell deployen (Node 11 + Node 15)
+3. Re-Test mit Issue #14

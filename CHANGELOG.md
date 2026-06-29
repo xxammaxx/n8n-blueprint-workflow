@@ -1,5 +1,46 @@
 # Changelog
 
+## 2026-06-29 — Comment Sync Fix: status.json Integration 🟡 COMMENT_SYNC_FIX_PREPARED
+
+### Root Cause Identified
+- 🟡 **Bug:** n8n "SSH Read status.json" node returns output as `{ stdout, success, exitCode }` wrapper, but "Format Evidence Comment" node tried to parse the entire wrapper as status.json content
+- 🟡 **Impact:** GitHub comments always showed `Status: UNKNOWN`, `Mode: manual-terminal`, `Provider configured: NO` — stale RUN_INPUT.json values
+- 🟡 **Field Mismatch:** SSH wrapper's `.status` field doesn't exist (it's in `.stdout`), so fallback to hardcoded values
+
+### Fix Prepared (Not Yet Deployed)
+- 🟢 **Node 11 ("Format Evidence Comment"):** Updated JS code to:
+  - Extract `sshOutput.stdout` (raw jq output from SSH node)
+  - Parse as JSON to get actual `status.json` content
+  - Read all fields: `status`, `mode.effective`, `agent_runtime.opencode_provider_configured`, `provider`, `model`, `agent_runtime.opencode_version`
+  - Fallback chain: `status.json` → SSH raw → RUN_INPUT.json → hardcoded defaults
+  - Label evidence source explicitly: `Evidence source: status.json` / `fallback`
+- 🟢 **Node 15 ("Format Final Result"):** Updated to read `dispatch_mode` and `status` from evidenceFormat data
+- 🟢 **New comment fields:** Status, Mode, Provider configured, Provider, Model, OpenCode, Evidence source
+- 🟢 **2 of 18 nodes changed** — triggers, schedule, guardrails, credentials unchanged
+
+### Test Issue #13
+- ✅ Created with `agent:ready`, `test:dummy`, `opencode:smoke`, `deepseek:direct`, `comment-sync:test`
+- ✅ Schedule Trigger picked up and processed exactly once
+- ✅ Label transition: ready → needs-review + evidence:attached
+- ✅ Runner evidence path confirmed: `/opt/dev-fabric/.../issue-13/gh-issue-13-20260629T054530Z`
+- ✅ Issues #3-#12 protected: all 10 safe, 0 re-processed
+- 🟡 Comment: Stale values (expected — patch not yet deployed)
+- ✅ New label: `comment-sync:test` (#0066FF)
+
+### Deployment Status
+- ⏳ Patch prepared and statically validated (17/17 checks PASS)
+- ⏳ Deployment blocked: n8n UI/API auth not available
+- 📋 Manual deployment: Edit Node 11 + Node 15 via n8n UI, then publish
+
+### Evidence
+- `evidence/dispatcher-comment-sync-status-json-20260629T053028Z/` (18 files)
+- Patch: `exports/comment-sync-after/dispatcher-Sv12QTo56NoPUu2D-after-comment-sync-20260629T053028Z.json`
+
+### Next
+- n8n UI access → Deploy patch → Re-test with Issue #14
+
+---
+
 ## 2026-06-28 — DeepSeek Dispatch Path Integration 🟢 DEEPSEEK_DUMMY_AGENT_GREEN
 
 ### Fix Applied

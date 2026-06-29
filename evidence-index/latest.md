@@ -1,44 +1,47 @@
 # Evidence Index — Latest
 
-**Last Updated:** 2026-06-28T12:37:00Z
+**Last Updated:** 2026-06-29T05:52:00Z
 
 ## Active Evidence Directory
 
-`evidence/deepseek-dispatch-integration-issue-10-20260628T092632Z/`
+`evidence/dispatcher-comment-sync-status-json-20260629T053028Z/`
 
 ## Status
 
-🟢 **DEEPSEEK_DUMMY_AGENT_GREEN** — DeepSeek provider successfully integrated into runner dispatch path. Provider env loaded, mode upgraded from `manual-terminal` to `opencode-run`, verified with Issue #12.
+🟡 **COMMENT_SYNC_FIX_PREPARED** — Root cause of stale GitHub comments identified and fix designed. The "Format Evidence Comment" node failed to extract `status.json` from the SSH output wrapper. Patch prepared and statically validated. Deployment pending n8n UI access.
 
 ## Key Files
 
 | File | Description |
 |------|-------------|
 | `preflight.md` | Pre-run system state |
-| `dispatch-path-analysis.md` | Dispatch path root cause analysis |
-| `provider-loader-readiness.md` | Provider loader verification |
-| `dispatch-script-patch-plan.md` | Patch design document |
-| `dispatch-script-after.md` | Script state after patching |
-| `dispatch-script-validation.md` | Syntax and logic validation |
-| `dispatch-script-dry-validation.md` | Dry-run analysis |
-| `secret-hygiene-before-issue-10.md` | Secret scan before test |
-| `dummy-issue-10-created.md` | Issue #10 creation log |
-| `dummy-issue-12-after.md` | Issue #12 post-run analysis |
-| `runner-evidence-issue-12.md` | Runner evidence analysis |
-| `secret-hygiene-after-issue-12.md` | Secret scan after test |
-| `issues-3-11-guard-after.md` | Protection verification |
+| `workflow-comment-path-before.md` | Current comment data flow (broken) |
+| `comment-data-flow-analysis.md` | Detailed data flow diagram |
+| `runner-status-json-structure.md` | status.json field documentation |
+| `comment-sync-fix-design.md` | Fix design with priority logic |
+| `workflow-patch-plan.md` | Minimal patch plan (2 nodes) |
+| `workflow-snapshot-before.md` | Snapshot before patch (SHA256) |
+| `workflow-patch-applied.md` | Patch application status |
+| `workflow-diff-summary.md` | Before/after diff verification |
+| `static-validation.md` | Static code validation (17/17 PASS) |
+| `dummy-issue-13-created.md` | Issue #13 creation log |
+| `n8n-execution-summary.md` | n8n execution for Issue #13 |
+| `github-comment-sync-validation.md` | Comment content validation (stale) |
+| `issues-3-12-guard-after.md` | Protection verification |
+| `runner-evidence-issue-13.md` | Runner evidence analysis |
+| `secret-hygiene-after-comment-sync.md` | Secret scan (GREEN) |
 | `validation-report.md` | Full validation |
-| `n8n-execution-summary.md` | n8n execution details |
-| `dispatcher-run-summary.md` | Dispatcher run summary |
 | `final-report.md` | Final report |
 
-## Dispatch Script State
+## Patch Files
 
-- Path: `/opt/dev-fabric/scripts/start_github_issue_run.sh`
-- SHA256: `4610a983aceb481e3c8f4083169ba13ee781e8ef40bdc3d2d1d2eb0c01ca3496`
-- Backup: `start_github_issue_run.sh.bak.20260628T093029Z`
+- Before: `exports/comment-sync-before/dispatcher-Sv12QTo56NoPUu2D-before-comment-sync-20260629T053028Z.json`
+- After: `exports/comment-sync-after/dispatcher-Sv12QTo56NoPUu2D-after-comment-sync-20260629T053028Z.json`
+- SHA256 (after): `17A4159C6BDD0538CDDFB9B87F69AF25D261701FBFFAF1D3577B4937C6E61FD7`
 
 ## Previous Evidence
 
+- `evidence/deepseek-dispatch-green-push-20260629T051858Z/` — Green push (commit 8b10fbd)
+- `evidence/deepseek-dispatch-integration-issue-10-20260628T092632Z/` — Provider dispatch integration
 - `evidence/deepseek-dummy-agent-test-20260628T090301Z/` — Issue #9 test (GREEN_PARTIAL)
-- `evidence/deepseek-direct-provider-setup-20260628T103512Z/` — Provider smoke test (DEEPSEEK_PROVIDER_SMOKE_GREEN)
+- `evidence/deepseek-direct-provider-setup-20260628T103512Z/` — Provider smoke test
