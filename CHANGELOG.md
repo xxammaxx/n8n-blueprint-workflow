@@ -1,5 +1,26 @@
 # Changelog
 
+## 2026-06-29 — Final Operations Baseline Check 🟢✅ FINAL_OPERATIONS_BASELINE_GREEN
+
+### Baseline Check Completed (15-Phase Read-Only)
+- 🟢✅ **FINAL_OPERATIONS_BASELINE_GREEN** — Repository and dispatcher in clean, stable, presentable state
+- 🟢 **GitHub Repository:** Default branch `master`, all commits pushed, clean working tree
+- 🟢 **n8n Dispatcher:** HTTP 200, workflow active (18 nodes), 15-min schedule trigger
+- 🟢 **DeepSeek Runner:** OpenCode 1.17.9, deepseek-v4-pro, provider in dispatch path
+- 🟢 **Comment Sync:** Issue #16 verified — `status.json` source, all values correct
+- 🟢 **Issues #3–#8:** All 6 protected, OPEN, unchanged since cleanup
+- 🟢 **Issues #9–#16:** All 8 CLOSED as `completed`, closing comments present
+- 🟢 **Secret Hygiene:** GREEN — 0 real leaks across all 13 evidence files
+- 🟢 **All 15 Hard Constraints Met:** No workflow, SQLite, runner, branch, or issue changes
+- 🟡 **Notes:** GREEN_BASELINE.md and OPERATIONS_RUNBOOK.md missing from repo root (pre-existing). .gitignore could be hardened.
+
+### Evidence
+- `evidence/final-operations-baseline-check-20260629T084453Z/` (13 files)
+
+### Updated Documents
+- STATUS.md, CHANGELOG.md, evidence-index/latest.md
+
+---
 ## 2026-06-29 — Dummy Issue Cleanup #9–#16 🟢✅ DUMMY_ISSUES_CLEANUP_GREEN
 
 ### Cleanup Completed

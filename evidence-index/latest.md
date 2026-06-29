@@ -1,29 +1,32 @@
 # Evidence Index — Latest
 
-**Last Updated:** 2026-06-29T10:31:14Z
+**Last Updated:** 2026-06-29T08:44:53Z
 
 ## Active Evidence Directory
 
-`evidence/dummy-issues-cleanup-9-16-20260629T103114Z/`
+`evidence/final-operations-baseline-check-20260629T084453Z/`
 
 ## Status
 
-🟢✅ **DUMMY_ISSUES_CLEANUP_GREEN** — All 8 dummy/test/canary issues (#9–#16) safely closed as `completed`. No workflow, SQLite, runner, or branch changes. Issues #3–#8 protected. Secret hygiene GREEN. Closing comments posted on all 8 issues.
+🟢✅ **FINAL_OPERATIONS_BASELINE_GREEN** — 15-phase post-cleanup baseline check confirms repository and dispatcher in clean, stable, presentable state. Default branch `master`, n8n HTTP 200, workflow active (18 nodes), DeepSeek deepseek-v4-pro, comment sync stable, issues #3–#8 protected, issues #9–#16 closed, 0 secrets, all hard constraints met.
 
 ## Key Files
 
 | File | Description |
 |------|-------------|
-| `preflight.md` | Phase 1 — System info, git status, authorization check |
-| `issues-9-16-inventory.md` | Phase 2 — Per-issue inventory (labels, comments, evidence) |
-| `cleanup-safety-gate.md` | Phase 3 — Safety gate classification (all GREEN) |
-| `cleanup-comments-prepared.md` | Phase 4 — Standardized closing comments |
-| `cleanup-apply-result.md` | Phase 5 — Applied results (8 closed, 0 skipped) |
-| `issues-9-16-after-cleanup.md` | Phase 6 — Post-cleanup state verification |
-| `issues-3-8-guard-after-cleanup.md` | Phase 6 — Guard issues #3–#8 protection check |
-| `dispatcher-after-cleanup-check.md` | Phase 7 — n8n/dispatcher read-only check |
-| `secret-hygiene-dummy-cleanup.md` | Phase 8 — Secret hygiene (GREEN, 0 real leaks) |
-
+| `preflight.md` | Phase 1 — System info, git status, n8n health |
+| `git-remote-default-branch-check.md` | Phase 2 — Branch validation, remote config |
+| `repository-landing-page-check.md` | Phase 3 — GitHub landing page assessment |
+| `n8n-dispatcher-baseline-check.md` | Phase 4 — n8n workflow read-only check |
+| `n8n-executions-baseline-check.md` | Phase 5 — Execution history check (24h) |
+| `issues-baseline-check.md` | Phase 6 — Issue state (#3–#8 protected, #9–#16 closed) |
+| `comment-sync-spot-check.md` | Phase 7 — Issue #16 comment sync verification |
+| `runner-deepseek-baseline-check.md` | Phase 8 — Runner/DeepSeek read-only assessment |
+| `backup-rollback-baseline-check.md` | Phase 9 — Backup, snapshot, rollback verification |
+| `secret-hygiene-final-baseline.md` | Phase 10 — Secret hygiene scan (GREEN) |
+| `FINAL_OPERATIONS_BASELINE.md` | Phase 11 — Final baseline summary |
+| `validation-report.md` | Phase 13 — Constraint and operational validation |
+| `final-report.md` | Phase 15 — Final report with status decision |
 
 ## Live Workflow Export
 
@@ -34,24 +37,9 @@
 
 - Backup: `database.sqlite.bak.20260629T0600Z` (on CT 101: `/opt/dev-fabric/n8n/data/.n8n/`)
 
-## Branch Drift Governance Evidence
+## Dummy Issue Cleanup Evidence
 
-`evidence/branch-drift-governance-20260629T080206Z/`
-
-### Status
-🔴 **RED_BRANCH_CONFLICT** — `main` and `master` have completely unrelated histories. Default Branch (`main`) shows outdated content. Source of Truth (`master`) contains all current operational documentation. Recommendation: Option A — set `master` as GitHub Default Branch. **No changes applied** — awaiting user authorization.
-
-### Key Files
-| File | Description |
-|------|-------------|
-| `preflight.md` | System environment, git status, initial drift detection |
-| `branch-comparison.md` | Detailed comparison: commit counts, diff stats, content differences |
-| `github-default-branch-reality.md` | GitHub settings, branch protection, README comparison |
-| `branch-drift-risk-analysis.md` | Risk assessment (7 risks evaluated) |
-| `branch-governance-options.md` | Three options: A (set default), B (sync to main), C (document only) |
-| `branch-governance-recommendation.md` | Clear recommendation: Option A |
-| `branch-governance-apply-plan.md` | Step-by-step apply instructions with authorization gates |
-| `secret-hygiene-branch-governance.md` | Secret hygiene scan — GREEN, 0 leaks |
+`evidence/dummy-issues-cleanup-9-16-20260629T103114Z/` — 🟢✅ DUMMY_ISSUES_CLEANUP_GREEN
 
 ---
 
