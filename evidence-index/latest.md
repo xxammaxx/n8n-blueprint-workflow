@@ -1,21 +1,36 @@
 # Evidence Index — Latest
 
-**Last Updated:** 2026-06-29T12:22:20Z
+**Last Updated:** 2026-06-29T12:38:00Z
 
 ## Active Evidence Directory
 
-**Current:** `evidence/migration-handoff-old-machine-2026-06-29_12-22-20/` 🟢📦
+**Current:** `evidence/new-machine-linux-mint-migration-setup-2026-06-29T123325Z/` 🟢🖥️
 
-**Previous:** `evidence/secret-remediation-after-token-rotation-20260629T110937Z/` 🟡⏳
+**Previous:** `evidence/migration-handoff-old-machine-2026-06-29_12-22-20/` 🟢📦
 
 ## Status
 
-🟢📦 **MIGRATION_HANDOFF_PREPARED** — Migration Handoff vollständig vorbereitet. Repository bereit für Clone auf neuem Rechner. Keine Secrets im Handoff. Token-Rotation bleibt offen (Nutzeraufgabe). History-Rewrite nicht ausgeführt.
+🟢🖥️ **NEW_MACHINE_READY_WITH_NOTES** — Linux Mint migration abgeschlossen. Repository geklont und validiert. n8n erreichbar. Runner SSH-Key fehlt noch. Lokale Secrets als Templates angelegt. Keine Runtime-Änderungen. Keine Secrets übernommen.
 
-## Key Files (Current Session: Migration Handoff)
+## Key Files (Current Session: Linux Mint Migration)
 
 | File | Description |
 |------|-------------|
+| `new-machine-linux-mint-preflight.md` | Phase 1 — Linux Mint OS, Shell, Tooling preflight |
+| `repo-clone-validation.md` | Phase 2 — Clone validation, branch, remote, commit |
+| `repo-content-validation.md` | Phase 3 — Key files inventory (README, STATUS, etc.) |
+| `secret-hygiene-new-machine.md` | Phase 4 — Secret hygiene scan, YELLOW_KNOWN_PREEXISTING |
+| `local-secret-structure.md` | Phase 5 — Local secrets/ template creation |
+| `n8n-readonly-connectivity.md` | Phase 6 — n8n health check (reachable) |
+| `runner-readonly-connectivity.md` | Phase 7 — Runner SSH check (key required) |
+| `local-tooling-check.md` | Phase 8 — Node, npm, Python, scripts inventory |
+| `playwright-new-machine-policy.md` | Phase 9 — Policy: no old artifacts |
+| `NEW_MACHINE_BASELINE.md` | Phase 10 — Migration baseline summary (root) |
+| `validation-report.md` | Phase 12 — 30-point validation (28 pass, 2 warn) |
+| `final-report.md` | Phase 14 — Final report with status decision |
+
+### Previous: Migration Handoff (Old Machine)
+
 | `preflight.md` | Phase 1 — System info, git status, .gitignore, secret hygiene preflight |
 | `git-remote-sync-check.md` | Phase 2 — Remote-Sync-Validierung, Statusentscheidung |
 | `secret-hygiene-before-migration-handoff.md` | Phase 3 — Secret-Scan-Ergebnisse, GREEN |
