@@ -1,14 +1,14 @@
 # Evidence Index — Latest
 
-**Last Updated:** 2026-06-29T08:44:53Z
+**Last Updated:** 2026-06-29T09:06:31Z
 
 ## Active Evidence Directory
 
-`evidence/final-operations-baseline-check-20260629T084453Z/`
+`evidence/repo-hygiene-root-docs-gitignore-20260629T090631Z/`
 
 ## Status
 
-🟢✅ **FINAL_OPERATIONS_BASELINE_GREEN** — 15-phase post-cleanup baseline check confirms repository and dispatcher in clean, stable, presentable state. Default branch `master`, n8n HTTP 200, workflow active (18 nodes), DeepSeek deepseek-v4-pro, comment sync stable, issues #3–#8 protected, issues #9–#16 closed, 0 secrets, all hard constraints met.
+🟢✅ **REPO_HYGIENE_GREEN** — 10-phase repository hygiene run completed. `.gitignore` hardened with 14 new patterns (DB/backup artifacts + Playwright session artifacts). Root documentation pointers (`GREEN_BASELINE.md`, `OPERATIONS_RUNBOOK.md`) created. 0 tracked DB/backup files. Secret Hygiene GREEN (0 real leaks). 19 hard constraints met — no runtime changes. Previous baseline: FINAL_OPERATIONS_BASELINE_GREEN.
 
 ## Key Files
 

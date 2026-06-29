@@ -1,5 +1,25 @@
 # Changelog
 
+## 2026-06-29 — Repository Hygiene: Root Docs & Gitignore Hardening 🟢✅ REPO_HYGIENE_GREEN
+
+### Hygiene Run Completed
+- 🟢✅ **REPO_HYGIENE_GREEN** — 10-phase read-only repository hygiene run
+- 🟢 **`.gitignore` hardened:** 8 DB/backup patterns (`*.db`, `*.sqlite`, `*.sqlite3`, `*.bak`, `*.db-shm`, `*.db-wal`, `*.sqlite-shm`, `*.sqlite-wal`) + `.playwright-mcp/` session artifacts
+- 🟢 **Root pointers created:** `GREEN_BASELINE.md` and `OPERATIONS_RUNBOOK.md` at repo root → point to `STATUS.md`, `evidence-index/latest.md`, `CHANGELOG.md`
+- 🟢 **Tracked DB/backup files:** 0 — verifiziert mit `git ls-files`
+- 🟢 **Tracked `.playwright-mcp/` artifacts:** 48 historical files documented (not removed — manual review recommended)
+- 🟢 **Secret Hygiene:** GREEN — 0 echte Leaks, 4 redacted references, 35 placeholder false positives
+- 🟢 **Root Documents Decision:** Pointer files (Option A) — lightweight, maintenance-friendly, single source of truth preserved
+- 🟢 **19 Hard Constraints Met:** No workflow, SQLite, runner, branch, or issue changes. No secrets output.
+
+### Evidence
+- `evidence/repo-hygiene-root-docs-gitignore-20260629T090631Z/` (12 files: preflight, gitignore-audit, tracked-db-backup-check, root-docs-decision, root-docs-created, secret-hygiene, validation-report, final-report)
+
+### Updated Documents
+- `.gitignore`, `GREEN_BASELINE.md` (new), `OPERATIONS_RUNBOOK.md` (new), `STATUS.md`, `CHANGELOG.md`, `evidence-index/latest.md`
+
+---
+
 ## 2026-06-29 — Final Operations Baseline Check 🟢✅ FINAL_OPERATIONS_BASELINE_GREEN
 
 ### Baseline Check Completed (15-Phase Read-Only)

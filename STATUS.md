@@ -1,7 +1,7 @@
 # Project Status
 
-**Last Updated:** 2026-06-29T08:44:53Z
-**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **COMMENT_SYNC_24H_OBSERVATION_GREEN** 🟢✅ | **SECRET_HYGIENE_GREEN** ✅ | **BRANCH_GOVERNANCE_DEFAULT_MASTER_APPLIED** 🟢✅ | **DUMMY_ISSUES_CLEANUP_GREEN** 🟢✅ | **FINAL_OPERATIONS_BASELINE_GREEN** 🟢✅
+**Last Updated:** 2026-06-29T09:06:31Z
+**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **COMMENT_SYNC_24H_OBSERVATION_GREEN** 🟢✅ | **SECRET_HYGIENE_GREEN** ✅ | **BRANCH_GOVERNANCE_DEFAULT_MASTER_APPLIED** 🟢✅ | **DUMMY_ISSUES_CLEANUP_GREEN** 🟢✅ | **FINAL_OPERATIONS_BASELINE_GREEN** 🟢✅ | **REPO_HYGIENE_GREEN** 🟢✅
 
 ---
 
@@ -507,6 +507,21 @@ The GitHub comment now correctly reads real Runner Evidence from `status.json` i
 ### Evidence
 - `evidence/dummy-issues-cleanup-9-16-20260629T103114Z/` (12+ files)
 
+## 🟢 Repo Hygiene — Root Docs & Gitignore Hardening (2026-06-29T09:06:31Z)
+
+### Hygiene Run Completed
+- 🟢✅ **REPO_HYGIENE_GREEN** — `.gitignore` hardened, root documentation pointers created
+- 🟢 **`.gitignore` hardened:** 14 new patterns for DB/backup artifacts + `.playwright-mcp/` session artifacts
+- 🟢 **Root pointers created:** `GREEN_BASELINE.md` and `OPERATIONS_RUNBOOK.md` at repo root
+- 🟢 **Tracked DB/backup files:** 0 — GREEN_NO_TRACKED_DB_BACKUPS
+- 🟢 **Secret Hygiene:** GREEN — 0 echte Leaks (4 redacted references, 35 placeholder false positives)
+- 🟢 **No Runtime Changes:** No workflow, SQLite, runner, branch, or issue modifications
+- 🟡 **Note:** 48 historical `.playwright-mcp/` files remain tracked in git index — not removed (manual review recommended)
+
+### Evidence
+- `evidence/repo-hygiene-root-docs-gitignore-20260629T090631Z/` (12 files)
+
 ## Next Steps
 1. Continue periodic monitoring
 2. Consider closing issues #3-#8 if/when they are no longer needed as protected baseline
+3. Consider `git rm --cached` for historical `.playwright-mcp/` tracked files (manual review)
