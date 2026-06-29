@@ -1,18 +1,36 @@
 # Evidence Index — Latest
 
-**Last Updated:** 2026-06-29T12:38:00Z
+**Last Updated:** 2026-06-29T13:02:02Z
 
 ## Active Evidence Directory
 
-**Current:** `evidence/new-machine-linux-mint-migration-setup-2026-06-29T123325Z/` 🟢🖥️
+**Current:** `evidence/linux-mint-workstation-prep-2026-06-29T13-02-02Z/` 🟢🖥️🔑
 
-**Previous:** `evidence/migration-handoff-old-machine-2026-06-29_12-22-20/` 🟢📦
+**Previous:** `evidence/new-machine-linux-mint-migration-setup-2026-06-29T123325Z/` 🟢🖥️
 
 ## Status
 
-🟢🖥️ **NEW_MACHINE_READY_WITH_NOTES** — Linux Mint migration abgeschlossen. Repository geklont und validiert. n8n erreichbar. Runner SSH-Key fehlt noch. Lokale Secrets als Templates angelegt. Keine Runtime-Änderungen. Keine Secrets übernommen.
+🟢🖥️🔑 **LINUX_MINT_WORKSTATION_READY_WITH_NOTES** — Linux Mint Workstation vorbereitet: Repo validiert, n8n erreichbar, lokale Secret-Struktur erstellt, SSH-Key vorhanden (Runner-Auth pending). 4 User-Actions für volle Operational Readiness ausstehend. Keine Runtime-Änderungen. Keine Secrets ausgegeben.
 
-## Key Files (Current Session: Linux Mint Migration)
+## Key Files (Current Session: Linux Mint Workstation Prep)
+
+| File | Description |
+|------|-------------|
+| `preflight.md` | Phase 1 — OS, tooling, git state preflight |
+| `secret-hygiene-before-workstation-prep.md` | Phase 2 — Secret hygiene scan (known incident only) |
+| `n8n-account-security-prep.md` | Phase 3 — n8n password/2FA/API-key status |
+| `local-n8n-api-secret-structure.md` | Phase 4 — n8n API key placeholder file |
+| `local-deepseek-secret-structure.md` | Phase 5 — DeepSeek provider secret file |
+| `ssh-key-prep.md` | Phase 6 — SSH key fingerprint, runner prep |
+| `runner-ssh-connectivity.md` | Phase 7 — Runner SSH test (SSH_KEY_REQUIRED) |
+| `runner-readonly-validation.md` | Phase 8 — Runner validation (BLOCKED) |
+| `n8n-readonly-validation-new-machine.md` | Phase 9 — n8n HTTP checks from new machine |
+| `local-baseline-validation.md` | Phase 10 — Health check (HEALTH_YELLOW) |
+| `secret-hygiene-after-linux-workstation-prep.md` | Phase 12 — Post-prep hygiene (GREEN) |
+| `validation-report.md` | Phase 14 — Constraint validation |
+| `final-report.md` | Phase 16 — Final report |
+
+## Key Files (Previous: Linux Mint Migration)
 
 | File | Description |
 |------|-------------|
