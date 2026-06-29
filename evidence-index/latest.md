@@ -1,31 +1,32 @@
 # Evidence Index — Latest
 
-**Last Updated:** 2026-06-29T07:10:00Z
+**Last Updated:** 2026-06-29T07:45:00Z
 
 ## Active Evidence Directory
 
-`evidence/post-comment-sync-stabilization-20260629T065737Z/`
+`evidence/comment-sync-24h-observation-20260629T074032Z/`
 
 ## Status
 
-🔒🟢 **COMMENT_SYNC_GREEN_BASELINE_FROZEN** — Post-Comment-Sync Stabilization Run. State frozen, validated across 13 phases. Workflow snapshot created, SHA256 verified, SQLite state documented, backup/rollback plan created, issues protected, secret hygiene confirmed. No runtime changes made.
+🟢✅ **COMMENT_SYNC_24H_OBSERVATION_GREEN** — 24-stündiger Read-only Observation Check abgeschlossen. Alle Systeme stabil: n8n gesund, Workflow aktiv (18 Nodes, Schedule 15-min), Comment-Sync via `status.json` verifiziert (Issue #16), Issues #3–#16 geschützt, SQLite-State konsistent, Backup intakt, Secret Hygiene grün (0 echte Leaks). 19/19 Hard Constraints eingehalten. Keine Änderungen an Runtime, Workflow, SQLite, Runner oder Konfiguration.
 
 ## Key Files
 
 | File | Description |
 |------|-------------|
-| `preflight.md` | Phase 1 — System preflight check |
-| `branch-remote-reality.md` | Phase 2 — Branch and remote reality |
-| `workflow-comment-sync-green-snapshot.md` | Phase 3 — Workflow snapshot + SHA256 |
-| `sqlite-comment-sync-state.md` | Phase 4 — SQLite patch state validation |
-| `rollback-plan.md` | Phase 5 — Backup and rollback plan |
-| `issue-16-comment-validation.md` | Phase 6a — Issue #16 comment validation |
-| `runner-evidence-issue-16-validation.md` | Phase 6b — Runner evidence validation |
-| `issues-3-16-guard-check.md` | Phase 7 — Issues #3-#16 guard check |
-| `dispatcher-health-post-comment-sync.md` | Phase 8 — Health check |
-| `secret-hygiene-post-comment-sync.md` | Phase 9 — Secret hygiene |
-| `validation-report.md` | Phase 11 — Full validation |
-| `final-report.md` | Phase 13 — Final report |
+| `preflight.md` | Phase 1 — Reality refresh, constraint check |
+| `git-branch-remote-observation.md` | Phase 2 — Git, branch, remote status |
+| `n8n-health-observation.md` | Phase 3 — n8n health, workflow verification |
+| `n8n-executions-24h.md` | Phase 4 — Execution history 24h |
+| `issues-3-16-guard-observation.md` | Phase 5 — Protected issues guard check |
+| `issue-16-comment-sync-observation.md` | Phase 6 — Comment-Sync validation |
+| `sqlite-state-24h-observation.md` | Phase 7 — SQLite state verification |
+| `backup-rollback-observation.md` | Phase 8 — Backup and rollback status |
+| `dispatcher-health-24h.md` | Phase 9 — Dispatcher health check |
+| `secret-hygiene-24h-observation.md` | Phase 10 — Secret hygiene scan |
+| `observation-summary.md` | Phase 11 — Overall summary |
+| `validation-report.md` | Phase 13 — Hard constraint validation |
+| `final-report.md` | Phase 15 — Final report |
 
 ## Live Workflow Export
 
@@ -38,6 +39,7 @@
 
 ## Previous Evidence
 
+- `evidence/post-comment-sync-stabilization-20260629T065737Z/` — COMMENT_SYNC_GREEN_BASELINE_FROZEN
 - `evidence/dispatcher-comment-sync-status-json-20260629T055645Z/` — Comment sync fix run (COMMENT_SYNC_GREEN)
 - `evidence/dispatcher-comment-sync-status-json-20260629T053028Z/` — Root cause analysis + patch design
 - `evidence/deepseek-dispatch-green-push-20260629T051858Z/` — Green push (commit 8b10fbd)

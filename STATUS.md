@@ -1,7 +1,7 @@
 # Project Status
 
-**Last Updated:** 2026-06-29T07:10:00Z
-**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **SECRET_HYGIENE_GREEN** ✅
+**Last Updated:** 2026-06-29T07:45:00Z
+**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **COMMENT_SYNC_24H_OBSERVATION_GREEN** 🟢✅ | **SECRET_HYGIENE_GREEN** ✅
 
 ---
 
@@ -433,3 +433,29 @@ The GitHub comment now correctly reads real Runner Evidence from `status.json` i
 ### Evidence
 - `evidence/dispatcher-comment-sync-status-json-20260629T055645Z/` (16+ files)
 - Live export: `exports/comment-sync-after/dispatcher-Sv12QTo56NoPUu2D-live-after-patch-20260629T061308Z.json`
+
+---
+
+## 2026-06-29 — 24h Read-Only Observation 🟢✅ COMMENT_SYNC_24H_OBSERVATION_GREEN
+
+### Observation Run (Strictly Read-Only, 15 Phases)
+- 🟢 **Status Decision:** `COMMENT_SYNC_24H_OBSERVATION_GREEN`
+- 🟢 **n8n Stable:** HTTP 200, healthz OK, workflow active (18 nodes)
+- 🟢 **Workflow Stable:** Schedule trigger active, comment-sync nodes present (SSH Read status.json → Format Evidence Comment → Create GitHub Comment)
+- 🟢 **Comment-Sync Stable:** Issue #16 comment verifies `status.json` source, all values correct
+- 🟢 **Issues #3-#16 Protected:** All OPEN, no `agent:ready`, 0 new comments since baseline freeze
+- 🟢 **SQLite State Stable:** No drift, comment-sync patch in active version
+- 🟢 **Secret Hygiene Green:** 0 real leaks, 1 known false positive (JWT token)
+- 🟢 **Backup/Rollback Intact:** `database.sqlite.bak.20260629T0600Z`, rollback plan documented
+- 🟢 **All 15 Prohibition Constraints Met:** No changes, no new issues, no closures, no secrets
+- ⚠️ **Branch Drift:** `master` vs `main` — governance note (pre-existing, unchanged)
+- ⚠️ **Health Check:** HEALTH_YELLOW (effective GREEN — 3 known false positives)
+- ⚠️ **Dummy Issues #9-#16:** Still open (to be closed in separate cleanup task)
+
+### Evidence
+- `evidence/comment-sync-24h-observation-20260629T074032Z/` (13 files: preflight, git, n8n health, executions, issue guard, comment-sync validation, SQLite, backup, dispatcher health, secret hygiene, observation summary, validation report, final report)
+
+### Next Steps
+1. Branch Governance: Align `master` to `main` (separate task)
+2. Dummy Issue Cleanup: Close Issues #9-#16 (separate task)
+3. Continue periodic monitoring
