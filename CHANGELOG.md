@@ -1,5 +1,45 @@
 # Changelog
 
+## 2026-06-28 — DeepSeek Dispatch Path Integration 🟢 DEEPSEEK_DUMMY_AGENT_GREEN
+
+### Fix Applied
+- 🟢 **Root Cause:** Runner dispatch script `start_github_issue_run.sh` did not source provider env file. Loader script used `exit` which killed the calling shell when sourced.
+- 🟢 **Solution (3 iterations):**
+  1. Provider env loaded via direct `source` with `set +e` protection (avoids loader `exit` trap)
+  2. `manual-terminal` mode upgraded to `opencode-run` when provider + opencode + tmux available
+  3. `DEEPSEEK_API_KEY` exported from `OPENCODE_API_KEY` for built-in deepseek provider
+- 🟢 **Verified:** Issue #12 runner evidence confirms `effective_mode=opencode-run`, `opencode_provider_configured=true`, `status=GREEN`
+
+### Test Issues Created
+- **#10:** First patch (loader source) → Script crashed (loader exit trap) — 3 evidence files
+- **#11:** Mode upgrade added → Script crashed (same issue) — 3 evidence files
+- **#12:** Direct env source + set +e → **SUCCESS** — 8 evidence files, GREEN status
+
+### Dispatch Script State
+| Item | Value |
+|------|-------|
+| Path | `/opt/dev-fabric/scripts/start_github_issue_run.sh` |
+| SHA256 | `4610a983aceb481e3c8f4083169ba13ee781e8ef40bdc3d2d1d2eb0c01ca3496` |
+| Backup | `start_github_issue_run.sh.bak.20260628T093029Z` |
+| Provider Block | Lines 215-232 (direct source + set +e) |
+| Mode Upgrade | Lines 235-244 (manual-terminal → opencode-run) |
+
+### Gates
+- ✅ Dispatcher unchanged (`Sv12QTo56NoPUu2D`)
+- ✅ Schedule unchanged (15-min interval)
+- ✅ Issues #3-#9 protected — 0 re-processed
+- ✅ Secret Hygiene GREEN — 0 real leaks
+- ✅ No productive changes, no GitHub Actions, no auto-merge
+
+### Status Classification
+- **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 — Provider env loaded in dispatch path, mode upgraded to opencode-run, evidence generated
+
+### Evidence
+- `evidence/deepseek-dispatch-integration-issue-10-20260628T092632Z/` (15+ files)
+- Runner: `/opt/dev-fabric/evidence/.../issue-12/gh-issue-12-20260628T123030Z/`
+
+---
+
 ## 2026-06-28 — DeepSeek Dummy Agent Test 🟡 GREEN_PARTIAL
 
 ### Test Execution

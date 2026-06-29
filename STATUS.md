@@ -1,7 +1,7 @@
 # Project Status
 
-**Last Updated:** 2026-06-28T09:20:00Z
-**Current Status:** **DEEPSEEK_PROVIDER_SMOKE_GREEN** 🟢 | **DUMMY_AGENT_TEST_GREEN_PARTIAL** 🟡 | **PROVIDER_DISPATCH_GAP_IDENTIFIED** | **SECRET_HYGIENE_GREEN** ✅
+**Last Updated:** 2026-06-28T12:37:00Z
+**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **DEEPSEEK_PROVIDER_SMOKE_GREEN** 🟢 | **SECRET_HYGIENE_GREEN** ✅
 
 ---
 
@@ -327,6 +327,33 @@ The DeepSeek provider IS fully configured and smoke-tested on the runner (`DEEPS
 
 ---
 
+## 🟢 DeepSeek Dispatch Path Integration (2026-06-28T12:37:00Z)
+
+### Integration Summary
+- 🟢 **Root Cause:** Runner dispatch script didn't source provider env; dispatcher always sends `mode=manual-terminal`
+- 🟢 **Fix Applied:** Direct env source with `set +e` protection + `manual-terminal` → `opencode-run` mode upgrade when provider loaded
+- 🟢 **Verified with Issue #12:** `effective_mode=opencode-run`, `opencode_provider_configured=true`, `status=GREEN`
+- 🟢 **Dispatch Script:** SHA256 `4610a983...`, backup `start_github_issue_run.sh.bak.20260628T093029Z`
+- 🟢 **Evidence:** 8 files in runner directory, 15+ files in local evidence
+
+### Key Evidence (Issue #12 agent.log)
+```
+requested_mode=manual-terminal
+effective_mode=opencode-run        ← UPGRADED
+opencode_provider_configured=true   ← PROVIDER LOADED
+status=GREEN                        ← NOT GREEN_PARTIAL
+manual_reason=none
+```
+
+### Gates
+- ✅ Dispatcher unchanged | ✅ Schedule unchanged | ✅ Provider env loaded in dispatch | ✅ Mode upgraded | ✅ Issues #3-#9 protected | ✅ Secret hygiene GREEN
+
+### Evidence
+- `evidence/deepseek-dispatch-integration-issue-10-20260628T092632Z/`
+- Runner: `/opt/dev-fabric/evidence/.../issue-12/gh-issue-12-20260628T123030Z/`
+
+---
+
 ## Next Actions
 
 **Priority 1:** ✅ DeepSeek Provider Smoke — DONE (DEEPSEEK_PROVIDER_SMOKE_GREEN)
@@ -336,7 +363,7 @@ The DeepSeek provider IS fully configured and smoke-tested on the runner (`DEEPS
 **Priority 5:** ✅ **Reliability Observation COMPLETED** — Day 0-3 abgeschlossen mit `RELIABILITY_OBSERVATION_PASSED_WITH_NOTES`
 **Priority 6:** 🔜 Configure n8N REST API key for full programmatic access (plan created)
 **Priority 7:** ✅ **DeepSeek Dummy Agent Test** — DONE (`GREEN_PARTIAL`: dispatcher+runner OK, provider not in dispatch path)
-**Priority 8:** 🔜 **Integrate Provider into Runner Dispatch** — Source `opencode-provider.env` in `start_github_issue_run.sh` for DeepSeek-powered agent runs
+**Priority 8:** ✅ **Provider Dispatch Integration** — DONE (`DEEPSEEK_DUMMY_AGENT_GREEN`: DeepSeek provider loaded in dispatch path, mode upgraded from manual-terminal to opencode-run)
 **Priority 9:** 🔜 Refresh Playwright n8n UI session for UI-based operations (plan created)
 
 ---
