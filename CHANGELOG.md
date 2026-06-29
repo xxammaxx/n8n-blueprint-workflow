@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-06-29 — Post-Comment-Sync Stabilization 🟢🔒 COMMENT_SYNC_GREEN_BASELINE_FROZEN
+
+### Stabilization Run (Read-Only)
+- 🔒 **COMMENT_SYNC_GREEN_BASELINE_FROZEN** — State frozen, validated across 13 phases
+- 🟢 **Workflow snapshot:** `exports/comment-sync-green/dispatcher-Sv12QTo56NoPUu2D-comment-sync-green-20260629T065737Z.json`
+- 🟢 **SHA256:** `79B7BE03187374E4FA68179EED96FA4163738A7CCFA85D42D615AE323DBD4BD9`
+- 🟢 **Issue #16:** Comment uses `status.json` — verified GREEN, opencode-run, deepseek, deepseek-v4-pro
+- 🟢 **Issues #3-#16:** All protected (0 re-processed, 0 agent:ready, 0 agent:running)
+- 🟢 **SQLite State:** `versionId` == `activeVersionId` — no drift
+- 🟢 **Backup/Rollback:** Backup `database.sqlite.bak.20260629T0600Z` on CT 101, rollback plan documented
+- 🟢 **Secret Hygiene:** GREEN (0 real leaks)
+- ⚠️ **BRANCH_DRIFT_NOTE:** `main` is GitHub default, `master` holds real state
+- ⚠️ **Health Check:** HEALTH_YELLOW (known false positives: git untracked files, placeholder patterns)
+
+### Evidence
+- `evidence/post-comment-sync-stabilization-20260629T065737Z/` (12+ files)
+
+---
+
 ## 2026-06-29 — Comment Sync Fix: Deployed & Verified 🟢 COMMENT_SYNC_GREEN
 
 ### Fix Deployed (Run 2 — Direct Database Update)

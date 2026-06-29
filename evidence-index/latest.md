@@ -1,44 +1,45 @@
 # Evidence Index — Latest
 
-**Last Updated:** 2026-06-29T06:50:00Z
+**Last Updated:** 2026-06-29T07:10:00Z
 
 ## Active Evidence Directory
 
-`evidence/dispatcher-comment-sync-status-json-20260629T055645Z/`
+`evidence/post-comment-sync-stabilization-20260629T065737Z/`
 
 ## Status
 
-🟢 **COMMENT_SYNC_GREEN** — GitHub comment sync fix deployed and verified. The dual-table database patch (workflow_entity + workflow_history) resolved the stale comment issue. Issue #16 confirmed: comment shows real Runner Evidence from `status.json` with `Evidence source: status.json`, `Status: GREEN`, `Mode: opencode-run`, `Provider: deepseek`.
+🔒🟢 **COMMENT_SYNC_GREEN_BASELINE_FROZEN** — Post-Comment-Sync Stabilization Run. State frozen, validated across 13 phases. Workflow snapshot created, SHA256 verified, SQLite state documented, backup/rollback plan created, issues protected, secret hygiene confirmed. No runtime changes made.
 
 ## Key Files
 
 | File | Description |
 |------|-------------|
-| `preflight.md` | Pre-run system state (Run 2) |
-| `workflow-snapshot-after.md` | Post-patch live workflow snapshot |
-| `static-validation.md` | Static code validation (34/34 PASS) |
-| `workflow-diff-summary.md` | Before/after diff (2 nodes changed) |
-| `dummy-issue-14-created.md` | Issue #14 creation (pre-patch test) |
-| `n8n-execution-summary.md` | n8n executions (#238-#240) |
-| `github-comment-sync-validation.md` | Issue #16 comment validation (MATCH) |
-| `issues-3-15-guard-after.md` | Protection verification (all safe) |
-| `runner-evidence-issue-16.md` | Runner evidence analysis |
-| `secret-hygiene-after-comment-sync.md` | Secret scan (GREEN) |
-| `validation-report.md` | Full validation (38/38 PASS) |
-| `final-report.md` | Final report |
+| `preflight.md` | Phase 1 — System preflight check |
+| `branch-remote-reality.md` | Phase 2 — Branch and remote reality |
+| `workflow-comment-sync-green-snapshot.md` | Phase 3 — Workflow snapshot + SHA256 |
+| `sqlite-comment-sync-state.md` | Phase 4 — SQLite patch state validation |
+| `rollback-plan.md` | Phase 5 — Backup and rollback plan |
+| `issue-16-comment-validation.md` | Phase 6a — Issue #16 comment validation |
+| `runner-evidence-issue-16-validation.md` | Phase 6b — Runner evidence validation |
+| `issues-3-16-guard-check.md` | Phase 7 — Issues #3-#16 guard check |
+| `dispatcher-health-post-comment-sync.md` | Phase 8 — Health check |
+| `secret-hygiene-post-comment-sync.md` | Phase 9 — Secret hygiene |
+| `validation-report.md` | Phase 11 — Full validation |
+| `final-report.md` | Phase 13 — Final report |
 
 ## Live Workflow Export
 
-- After patch (live): `exports/comment-sync-after/dispatcher-Sv12QTo56NoPUu2D-live-after-patch-20260629T061308Z.json`
+- Green snapshot: `exports/comment-sync-green/dispatcher-Sv12QTo56NoPUu2D-comment-sync-green-20260629T065737Z.json`
 - SHA256: `79B7BE03187374E4FA68179EED96FA4163738A7CCFA85D42D615AE323DBD4BD9`
 
 ## Database Backups
 
-- Before: `database.sqlite.bak.20260629T0600Z` (on CT 101)
+- Backup: `database.sqlite.bak.20260629T0600Z` (on CT 101: `/opt/dev-fabric/n8n/data/.n8n/`)
 
 ## Previous Evidence
 
-- `evidence/dispatcher-comment-sync-status-json-20260629T053028Z/` — Previous run (root cause analysis + patch design)
+- `evidence/dispatcher-comment-sync-status-json-20260629T055645Z/` — Comment sync fix run (COMMENT_SYNC_GREEN)
+- `evidence/dispatcher-comment-sync-status-json-20260629T053028Z/` — Root cause analysis + patch design
 - `evidence/deepseek-dispatch-green-push-20260629T051858Z/` — Green push (commit 8b10fbd)
 - `evidence/deepseek-dispatch-integration-issue-10-20260628T092632Z/` — Provider dispatch integration
 - `evidence/deepseek-dummy-agent-test-20260628T090301Z/` — Issue #9 test (GREEN_PARTIAL)

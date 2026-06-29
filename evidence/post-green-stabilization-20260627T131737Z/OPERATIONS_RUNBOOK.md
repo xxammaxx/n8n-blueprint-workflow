@@ -369,6 +369,39 @@ If `agent:needs-review` or `evidence:attached` is present, the issue was already
 
 ---
 
+## 12b. Workflow Database Patch (Advanced)
+
+### Location
+- Database: `/opt/dev-fabric/n8n/data/.n8n/database.sqlite` (CT 101)
+- Backup: `/opt/dev-fabric/n8n/data/.n8n/database.sqlite.bak.20260629T0600Z`
+
+### Critical: Dual-Table Architecture
+n8n uses TWO tables for workflow storage:
+| Table | Role |
+|-------|------|
+| `workflow_entity` | Workflow definition (all versions) |
+| `workflow_history` | Version history; `activeVersionId` links to active version |
+
+**Execution uses `workflow_history.nodes` via `workflow_entity.activeVersionId`, NOT `workflow_entity.nodes` directly.**
+
+### Patching Procedure
+1. Stop n8n service: `systemctl stop n8n` (in CT 101)
+2. Backup database: `cp database.sqlite database.sqlite.bak.$(date +%Y%m%dT%H%M%SZ)`
+3. Patch `workflow_entity.nodes` — update JSON in nodes column
+4. Patch `workflow_history.nodes` — same update for active version
+5. Start n8n service: `systemctl start n8n`
+6. Verify: Check healthz → 200, Workflow active, Schedule Trigger present
+
+### Rollback (Emergency Only)
+1. Stop n8n
+2. `cp database.sqlite.bak.20260629T0600Z database.sqlite`
+3. Start n8n
+4. Verify: n8n reachable, Workflow active, Issues protected
+
+**Warning:** Rollback only for RED/production errors, not cosmetic notes.
+
+---
+
 ## 13. Key Contacts / References
 
 | Item | Reference |

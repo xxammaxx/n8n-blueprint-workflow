@@ -209,3 +209,41 @@
 | Guardrails Fix | `evidence/guardrails-trigger-agnostic-fix-20260627T062657Z/` | 🟢 complete |
 | Schedule Auto-Run | `evidence/schedule-auto-run-verification-20260627T061306Z/` | 🟢 complete |
 | Node 15 Fix | `evidence/schedule-trigger-node15-fix-20260627T050006Z/` | 🟢 complete |
+
+---
+
+## 16. Comment-Sync Update (2026-06-29)
+
+### Status
+🔒🟢 **COMMENT_SYNC_GREEN_BASELINE_FROZEN**
+
+### What Changed
+- **Node 11 (Format Evidence Comment):** Parses SSH stdout as `JSON.parse(sshOutput.stdout)` → extracts real values from `status.json`
+- **Node 15 (Format Final Result):** Synced from `evidenceFormat.status` instead of hardcoded `GREEN_PARTIAL_PLUS`
+
+### GitHub Comment Now Shows
+| Field | Source | Example |
+|-------|--------|---------|
+| Status | `status.json.status` | `GREEN` |
+| Mode | `status.json.mode.effective` | `opencode-run` |
+| Provider configured | `status.json.agent_runtime.opencode_provider_configured` | `true` |
+| Provider | `status.json.provider` | `deepseek` |
+| Model | `status.json.model` | `deepseek-v4-pro` |
+| OpenCode Version | `status.json.agent_runtime.opencode_version` | `1.17.9` |
+| Evidence Source | Label | `status.json` |
+
+### SQLite Dual-Table Knowledge
+- n8n uses `workflow_history.activeVersionId` for execution, NOT `workflow_entity.nodes`
+- Both `workflow_entity.nodes` AND `workflow_history.nodes` must be patched for changes to take effect
+- After DB patch, n8n restart is required to clear in-memory workflow cache
+
+### Backup
+- `database.sqlite.bak.20260629T0600Z` on CT 101 (`/opt/dev-fabric/n8n/data/.n8n/`)
+- Rollback plan: `evidence/post-comment-sync-stabilization-20260629T065737Z/rollback-plan.md`
+
+### Protection
+- Issues #3-#16: ALL protected (no `agent:ready`, no `agent:running`, all `agent:needs-review` + `evidence:attached`)
+- Guardrails block: isAlreadyProcessed detection, HARD BLOCK for Issue #3
+
+### Next Observation
+- 24h Read-only Check empfohlen (keine Änderungen am Workflow nötig)
