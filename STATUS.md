@@ -1,7 +1,7 @@
 # Project Status
 
-**Last Updated:** 2026-06-29T05:52:00Z
-**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_FIX_PREPARED** 🟡 | **SECRET_HYGIENE_GREEN** ✅
+**Last Updated:** 2026-06-29T06:50:00Z
+**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN** 🟢 | **SECRET_HYGIENE_GREEN** ✅
 
 ---
 
@@ -400,39 +400,36 @@ manual_reason=none
 
 ---
 
-## 🟡 Comment Sync Fix — status.json Integration (2026-06-29T05:52:00Z)
+## 🟢 Comment Sync Fix — status.json Integration (2026-06-29T06:50:00Z)
 
-### Root Cause Identified
-- 🟡 **Bug:** Der "SSH Read status.json" Node (ID `592fc2b2-...`) gibt SSH-Output als Wrapper zurück: `{ stdout, success, exitCode }`
-- 🟡 **Impact:** Der "Format Evidence Comment" Node (ID `25d2cbd3-...`) sucht nach `.status` im Wrapper-Objekt statt in `.stdout`
-- 🟡 **Result:** GitHub-Kommentar zeigt `Status: UNKNOWN`, `Mode: manual-terminal`, `Provider configured: NO` — immer Stale-Werte aus RUN_INPUT.json
+### ✅ Issue Resolved
 
-### Fix Prepared
-- 🟢 **Node 11 ("Format Evidence Comment"):** Code aktualisiert — Extrahiert `stdout`, parsed als JSON, liest alle Felder aus `status.json`
-- 🟢 **Node 15 ("Format Final Result"):** dispatch_mode und status aus evidenceFormat statt hardcoded
+The GitHub comment now correctly reads real Runner Evidence from `status.json` instead of stale `RUN_INPUT.json` values.
+
+### Root Cause (Dual)
+1. **Node code bug:** The "SSH Read status.json" Node outputs a wrapper `{ stdout, success, exitCode }`, but the "Format Evidence Comment" Node tried to parse the wrapper directly instead of extracting `.stdout` first.
+2. **n8n versioning:** n8n uses `workflow_history.activeVersionId` for execution, not `workflow_entity.nodes`. The initial patch only updated `workflow_entity.nodes`, leaving `workflow_history.nodes` with stale code.
+
+### Fix Applied (via Direct Database Update)
+- 🟢 **Node 11 ("Format Evidence Comment"):** Updated to parse `sshOutput.stdout` as JSON, extract all status.json fields
+- 🟢 **Node 15 ("Format Final Result"):** Uses evidenceFormat data instead of hardcoded values
 - 🟢 **Fallback Chain:** status.json → SSH raw → RUN_INPUT.json → hardcoded defaults
-- 🟢 **Evidence Source Label:** Explizit `Evidence source: status.json` im Kommentar
-- 🟢 **Neue Kommentarfelder:** `Provider`, `Model`, `OpenCode`, `Evidence source`
+- 🟢 **Evidence Source Label:** Explicit `Evidence source: status.json` in comment
+- 🟢 **Both tables patched:** `workflow_entity.nodes` + `workflow_history.nodes`
 
-### Deployment Status
-- ⏳ **Patch vorbereitet:** `exports/comment-sync-after/` — JSON validiert, SHA256 verified
-- ⏳ **Deployment:** Erfordert n8n UI-Zugriff (derzeit nicht authentifiziert)
-- 🟢 **2 Nodes geändert, 16 unverändert** (Trigger, Schedule, Guardrails, Credentials intakt)
+### Deployment Method
+- Method: Direct SQLite database update via Proxmox SSH
+- Affected: `workflow_entity.nodes` + `workflow_history.nodes` (Node 11 + Node 15)
+- Backup: `database.sqlite.bak.20260629T0600Z`
 
-### Issue #13 Verification
-- ✅ Dispatch Pipeline: Issue #13 via Schedule Trigger verarbeitet
+### Issue #16 Verification (FIRST SUCCESSFUL RUN)
+- ✅ Dispatch Pipeline: Issue #16 via Schedule Trigger (Execution #240)
 - ✅ Label Transition: `agent:ready` → `agent:needs-review` + `evidence:attached`
-- ✅ Runner Evidence Path: `/opt/dev-fabric/.../issue-13/gh-issue-13-20260629T054530Z`
-- ✅ Issues #3-#12 Protected: Alle 10 geschützt, 0 re-processed
-- 🟡 GitHub Comment: Weiterhin Stale-Werte (erwartet — Patch noch nicht deployed)
+- ✅ GitHub Comment: `Evidence source: status.json` ✅
+- ✅ Values verified: `Status: GREEN`, `Mode: opencode-run`, `Provider configured: true`, `Provider: deepseek`, `Model: deepseek-v4-pro`, `OpenCode: 1.17.9`
+- ✅ Issues #3-#15 Protected: Alle 13 geschützt, 0 re-processed
 - ✅ Secret Hygiene: GREEN — 0 echte Leaks
-- ✅ Neues Label: `comment-sync:test` (#0066FF)
 
 ### Evidence
-- `evidence/dispatcher-comment-sync-status-json-20260629T053028Z/` (18 files)
-- Patch: `exports/comment-sync-after/dispatcher-Sv12QTo56NoPUu2D-after-comment-sync-20260629T053028Z.json`
-
-### Next
-1. n8n UI-Zugriff herstellen
-2. Patch manuell deployen (Node 11 + Node 15)
-3. Re-Test mit Issue #14
+- `evidence/dispatcher-comment-sync-status-json-20260629T055645Z/` (16+ files)
+- Live export: `exports/comment-sync-after/dispatcher-Sv12QTo56NoPUu2D-live-after-patch-20260629T061308Z.json`

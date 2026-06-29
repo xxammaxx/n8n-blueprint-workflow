@@ -1,46 +1,44 @@
 # Evidence Index — Latest
 
-**Last Updated:** 2026-06-29T05:52:00Z
+**Last Updated:** 2026-06-29T06:50:00Z
 
 ## Active Evidence Directory
 
-`evidence/dispatcher-comment-sync-status-json-20260629T053028Z/`
+`evidence/dispatcher-comment-sync-status-json-20260629T055645Z/`
 
 ## Status
 
-🟡 **COMMENT_SYNC_FIX_PREPARED** — Root cause of stale GitHub comments identified and fix designed. The "Format Evidence Comment" node failed to extract `status.json` from the SSH output wrapper. Patch prepared and statically validated. Deployment pending n8n UI access.
+🟢 **COMMENT_SYNC_GREEN** — GitHub comment sync fix deployed and verified. The dual-table database patch (workflow_entity + workflow_history) resolved the stale comment issue. Issue #16 confirmed: comment shows real Runner Evidence from `status.json` with `Evidence source: status.json`, `Status: GREEN`, `Mode: opencode-run`, `Provider: deepseek`.
 
 ## Key Files
 
 | File | Description |
 |------|-------------|
-| `preflight.md` | Pre-run system state |
-| `workflow-comment-path-before.md` | Current comment data flow (broken) |
-| `comment-data-flow-analysis.md` | Detailed data flow diagram |
-| `runner-status-json-structure.md` | status.json field documentation |
-| `comment-sync-fix-design.md` | Fix design with priority logic |
-| `workflow-patch-plan.md` | Minimal patch plan (2 nodes) |
-| `workflow-snapshot-before.md` | Snapshot before patch (SHA256) |
-| `workflow-patch-applied.md` | Patch application status |
-| `workflow-diff-summary.md` | Before/after diff verification |
-| `static-validation.md` | Static code validation (17/17 PASS) |
-| `dummy-issue-13-created.md` | Issue #13 creation log |
-| `n8n-execution-summary.md` | n8n execution for Issue #13 |
-| `github-comment-sync-validation.md` | Comment content validation (stale) |
-| `issues-3-12-guard-after.md` | Protection verification |
-| `runner-evidence-issue-13.md` | Runner evidence analysis |
+| `preflight.md` | Pre-run system state (Run 2) |
+| `workflow-snapshot-after.md` | Post-patch live workflow snapshot |
+| `static-validation.md` | Static code validation (34/34 PASS) |
+| `workflow-diff-summary.md` | Before/after diff (2 nodes changed) |
+| `dummy-issue-14-created.md` | Issue #14 creation (pre-patch test) |
+| `n8n-execution-summary.md` | n8n executions (#238-#240) |
+| `github-comment-sync-validation.md` | Issue #16 comment validation (MATCH) |
+| `issues-3-15-guard-after.md` | Protection verification (all safe) |
+| `runner-evidence-issue-16.md` | Runner evidence analysis |
 | `secret-hygiene-after-comment-sync.md` | Secret scan (GREEN) |
-| `validation-report.md` | Full validation |
+| `validation-report.md` | Full validation (38/38 PASS) |
 | `final-report.md` | Final report |
 
-## Patch Files
+## Live Workflow Export
 
-- Before: `exports/comment-sync-before/dispatcher-Sv12QTo56NoPUu2D-before-comment-sync-20260629T053028Z.json`
-- After: `exports/comment-sync-after/dispatcher-Sv12QTo56NoPUu2D-after-comment-sync-20260629T053028Z.json`
-- SHA256 (after): `17A4159C6BDD0538CDDFB9B87F69AF25D261701FBFFAF1D3577B4937C6E61FD7`
+- After patch (live): `exports/comment-sync-after/dispatcher-Sv12QTo56NoPUu2D-live-after-patch-20260629T061308Z.json`
+- SHA256: `79B7BE03187374E4FA68179EED96FA4163738A7CCFA85D42D615AE323DBD4BD9`
+
+## Database Backups
+
+- Before: `database.sqlite.bak.20260629T0600Z` (on CT 101)
 
 ## Previous Evidence
 
+- `evidence/dispatcher-comment-sync-status-json-20260629T053028Z/` — Previous run (root cause analysis + patch design)
 - `evidence/deepseek-dispatch-green-push-20260629T051858Z/` — Green push (commit 8b10fbd)
 - `evidence/deepseek-dispatch-integration-issue-10-20260628T092632Z/` — Provider dispatch integration
 - `evidence/deepseek-dummy-agent-test-20260628T090301Z/` — Issue #9 test (GREEN_PARTIAL)

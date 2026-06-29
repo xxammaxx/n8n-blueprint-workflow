@@ -1,6 +1,34 @@
 # Changelog
 
-## 2026-06-29 — Comment Sync Fix: status.json Integration 🟡 COMMENT_SYNC_FIX_PREPARED
+## 2026-06-29 — Comment Sync Fix: Deployed & Verified 🟢 COMMENT_SYNC_GREEN
+
+### Fix Deployed (Run 2 — Direct Database Update)
+- 🟢 **Deployment method:** Direct SQLite database update via Proxmox SSH (CT 101)
+- 🟢 **Tables patched:** `workflow_entity.nodes` + `workflow_history.nodes` (Node 11 + Node 15)
+- 🟢 **Critical discovery:** n8n uses `workflow_history.activeVersionId` for execution, not `workflow_entity.nodes`. Both tables must be patched.
+- 🟢 **n8n restart:** Required to clear in-memory workflow cache
+- 🟢 **Backup:** `database.sqlite.bak.20260629T0600Z` on CT 101
+
+### Issue #16 Verification (FIRST SUCCESSFUL RUN)
+- ✅ Created with `agent:ready`, `test:dummy`, `opencode:smoke`, `deepseek:direct`, `comment-sync:test`
+- ✅ Schedule Trigger (Execution #240, 06:45 UTC) processed exactly once
+- ✅ GitHub Comment uses `Evidence source: status.json` with all correct values:
+  - `Status: GREEN` (was UNKNOWN)
+  - `Mode: opencode-run` (was manual-terminal)  
+  - `Provider configured: true` (was NO)
+  - `Provider: deepseek` (was not shown)
+  - `Model: deepseek-v4-pro` (was not shown)
+  - `OpenCode: 1.17.9` (was not shown)
+- ✅ Issues #3-#15 protected: all 13 safe, 0 re-processed
+- ✅ Secret hygiene GREEN: 0 leaks
+
+### Evidence
+- `evidence/dispatcher-comment-sync-status-json-20260629T055645Z/` (16+ files)
+- Live export: `exports/comment-sync-after/dispatcher-Sv12QTo56NoPUu2D-live-after-patch-20260629T061308Z.json`
+
+---
+
+## 2026-06-29 — Comment Sync Fix: status.json Integration 🟡 COMMENT_SYNC_FIX_PREPARED (Run 1)
 
 ### Root Cause Identified
 - 🟡 **Bug:** n8n "SSH Read status.json" node returns output as `{ stdout, success, exitCode }` wrapper, but "Format Evidence Comment" node tried to parse the entire wrapper as status.json content
