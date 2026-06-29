@@ -1,5 +1,28 @@
 # Changelog
 
+## 2026-06-29 — Linux Mint Operational Readiness Validation 🟡🖥️ NEW_MACHINE_READY_WITH_NOTES
+
+### 15-Phase Read-Only Validation Run
+- 🟡 **NEW_MACHINE_READY_WITH_NOTES** — Linux Mint workstation validated, 2 items need manual remediation
+- ✅ **System Preflight:** Linux Mint 22.1 Xia, Node v22.22, Git 2.43, curl 8.5, SSH 9.6, Python 3.12
+- ✅ **Repository:** Clean, branch `master`, commit `363edd5`, in sync with `origin/master`
+- ✅ **n8n Health:** Reachable (HTTP 200), healthz `{"status":"ok"}` — GREEN
+- ❌ **n8n API:** HTTP 401 — N8N_API_KEY_NOT_READY (key rejected, manual regeneration needed)
+- ❌ **SSH Runner:** Permission denied (publickey) — SSH_KEY_NOT_AUTHORIZED (pubkey not on runner)
+- ✅ **Local Secrets:** n8n-api.env (2 keys) + opencode-provider.env (6 keys) — both properly structured, 600 perms, gitignored
+- 🟡 **Dispatcher Health:** HEALTH_YELLOW (known powershell warnings, secret-hygiene script fail)
+- ⚠️ **Secret Hygiene:** Known `.playwright-mcp/` JWT leak (key revoked, no active leaks, no new findings)
+- 🟢 **No Runtime Changes:** No workflow, SQLite, runner, issue, or branch changes
+- 🟢 **No Secrets Output:** All 15 phases — zero secret values displayed
+
+### Evidence
+- `evidence/linux-mint-operational-readiness-2026-06-29T14-00-47Z/` (10+ files)
+
+### Updated Documents
+- STATUS.md, CHANGELOG.md, evidence-index/latest.md
+
+---
+
 ## 2026-06-29 — Migration Handoff: New Machine Preparation 🟢📦 MIGRATION_HANDOFF_PREPARED
 
 ### Migration Handoff Completed

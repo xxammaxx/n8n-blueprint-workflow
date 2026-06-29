@@ -1,7 +1,7 @@
 # Project Status
 
-**Last Updated:** 2026-06-29T12:22:20Z
-**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **COMMENT_SYNC_24H_OBSERVATION_GREEN** 🟢✅ | **BRANCH_GOVERNANCE_DEFAULT_MASTER_APPLIED** 🟢✅ | **DUMMY_ISSUES_CLEANUP_GREEN** 🟢✅ | **FINAL_OPERATIONS_BASELINE_GREEN** 🟢✅ | **REPO_HYGIENE_GREEN** 🟢✅ | **SECRET_HYGIENE: RED_SECRET_LEAK** 🔴⚠️ | **SECRET_REMEDIATION: TOKEN_ROTATION_PENDING** 🟡⏳ | **MIGRATION_HANDOFF_PREPARED** 🟢📦
+**Last Updated:** 2026-06-29T14:00:47Z
+**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **COMMENT_SYNC_24H_OBSERVATION_GREEN** 🟢✅ | **BRANCH_GOVERNANCE_DEFAULT_MASTER_APPLIED** 🟢✅ | **DUMMY_ISSUES_CLEANUP_GREEN** 🟢✅ | **FINAL_OPERATIONS_BASELINE_GREEN** 🟢✅ | **REPO_HYGIENE_GREEN** 🟢✅ | **SECRET_HYGIENE: RED_SECRET_LEAK** 🔴⚠️ | **SECRET_REMEDIATION: TOKEN_ROTATION_PENDING** 🟡⏳ | **MIGRATION_HANDOFF_PREPARED** 🟢📦 | **LINUX_MINT_OPERATIONAL_READINESS: NEW_MACHINE_READY_WITH_NOTES** 🟡🖥️
 
 ---
 
@@ -615,6 +615,42 @@ The GitHub comment now correctly reads real Runner Evidence from `status.json` i
 - 48 `.playwright-mcp/` Dateien getrackt, 47 clean
 - Remote Exposure in Commit `485dc18`
 - Empfehlung: Option A — History Rewrite mit `git filter-repo`
+
+---
+
+## 🟡🖥️ LINUX MINT OPERATIONAL READINESS — NEW_MACHINE_READY_WITH_NOTES (2026-06-29T14:00:47Z)
+
+### Validation Run (15-Phase Read-Only)
+
+| Phase | Check | Status |
+|-------|-------|--------|
+| 1 | System Preflight | ✅ PASS — Linux Mint 22.1, Node v22.22, Git 2.43, curl 8.5, SSH 9.6 |
+| 2 | Secret Hygiene (Before) | ⚠️ KNOWN — `.playwright-mcp/` JWT leak (key revoked) |
+| 3 | Local Secret Structure | ✅ LOCAL_SECRETS_READY — n8n-api.env + opencode-provider.env, all keys present |
+| 4 | n8n Health | ✅ N8N_HEALTH_OK — healthz: `{"status":"ok"}`, UI serving |
+| 5 | n8n API Read-Only | ❌ N8N_API_KEY_NOT_READY — HTTP 401 |
+| 6 | SSH Runner Connectivity | ❌ SSH_KEY_NOT_AUTHORIZED — Permission denied (publickey) |
+| 7 | Runner Read-Only | ⏭️ SKIPPED (SSH not authorized) |
+| 8 | Runner Provider | ⏭️ SKIPPED (SSH not authorized) |
+| 9 | Dispatcher Health | 🟡 HEALTH_YELLOW (known powershell warnings, secret-hygiene script) |
+| 10 | Readiness Summary | 🟡 NEW_MACHINE_READY_WITH_NOTES |
+
+### Open Actions Required
+1. 🔴 **SSH Key Authorization:** Copy ed25519 pubkey to `runner@192.168.1.53:~/.ssh/authorized_keys`
+2. 🔴 **n8n API Key:** Generate new API key at `http://192.168.1.52:5678` → Settings → API, update `secrets/n8n-api.env`
+3. 🟡 **Token Rotation:** Still pending (separate task)
+
+### Green Items
+- ✅ System tools all present and current
+- ✅ Repository clean, in sync with origin/master
+- ✅ Local secrets properly structured (600 perms, gitignored, all keys filled)
+- ✅ DeepSeek provider config present (6/6 keys)
+- ✅ n8n reachable and healthy
+- ✅ No new secrets exposed
+- ✅ No runtime changes
+
+### Evidence
+- `evidence/linux-mint-operational-readiness-2026-06-29T14-00-47Z/` (10+ files)
 
 ---
 
