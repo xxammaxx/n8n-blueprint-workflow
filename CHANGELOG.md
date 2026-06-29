@@ -1,5 +1,41 @@
 # Changelog
 
+## 2026-06-29 — n8n API Key Validation 🟢🔑 N8N_API_READY, SSH Pending 🟡🔐
+
+### Aktion 1: n8n API Read-Only Validation
+- 🟢 **N8N_API_READY** — n8n API key validated successfully (HTTP 200)
+- ✅ **Secret Structure:** `secrets/n8n-api.env` — 2 vars, 600 perms, gitignored, properly formatted
+- ✅ **API Test:** `GET api/v1/workflows?limit=1` returned HTTP 200 with non-empty response
+- ✅ **No Placeholder:** API key was user-provided (no `PASTE_` placeholder)
+- ✅ **Cleanup:** `N8N_API_KEY` unset, temporary response file deleted
+
+### Aktion 2: SSH Runner — still pending
+- 🟡 **SSH_USER_ACTION_REQUIRED** — Public key present (`~/.ssh/id_ed25519.pub`) but not yet authorized on runner `192.168.1.53` (user `runner`)
+- No SSH test was forced
+
+### Dispatcher Health
+- 🟡 `HEALTH_YELLOW` — n8n reachable, workflow local export OK, API now green. Secret-hygiene script still failing (expected on new machine).
+
+### Secret Hygiene
+- 🟢 **Green** — No new secrets in tracked files
+- ⚠️ Known: `.playwright-mcp/` historically tracked (pre-existing from old machine)
+
+### No Runtime Changes
+- ✅ No workflow modification
+- ✅ No SQLite changes
+- ✅ No runner script changes
+- ✅ No issues created/modified
+- ✅ No history rewrite
+- ✅ No secrets emitted in any phase
+
+### Evidence
+- `evidence/linux-mint-readiness-blocker-fix-20260629T151221Z/` (10+ files)
+
+### Updated Documents
+- STATUS.md, CHANGELOG.md, evidence-index/latest.md
+
+---
+
 ## 2026-06-29 — Linux Mint Operational Readiness Validation 🟡🖥️ NEW_MACHINE_READY_WITH_NOTES
 
 ### 15-Phase Read-Only Validation Run

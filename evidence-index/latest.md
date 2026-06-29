@@ -1,31 +1,31 @@
 # Evidence Index — Latest
 
-**Last Updated:** 2026-06-29T14:00:47Z
+**Last Updated:** 2026-06-29T15:12:21Z
 
 ## Active Evidence Directory
 
-**Current:** `evidence/linux-mint-operational-readiness-2026-06-29T14-00-47Z/` 🟡🖥️
+**Current:** `evidence/linux-mint-readiness-blocker-fix-20260629T151221Z/` 🟢🔑🟡🔐
 
-**Previous:** `evidence/linux-mint-workstation-prep-2026-06-29T13-02-02Z/` 🟢🖥️🔑
+**Previous:** `evidence/linux-mint-operational-readiness-2026-06-29T14-00-47Z/` 🟡🖥️
 
 ## Status
 
-🟡🖥️ **NEW_MACHINE_READY_WITH_NOTES** — Linux Mint workstation operational readiness validated: system tools ✅, repo clean ✅, n8n health ✅, local secrets ✅. Two items need manual remediation: n8n API key (HTTP 401) and SSH key on runner (Permission denied). No runtime changes, no secrets output.
+🟢🔑🟡🔐 **N8N_API_READY | SSH_USER_ACTION_REQUIRED** — n8n API key validated successfully (HTTP 200, no placeholder). SSH runner authorization still pending: public key exists locally but not yet on runner `192.168.1.53`. No runtime changes, no secrets output. Next step: user must authorize SSH public key on runner. See evidence directory for full details.
 
-## Key Files (Current Session: Linux Mint Operational Readiness)
+## Key Files (Current Session: n8n API Validation)
 
 | File | Description |
 |------|-------------|
-| `preflight.md` | Phase 1 — System, repo, tooling preflight |
-| `secret-hygiene-before-operational-readiness.md` | Phase 2 — Secret hygiene scan (known JWT leak) |
-| `local-secret-structure-validation.md` | Phase 3 — Local secret files validation (LOCAL_SECRETS_READY) |
-| `n8n-health-readonly.md` | Phase 4 — n8n health check (N8N_HEALTH_OK) |
-| `n8n-api-readonly-validation.md` | Phase 5 — n8n API test (N8N_API_KEY_NOT_READY) |
-| `runner-ssh-connectivity.md` | Phase 6 — SSH runner test (SSH_KEY_NOT_AUTHORIZED) |
-| `dispatcher-health-new-machine.md` | Phase 9 — Dispatcher health (HEALTH_YELLOW) |
-| `LINUX_MINT_OPERATIONAL_READINESS.md` | Phase 10 — Readiness summary (NEW_MACHINE_READY_WITH_NOTES) |
+| `n8n-api-validation-preflight.md` | Phase 1 — Git status, branch, secret file checks |
+| `n8n-api-secret-structure-check.md` | Phase 2 — Boolean structure validation (no placeholder) |
+| `n8n-api-readonly-validation-after-local-key.md` | Phase 3 — API read-only test (HTTP 200, N8N_API_READY) |
+| `runner-ssh-status-pending.md` | Phase 4 — SSH status (SSH_USER_ACTION_REQUIRED) |
+| `dispatcher-health-after-n8n-api-validation.md` | Phase 5 — HEALTH_YELLOW |
+| `secret-hygiene-after-n8n-api-validation.md` | Phase 6 — Secret hygiene (GREEN) |
+| `validation-report.md` | Phase 8 — Constraint validation |
+| `final-report.md` | Phase 10 — Final report with status decision |
 
-## Key Files (Previous: Linux Mint Migration)
+## Key Files (Previous: Linux Mint Operational Readiness)
 
 | File | Description |
 |------|-------------|

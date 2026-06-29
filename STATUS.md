@@ -1,7 +1,7 @@
 # Project Status
 
-**Last Updated:** 2026-06-29T14:00:47Z
-**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **COMMENT_SYNC_24H_OBSERVATION_GREEN** 🟢✅ | **BRANCH_GOVERNANCE_DEFAULT_MASTER_APPLIED** 🟢✅ | **DUMMY_ISSUES_CLEANUP_GREEN** 🟢✅ | **FINAL_OPERATIONS_BASELINE_GREEN** 🟢✅ | **REPO_HYGIENE_GREEN** 🟢✅ | **SECRET_HYGIENE: RED_SECRET_LEAK** 🔴⚠️ | **SECRET_REMEDIATION: TOKEN_ROTATION_PENDING** 🟡⏳ | **MIGRATION_HANDOFF_PREPARED** 🟢📦 | **LINUX_MINT_OPERATIONAL_READINESS: NEW_MACHINE_READY_WITH_NOTES** 🟡🖥️
+**Last Updated:** 2026-06-29T15:12:21Z
+**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **COMMENT_SYNC_24H_OBSERVATION_GREEN** 🟢✅ | **BRANCH_GOVERNANCE_DEFAULT_MASTER_APPLIED** 🟢✅ | **DUMMY_ISSUES_CLEANUP_GREEN** 🟢✅ | **FINAL_OPERATIONS_BASELINE_GREEN** 🟢✅ | **REPO_HYGIENE_GREEN** 🟢✅ | **SECRET_HYGIENE: RED_SECRET_LEAK** 🔴⚠️ | **SECRET_REMEDIATION: TOKEN_ROTATION_PENDING** 🟡⏳ | **MIGRATION_HANDOFF_PREPARED** 🟢📦 | **LINUX_MINT_OPERATIONAL_READINESS: NEW_MACHINE_READY_WITH_NOTES** 🟡🖥️ | **N8N_API_READY** 🟢🔑 | **SSH_USER_ACTION_REQUIRED** 🟡🔐
 
 ---
 
@@ -681,3 +681,39 @@ The GitHub comment now correctly reads real Runner Evidence from `status.json` i
 2. Token-Rotation auf altem oder neuem Rechner finalisieren
 3. History-Rewrite später entscheiden
 4. Alte Maschine deaktivieren nach vollständiger Validierung
+
+---
+
+## 🟢🔑 n8n API Key Validation (2026-06-29T15:12:21Z)
+
+### Aktion 1: n8n API Key lokal eingetragen und getestet
+
+| Check | Result |
+|---|---|
+| `secrets/n8n-api.env` present | yes |
+| Permissions | 600 |
+| Gitignored | yes |
+| `N8N_BASE_URL` set | yes |
+| `N8N_API_KEY` set | yes (user-provided, no placeholder) |
+| API read-only test | ✅ **HTTP 200** — non-empty response |
+| Secrets emitted | **no** |
+
+**Status:** `N8N_API_READY` 🟢🔑
+
+### Aktion 2: SSH Runner — noch offen
+
+| Check | Result |
+|---|---|
+| Public Key (`~/.ssh/id_ed25519.pub`) present | yes |
+| Runner `192.168.1.53` (user `runner`) | not yet authorized |
+| Authorization by user pending | yes |
+
+**Status:** `SSH_USER_ACTION_REQUIRED` 🟡🔐
+
+### Dispatcher Health
+
+`HEALTH_YELLOW` — n8n reachable ✅, API now ready ✅ (was 401), SSH still blocked 🟡.
+
+### Evidence
+
+`evidence/linux-mint-readiness-blocker-fix-20260629T151221Z/` (10 files)
