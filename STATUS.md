@@ -1,7 +1,7 @@
 # Project Status
 
-**Last Updated:** 2026-06-29T07:45:00Z
-**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **COMMENT_SYNC_24H_OBSERVATION_GREEN** 🟢✅ | **SECRET_HYGIENE_GREEN** ✅
+**Last Updated:** 2026-06-29T08:20:00Z
+**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **COMMENT_SYNC_24H_OBSERVATION_GREEN** 🟢✅ | **SECRET_HYGIENE_GREEN** ✅ | **BRANCH_GOVERNANCE_DEFAULT_MASTER_APPLIED** 🟢✅
 
 ---
 
@@ -479,7 +479,18 @@ The GitHub comment now correctly reads real Runner Evidence from `status.json` i
 ### Secret Hygiene
 - **GREEN** — 0 echte Leaks in Analyse und Evidence
 
+## Branch Governance — Applied (2026-06-29 08:19 UTC)
+
+- 🟢✅ **BRANCH_GOVERNANCE_DEFAULT_MASTER_APPLIED** — GitHub Default Branch ist jetzt `master`
+- 🟢 **Methode:** `gh repo edit --default-branch master`
+- 🟢 **`main` nicht gelöscht** — existiert weiterhin als historischer Branch
+- 🟢 **Kein Merge, kein Force Push, keine Branches gelöscht**
+- 🟢 **Commit `4670add` gepusht** — Branch-Drift-Analyse auf origin/master
+- 🟢 **Source of Truth jetzt sichtbar** auf GitHub-Projektseite (`master`)
+
+### Evidence
+- `evidence/branch-default-master-apply-20260629T081907Z/` (5 files: preflight, commit review, secret hygiene, push result, default branch apply)
+
 ## Next Steps
-1. Branch Governance: Freigabe für Option A/B/C einholen (Apply-Plan in `evidence/branch-drift-governance-20260629T080206Z/branch-governance-apply-plan.md`)
-2. Dummy Issue Cleanup: Close Issues #9-#16 (separate task)
-3. Continue periodic monitoring
+1. Dummy Issue Cleanup: Close Issues #9-#16 (separate task)
+2. Continue periodic monitoring

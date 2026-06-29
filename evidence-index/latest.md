@@ -1,14 +1,14 @@
 # Evidence Index — Latest
 
-**Last Updated:** 2026-06-29T07:45:00Z
+**Last Updated:** 2026-06-29T08:20:00Z
 
 ## Active Evidence Directory
 
-`evidence/comment-sync-24h-observation-20260629T074032Z/`
+`evidence/branch-default-master-apply-20260629T081907Z/`
 
 ## Status
 
-🟢✅ **COMMENT_SYNC_24H_OBSERVATION_GREEN** — 24-stündiger Read-only Observation Check abgeschlossen. Alle Systeme stabil: n8n gesund, Workflow aktiv (18 Nodes, Schedule 15-min), Comment-Sync via `status.json` verifiziert (Issue #16), Issues #3–#16 geschützt, SQLite-State konsistent, Backup intakt, Secret Hygiene grün (0 echte Leaks). 19/19 Hard Constraints eingehalten. Keine Änderungen an Runtime, Workflow, SQLite, Runner oder Konfiguration.
+🟢✅ **BRANCH_GOVERNANCE_DEFAULT_MASTER_APPLIED** — GitHub Default Branch ist jetzt `master`. Keine Branches gelöscht, kein Merge, kein Force Push. Commit `4670add` (Branch-Drift-Analyse) nach origin/master gepusht. Source of Truth jetzt auf GitHub-Projektseite sichtbar. `main` als historischer Branch erhalten.
 
 ## Key Files
 

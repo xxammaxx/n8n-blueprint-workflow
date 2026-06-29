@@ -1,19 +1,35 @@
 # Changelog
 
+## 2026-06-29 — Branch Governance: Default Branch Applied 🟢✅ BRANCH_GOVERNANCE_DEFAULT_MASTER_APPLIED
+
+### Apply (Option A)
+- 🟢✅ **BRANCH_GOVERNANCE_DEFAULT_MASTER_APPLIED** — GitHub Default Branch is now `master`
+- 🟢 **Method:** `gh repo edit --default-branch master` (no git operations)
+- 🟢 **Pre-apply:** Commit `4670add` (branch drift analysis) pushed to origin/master
+- 🟢 **`main` not deleted** — preserved as historic branch
+- 🟢 **No merge, no force push, no branches deleted**
+- 🟢 **Secret Hygiene:** GREEN — 0 real leaks (verified before push and apply)
+- 🟢 **Source of Truth now visible** on GitHub project page (READMe, GREEN_BASELINE, OPS_RUNBOOK)
+
+### Evidence
+- `evidence/branch-default-master-apply-20260629T081907Z/` (5 files: preflight, commit review, secret hygiene, push result, default branch apply)
+- `evidence/branch-drift-governance-20260629T080206Z/` (from analysis phase)
+
+---
+
 ## 2026-06-29 — Branch Drift Governance Analysis 🔴 RED_BRANCH_CONFLICT
 
 ### Governance Analysis (Read-Only)
 - 🔴 **RED_BRANCH_CONFLICT** — `main` and `master` have completely unrelated histories
 - 🔍 **Default Branch:** `main` (GitHub) — outdated content, HEAD `3687959` (2026-06-27)
-- 🔍 **Source of Truth:** `master` — current operations, HEAD `1c9a68b` (2026-06-29)
+- 🔍 **Source of Truth:** `master` — current operations, HEAD `4670add` (2026-06-29)
 - 🔍 **Unique Commits:** `main` has 28, `master` has 26 — 0 common ancestors
 - 🔍 **Diff:** 591 files changed, +61,743 insertions, -10,300 deletions
-- 🛡️ **Recommendation:** Option A — set `master` as GitHub Default Branch (zero-risk, no git operations)
-- ⚠️ **No changes applied** — awaiting user authorization
+- 🛡️ **Recommendation:** Option A — set `master` as GitHub Default Branch
 - 🟢 **Secret Hygiene:** GREEN — no leaks in analysis
 
 ### Evidence
-- `evidence/branch-drift-governance-20260629T080206Z/` (8 files: preflight, comparison, github reality, risk analysis, options, recommendation, apply plan, secret hygiene)
+- `evidence/branch-drift-governance-20260629T080206Z/` (10 files)
 
 ---
 
