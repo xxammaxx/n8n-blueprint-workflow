@@ -1,7 +1,7 @@
 # Project Status
 
-**Last Updated:** 2026-07-02T21:07:00Z
-**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **NEW_MACHINE_OPERATIONAL_READY** 🟢🖥️ | **N8N_API_READY** 🟢🔑 | **SSH_AUTHORIZED** 🟢🔐 | **SU_RUNNER_FIXED** ✅🔧 | **DATABASE_LOCK_REMEDIATION_GREEN** ✅🔓 | **OPENCODE_PROVIDER_KEY_STRUCTURALLY_READY** 🟢⚙️ | **N8N_MCP_ACTIVATION_PREPARED** 🟡📐 | **PLAYWRIGHT_MCP_CAPABLE** 🟢🎭 | **PLAYWRIGHT_E2E_AUTH_MISSING** 🟡🔒 | **PROVIDER_SMOKE_AUTH_MISSING** 🟡🔒 | **SECRET_HYGIENE_GREEN** 🟢🧹
+**Last Updated:** 2026-07-02T21:11:20Z
+**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **NEW_MACHINE_OPERATIONAL_READY** 🟢🖥️ | **N8N_API_READY** 🟢🔑 | **SSH_AUTHORIZED** 🟢🔐 | **SU_RUNNER_FIXED** ✅🔧 | **DATABASE_LOCK_REMEDIATION_GREEN** ✅🔓 | **OPENCODE_PROVIDER_KEY_STRUCTURALLY_READY** 🟢⚙️ | **N8N_MCP_ACTIVATION_PREPARED** 🟡📐 | **PLAYWRIGHT_MCP_CAPABLE** 🟢🎭 | **PLAYWRIGHT_E2E_AUTH_MISSING** 🟡🔒 | **PROVIDER_SMOKE_AUTH_MISSING** 🟡🔒 | **SECRET_HYGIENE_GREEN** 🟢🧹 | **MCP_LOCAL_CONFIG_GIT_HYGIENE_GREEN** 🟢🧹
 
 ---
 
@@ -44,11 +44,28 @@
 
 ### Secret Hygiene
 - **Status:** `SECRET_HYGIENE_GREEN` 🟢🧹
-- **Minor issue:** `mcp/n8n-mcp.local.json` tracked-but-gitignored (placeholders only)
+- **MCP Local Config:** `mcp/n8n-mcp.local.json` — gitignored, NOT tracked, placeholders only ✅
 - **Evidence:** 15 files, no secrets
 
 ### Evidence
 - **Verzeichnis:** `evidence/n8n-mcp-playwright-e2e-prep-20260702T204149Z/` (15 files)
+
+---
+
+## 🟢 MCP Local Config Git Hygiene (2026-07-02T21:11:20Z)
+
+### Hygiene Run Completed
+- **Status:** `MCP_LOCAL_CONFIG_GIT_HYGIENE_GREEN` 🟢🧹
+- **File:** `mcp/n8n-mcp.local.json` — placeholders only, gitignored, never tracked
+- **`.gitignore`:** Rules already present at lines 45-47 (`mcp/*.local.json`, `.mcp.local.json`, `.mcp/`)
+- **Secret Check:** 0 real secrets — all values are `PASTE_*` placeholders
+- **No `git rm --cached` needed:** File was never tracked in git index
+- **No .gitignore changes needed:** Rules already cover the file
+- **Secret Hygiene:** GREEN — 0 new leaks
+- **No runtime changes:** No n8n, Runner, Workflow, or Issue modifications
+
+### Evidence
+- **Verzeichnis:** `evidence/mcp-local-config-git-hygiene-20260702T211120Z/` (7 files)
 
 ---
 

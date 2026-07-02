@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-07-02 — MCP Local Config Git Hygiene 🟢🧹 MCP_LOCAL_CONFIG_GIT_HYGIENE_GREEN
+
+### Hygiene Run Completed (9 Phases)
+- 🟢 **MCP_LOCAL_CONFIG_GIT_HYGIENE_GREEN** — `mcp/n8n-mcp.local.json` confirmed gitignored, not tracked
+- 🟢 **File Status:** Exists locally (placeholders only), gitignored by `.gitignore:45` (`mcp/*.local.json`), never tracked in git history
+- 🟢 **Secret Check:** 0 real secrets — all values are `PASTE_*` placeholders. One false positive (`Bearer PASTE_LOCAL_N8N_MCP_TOKEN_HERE`) correctly identified.
+- 🟢 **`.gitignore` Rules:** Already present — no additions needed (lines 45-47)
+- 🟢 **No `git rm --cached`:** File was never in git index — no cleanup needed
+- 🟢 **Secret Hygiene:** GREEN — 0 real leaks across all tracked files
+- 🟢 **15/15 Hard Constraints:** All PASS — no secrets, no runtime changes, no issues, no agent run
+- 🟢 **Previous Note Corrected:** STATUS.md line 47 "tracked-but-gitignored" was factually incorrect — file was never tracked
+
+### Evidence
+- `evidence/mcp-local-config-git-hygiene-20260702T211120Z/` (7 files: preflight, secret check, gitignore rules, index cleanup no-op, secret hygiene, validation, final report)
+
+---
+
 ## 2026-07-02 — n8n MCP + Playwright E2E Prep & API Key Re-Validation 🟢 N8N_API_READY | 🟢 OPENCODE_PROVIDER_KEY_STRUCTURALLY_READY | 🟡 N8N_MCP_ACTIVATION_PREPARED | 🟢 PLAYWRIGHT_MCP_CAPABLE
 
 ### Session Summary (Phases 1-20)

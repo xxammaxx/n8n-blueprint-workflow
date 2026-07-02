@@ -1,10 +1,12 @@
 # Evidence Index — Latest
 
-**Last Updated:** 2026-07-02T21:07:00Z
+**Last Updated:** 2026-07-02T21:11:20Z
 
 ## Active Evidence Directory
 
-**Current:** `evidence/n8n-mcp-playwright-e2e-prep-20260702T204149Z/` 🟢🔑🟢⚙️🟡📐🟢🎭🟡🔒 **N8N_API_READY** | **OPENCODE_PROVIDER_KEY_STRUCTURALLY_READY** | **N8N_MCP_ACTIVATION_PREPARED** | **PLAYWRIGHT_MCP_CAPABLE** | **PROVIDER_SMOKE_AUTH_MISSING** | **PLAYWRIGHT_E2E_AUTH_MISSING**
+**Current:** `evidence/mcp-local-config-git-hygiene-20260702T211120Z/` 🟢🧹 **MCP_LOCAL_CONFIG_GIT_HYGIENE_GREEN**
+
+**Previous:** `evidence/n8n-mcp-playwright-e2e-prep-20260702T204149Z/` 🟢🔑🟢⚙️🟡📐🟢🎭🟡🔒 **N8N_API_READY** | **OPENCODE_PROVIDER_KEY_STRUCTURALLY_READY** | **N8N_MCP_ACTIVATION_PREPARED** | **PLAYWRIGHT_MCP_CAPABLE** | **PROVIDER_SMOKE_AUTH_MISSING** | **PLAYWRIGHT_E2E_AUTH_MISSING**
 
 **Previous:** `evidence/n8n-mcp-activation-playwright-verification-2026-07-02T161646Z/` 🟡🔒🟢🎭 **N8N_MCP_ACTIVATION_AUTH_MISSING** | **PLAYWRIGHT_MCP_READY**
 
@@ -12,7 +14,21 @@
 
 ## Status
 
-🟢🔑 **N8N_API_READY** — API key re-validated (HTTP 200), API fully functional
+🟢🧹 **MCP_LOCAL_CONFIG_GIT_HYGIENE_GREEN** — `mcp/n8n-mcp.local.json` confirmed gitignored (never tracked), placeholders only, no secret leaks
+
+## Key Files (Current Session: MCP Local Config Git Hygiene)
+
+| File | Description |
+|------|-------------|
+| `preflight.md` | Phase 1 — Git state, file tracking status, preflight checks |
+| `mcp-local-config-secret-check.md` | Phase 2 — Placeholder-only validation, false positive analysis |
+| `gitignore-mcp-local-rules.md` | Phase 3 — .gitignore rules already present (no additions needed) |
+| `mcp-local-config-index-cleanup.md` | Phase 4 — No `git rm --cached` needed (file never tracked) |
+| `secret-hygiene-after-mcp-local-cleanup.md` | Phase 5 — Secret hygiene GREEN (0 real secrets) |
+| `validation-report.md` | Phase 7 — 15/15 hard constraints PASS |
+| `final-report.md` | Phase 9 — Final report with status decision |
+
+**Previous:** 🟢🔑 **N8N_API_READY** — API key re-validated (HTTP 200), API fully functional
 
 🟢⚙️ **OPENCODE_PROVIDER_KEY_STRUCTURALLY_READY** — Local and runner envs identical, no placeholders, no drift
 
