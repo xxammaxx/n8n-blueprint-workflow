@@ -1,7 +1,7 @@
 # Project Status
 
-**Last Updated:** 2026-07-02T15:42:00Z
-**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **NEW_MACHINE_OPERATIONAL_READY** 🟢🖥️ | **N8N_API_READY** 🟢🔑 | **SSH_AUTHORIZED** 🟢🔐 | **SU_RUNNER_HANG_CONFIRMED** 🟡🔍 | **DATABASE_LOCK_RUNNER_CT102_SUSPECTED** 🟡🔍 | **N8N_MCP_CAPABLE** 🟢🔧 | **PLAYWRIGHT_MCP_CAPABLE** 🟢🔧 | **MCP_BUILD_PROCESS_PREPARED** 🟢📐 | **RUNNER_PROVIDER_ENV_READY** 🟢⚙️ | **HISTORY_REMEDIATION_GREEN** ✅🧹
+**Last Updated:** 2026-07-02T15:55:51Z
+**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **NEW_MACHINE_OPERATIONAL_READY** 🟢🖥️ | **N8N_API_READY** 🟢🔑 | **SSH_AUTHORIZED** 🟢🔐 | **SU_RUNNER_HANG_CONFIRMED** 🟡🔍 | **DATABASE_LOCK_REMEDIATION_GREEN** ✅🔓 | **N8N_MCP_CAPABLE** 🟢🔧 | **PLAYWRIGHT_MCP_CAPABLE** 🟢🔧 | **MCP_BUILD_PROCESS_PREPARED** 🟢📐 | **RUNNER_PROVIDER_ENV_READY** 🟢⚙️ | **HISTORY_REMEDIATION_GREEN** ✅🧹
 
 ---
 
@@ -432,6 +432,7 @@ manual_reason=none
 **Priority 9:** 🔜 Refresh Playwright n8n UI session for UI-based operations (plan created)
 **Priority 10:** 🟢 **SSH Key Authorization on Runner** — ✅ RESOLVED (SSH_AUTHORIZED via Proxmox pct exec 102 repair)
 **Priority 11:** ✅ **`.playwright-mcp/` History-Remediation** — **DONE** (`HISTORY_REMEDIATION_GREEN`: `git filter-repo` purged `.playwright-mcp/` from master history, `--force-with-lease` push, remote verified clean, docs restored)
+**Priority 12:** ✅ **`database locked` Remediation** — **DONE** (`DATABASE_LOCK_REMEDIATION_GREEN`: Stale PID 7103 auf CT 102 via SIGTERM beendet, Lock resolved, 0 DB/WAL/SHM gelöscht, 0 Secrets)
 
 ---
 
@@ -708,6 +709,31 @@ The GitHub comment now correctly reads real Runner Evidence from `status.json` i
 
 ### Evidence
 - `evidence/playwright-mcp-history-remediation-20260702T152807Z/` (17 files: 19-Phasen-Dokumentation)
+
+---
+
+## ✅ DATABASE LOCK REMEDIATION — DATABASE_LOCK_REMEDIATION_GREEN (2026-07-02T15:55:51Z)
+
+### Remediation Summary
+- ✅ **DATABASE_LOCK_REMEDIATION_GREEN** — Database lock resolved by controlled SIGTERM of stale OpenCode process
+- ✅ **Root Cause:** PID 7103 — `/opt/dev-fabric/opencode/opencode providers login --provider opencode` — stale since Jun28 (~4 days), orphaned (PPID=0), no TTY, no tmux session
+- ✅ **Lock Source:** `/root/.local/share/opencode/opencode.db` with 1.3 MB un-checkpointed WAL on CT 102
+- ✅ **Action:** SIGTERM (15) to PID 7103 — process stopped immediately, 5s wait confirmed
+- ✅ **Post-Check:** No open DB handles remaining, WAL preserved for next DB open checkpoint
+- ✅ **Safety:** No SIGKILL, no DB files deleted, no WAL/SHM deleted, no CT restart, no n8n restart
+- ✅ **Phases:** 15 phases completed, all 18 hard constraints PASS
+
+### What Was NOT Done
+- ❌ No DB file deletion
+- ❌ No WAL/SHM file deletion
+- ❌ No SIGKILL
+- ❌ No CT restart
+- ❌ No n8n restart
+- ❌ No workflow changes
+- ❌ No secrets output
+
+### Evidence
+- `evidence/database-locked-remediation-2026-07-02T15-55-51Z/` (17 files)
 
 ---
 

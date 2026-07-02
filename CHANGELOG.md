@@ -1,5 +1,25 @@
 # Changelog
 
+## 2026-07-02 — Database Locked Remediation ✅🔓 DATABASE_LOCK_REMEDIATION_GREEN
+
+### Remediation Executed (15 Phases)
+- ✅ **DATABASE_LOCK_REMEDIATION_GREEN** — Database lock auf CT 102 durch kontrolliertes SIGTERM resolved
+- ✅ **Root Cause:** PID 7103 — `/opt/dev-fabric/opencode/opencode providers login --provider opencode` — stale seit Jun28 (~4 Tage), orphaned (PPID=0), kein TTY, kein tmux
+- ✅ **Lock Source:** `/root/.local/share/opencode/opencode.db` mit 1.3 MB WAL auf CT 102
+- ✅ **Action:** SIGTERM an PID 7103 — Prozess sofort gestoppt, 5s wait bestätigt
+- ✅ **Post-Check:** Keine offenen DB-Handles mehr, WAL unverändert (SQLite checkpointet beim nächsten DB-Open)
+- ✅ **Safety:** Kein SIGKILL, keine DB-Datei gelöscht, kein CT/n8n Restart, keine Secrets ausgegeben
+- ✅ **18/18 Hard Constraints:** Alle PASS
+- ✅ **Secret Hygiene:** GREEN — 0 neue Leaks
+
+### Evidence
+- `evidence/database-locked-remediation-2026-07-02T15-55-51Z/` (17 files)
+
+### Status Change
+- `DATABASE_LOCK_RUNNER_CT102_SUSPECTED` 🟡 → `DATABASE_LOCK_REMEDIATION_GREEN` ✅
+
+---
+
 ## 2026-07-02 — `.playwright-mcp/` History Remediation ✅🧹 HISTORY_REMEDIATION_GREEN
 
 ### Remediation Completed (19 Phases)

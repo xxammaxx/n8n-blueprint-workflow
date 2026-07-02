@@ -1,14 +1,14 @@
 # Linux Mint Operational Readiness
 
-**Last Updated:** 2026-07-02T15:20:00Z  
-**Session:** runner-post-ssh-stabilization-database-locked-n8n-mcp-playwright (Phases 1-24)  
-**Agent:** Issue Orchestrator (Post-SSH-Stabilisierung + DB-Lock-Diagnose + MCP-Vorbereitung)
+**Last Updated:** 2026-07-02T15:55:51Z  
+**Session:** database-locked-remediation (Phases 1-15)  
+**Agent:** Issue Orchestrator (Database Lock Remediation)
 
 ---
 
 ## Overall Status: **NEW_MACHINE_OPERATIONAL_READY_WITH_HISTORY_LEAK_NOTE**
 
-Combined operational readiness: **READY** 🟢 — SSH zum Runner GREEN, n8n API GREEN, Provider-Env strukturell READY. Neue Erkenntnisse: `su - runner` hängt (PAM-Problem, Workaround: `runuser`), `database locked` diagnostiziert (OpenCode SQLite auf CT 102 mit großer WAL), n8n MCP und Playwright MCP sind technisch unterstützt und Konzepte/Templates liegen vor. Alle neuen Dateien sind secret-clean. Kein Commit/Push (History-Leak).
+Combined operational readiness: **READY** 🟢 — SSH zum Runner GREEN, n8n API GREEN, Provider-Env strukturell READY. **DATABASE_LOCK_REMEDIATION_GREEN** — Stale PID 7103 via SIGTERM resolved, Lock beseitigt. Weitere bekannte Themen: `su - runner` hängt (PAM-Problem, Workaround: `runuser`), n8n MCP und Playwright MCP sind technisch unterstützt und Konzepte/Templates liegen vor.
 
 ---
 
@@ -18,7 +18,7 @@ Combined operational readiness: **READY** 🟢 — SSH zum Runner GREEN, n8n API
 |----------|-------|
 | **Primary** | `NEW_MACHINE_OPERATIONAL_READY_WITH_HISTORY_LEAK_NOTE` |
 | **New Sub-Status** | `SU_RUNNER_HANG_CONFIRMED` — PAM/`su`-Problem, Workaround `runuser` |
-| **New Sub-Status** | `DATABASE_LOCK_RUNNER_CT102_SUSPECTED` — OpenCode SQLite, kein Repair |
+| **New Sub-Status** | `DATABASE_LOCK_REMEDIATION_GREEN` — Stale PID 7103 via SIGTERM resolved ✅ |
 | **New Sub-Status** | `N8N_MCP_CAPABLE` — n8n 2.26.8, MCP unterstützt, nicht aktiviert |
 | **New Sub-Status** | `PLAYWRIGHT_MCP_CAPABLE` — `@playwright/mcp` installierbar, `--isolated` |
 | **New Sub-Status** | `MCP_BUILD_PROCESS_PREPARED` — Architektur, Templates, Pläne erstellt |
@@ -62,6 +62,12 @@ Real n8n JWT tokens in tracked `.playwright-mcp/` files (commits 485dc18, 508884
 ---
 
 ## Known Issues
+
+### Resolved: Database Locked (CT 102)
+- **Root Cause:** PID 7103 — stale OpenCode `providers login` (since Jun28, orphaned)
+- **Resolution:** SIGTERM — process stopped, DB handles released, lock resolved
+- **Resolution Date:** 2026-07-02T15:55:51Z
+- **Status:** DATABASE_LOCK_REMEDIATION_GREEN ✅
 
 ### Resolved: SSH Key Not Authorized on Runner
 - **Target:** `runner@192.168.1.53`
@@ -122,9 +128,25 @@ Real n8n JWT tokens in tracked `.playwright-mcp/` files (commits 485dc18, 508884
 
 ---
 
-## Evidence (This Session)
+## Evidence
 
-- `evidence/runner-admin-access-recovery-20260629T191154Z/` (12 files)
+### Current Session: Database Locked Remediation
+- `evidence/database-locked-remediation-2026-07-02T15-55-51Z/` (17 files)
+  - `preflight.md` — Phase 1: Preflight (Git, SSH, CT Status)
+  - `database-lock-current-diagnosis.md` — Phase 2: Lock source confirmed (PID 7103)
+  - `opencode-pid-7103-check.md` — Phase 3: PID 7103 stale/orphaned confirmed
+  - `pre-remediation-backup-and-rollback.md` — Phase 4: Backup metadata + rollback plan
+  - `remediation-decision.md` — Phase 5: Option B (SOFT_STOP_STALE_OPENCODE_PROCESS)
+  - `soft-stop-opencode-process.md` — Phase 6: SIGTERM executed, process stopped
+  - `post-remediation-database-check.md` — Phase 7: No open DB handles, lock resolved
+  - `runner-readonly-after-db-remediation.md` — Phase 8: Runner SSH timeout (known issue)
+  - `n8n-api-recheck-after-db-remediation.md` — Phase 9: n8n API recheck
+  - `dispatcher-health-after-db-remediation.md` — Phase 10: HEALTH_YELLOW
+  - `secret-hygiene-after-db-remediation.md` — Phase 11: GREEN, 0 new leaks
+  - `validation-report.md` — Phase 13: 18/18 constraints PASS
+  - `final-report.md` — Phase 15: DATABASE_LOCK_REMEDIATION_GREEN
+
+### Previous Session: Runner Admin Access Recovery
   - `preflight.md` — Phase 1: Preflight-Dokumentation
   - `network-access-check.md` — Phase 2: Alle Ports erreichbar
   - `proxmox-admin-access-options.md` — Phase 3: Admin-Zugriff via root@192.168.1.136

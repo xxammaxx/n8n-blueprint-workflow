@@ -1,18 +1,18 @@
 # Evidence Index — Latest
 
-**Last Updated:** 2026-07-02T15:42:00Z
+**Last Updated:** 2026-07-02T15:55:51Z
 
 ## Active Evidence Directory
 
-**Current:** `evidence/playwright-mcp-history-remediation-20260702T152807Z/` ✅🧹 **HISTORY_REMEDIATION_GREEN**
+**Current:** `evidence/database-locked-remediation-2026-07-02T15-55-51Z/` ✅🔓 **DATABASE_LOCK_REMEDIATION_GREEN**
 
-**Previous:** `evidence/runner-post-ssh-stabilization-database-locked-n8n-mcp-playwright-20260702T151206Z/` 🟢🔍🔧📐🟡⚠️
+**Previous:** `evidence/playwright-mcp-history-remediation-20260702T152807Z/` ✅🧹 **HISTORY_REMEDIATION_GREEN**
 
 ## Status
 
-✅🧹 **HISTORY_REMEDIATION_GREEN** — `.playwright-mcp/` vollständig aus `master` Git-History entfernt via `git filter-repo`. Token-Rotation bestätigt, `--force-with-lease` Push auf `master`, Remote validiert, Docs restored (115 files). 0 neue Leaks. Siehe Evidence-Verzeichnis für vollständige 19-Phasen-Dokumentation.
+✅🔓 **DATABASE_LOCK_REMEDIATION_GREEN** — Database lock auf CT 102 erfolgreich resolved via kontrolliertes SIGTERM an stale PID 7103 (OpenCode `providers login`, seit Jun28 orphaned). 1.3 MB WAL unverändert, keine DB-Dateien gelöscht, kein SIGKILL, keine Secrets. Siehe Evidence-Verzeichnis für vollständige 15-Phasen-Dokumentation.
 
-**Previous:** 🟢🔍🔧📐🟡⚠️ **NEW_MACHINE_OPERATIONAL_READY** + **SU_RUNNER_HANG_CONFIRMED** + **DATABASE_LOCK_RUNNER_CT102_SUSPECTED** + **N8N_MCP_CAPABLE** + **PLAYWRIGHT_MCP_CAPABLE** + **MCP_BUILD_PROCESS_PREPARED** — Post-SSH-Stabilisierungscheck abgeschlossen. Siehe `evidence/runner-post-ssh-stabilization-.../` für 24-Phasen-Dokumentation.
+**Previous:** ✅🧹 **HISTORY_REMEDIATION_GREEN** — `.playwright-mcp/` vollständig aus `master` Git-History entfernt via `git filter-repo`. Token-Rotation bestätigt, `--force-with-lease` Push auf `master`, Remote validiert, Docs restored (115 files). 0 neue Leaks.
 
 ## Key Files (Current Session: Runner Admin Access Recovery Phases 1-17)
 
