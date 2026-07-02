@@ -1,7 +1,51 @@
 # Project Status
 
-**Last Updated:** 2026-07-02T16:10:00Z
-**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **NEW_MACHINE_OPERATIONAL_READY** 🟢🖥️ | **N8N_API_READY** 🟢🔑 | **SSH_AUTHORIZED** 🟢🔐 | **SU_RUNNER_FIXED** ✅🔧 | **DATABASE_LOCK_REMEDIATION_GREEN** ✅🔓 | **N8N_MCP_CAPABLE** 🟢🔧 | **PLAYWRIGHT_MCP_CAPABLE** 🟢🔧 | **MCP_BUILD_PROCESS_PREPARED** 🟢📐 | **RUNNER_PROVIDER_ENV_READY** 🟢⚙️ | **HISTORY_REMEDIATION_GREEN** ✅🧹
+**Last Updated:** 2026-07-02T16:16:46Z
+**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **NEW_MACHINE_OPERATIONAL_READY** 🟢🖥️ | **N8N_API_READY** 🟢🔑 | **SSH_AUTHORIZED** 🟢🔐 | **SU_RUNNER_FIXED** ✅🔧 | **DATABASE_LOCK_REMEDIATION_GREEN** ✅🔓 | **N8N_MCP_CAPABLE** 🟢🔧 | **PLAYWRIGHT_MCP_CAPABLE** 🟢🔧 | **MCP_BUILD_PROCESS_PREPARED** 🟢📐 | **RUNNER_PROVIDER_ENV_READY** 🟢⚙️ | **HISTORY_REMEDIATION_GREEN** ✅🧹 | **N8N_MCP_ACTIVATION_AUTH_MISSING** 🟡🔒 | **PLAYWRIGHT_MCP_READY** 🟢🎭
+
+---
+
+## 🟡 n8n MCP & Playwright MCP Readiness Preparation (2026-07-02T16:16:46Z)
+
+### n8n MCP
+- **Status:** `N8N_MCP_ACTIVATION_AUTH_MISSING` 🟡🔒
+- **Capability:** n8n 2.26.8 unterstützt MCP (≥2.18.4), aber NICHT in der UI aktiviert
+- **Grund:** Explizite Nutzer-Freigabe zur Aktivierung fehlt
+- **Nächster Schritt:** Nutzer muss autorisieren: `Ich autorisiere die sichere n8n MCP Aktivierung in der n8n UI...`
+
+### Playwright MCP
+- **Status:** `PLAYWRIGHT_MCP_READY` 🟢🎭
+- **Version:** 0.0.77
+- **`--isolated` Flag:** Verfügbar ✅
+- **Browser:** Chromium, Firefox, Webkit, Edge
+- **Headless Mode:** Verfügbar
+
+### MCP UI Discovery
+- **n8n UI erreichbar:** YES (HTTP 200, redirect → /signin)
+- **Login erforderlich:** YES
+- **MCP-Elemente auf Login-Page:** keine sichtbar
+- **Keine UI-Änderungen:** YES
+
+### Lokale MCP Config
+- **Template:** `mcp/n8n-mcp.local.json` (gitignored, nur Platzhalter)
+- **Playwright Server eingetragen:** YES
+- **n8n Server eingetragen:** YES (mit Platzhaltern)
+- **Keine echten Secrets:** YES
+
+### MCP Client Tool
+- **`mcp` CLI:** Verfügbar (`/home/xxammaxx/.local/bin/mcp`, Python)
+- **MCP Inspector Client:** nicht lokal verfügbar
+
+### Playwright MCP E2E Plan
+- **Erstellt:** YES (`playwright-mcp-e2e-plan.md`)
+- **Status:** PENDING — wartet auf separate Freigabe
+
+### Dispatcher Health
+- **Status:** HEALTH_YELLOW (n8n reachable ✅, workflow Sv12QTo56NoPUu2D: 18 nodes ✅)
+- **Secret Hygiene:** GREEN — 0 neue Leaks
+
+### Evidence
+- **Verzeichnis:** `evidence/n8n-mcp-activation-playwright-verification-2026-07-02T161646Z/` (9 files)
 
 ---
 

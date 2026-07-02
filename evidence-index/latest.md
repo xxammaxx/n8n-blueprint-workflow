@@ -1,10 +1,12 @@
 # Evidence Index — Latest
 
-**Last Updated:** 2026-07-02T16:10:00Z
+**Last Updated:** 2026-07-02T16:16:46Z
 
 ## Active Evidence Directory
 
-**Current:** `evidence/su-runner-pam-remediation-20260702T160431Z/` ✅🔧 **SU_RUNNER_FIXED**
+**Current:** `evidence/n8n-mcp-activation-playwright-verification-2026-07-02T161646Z/` 🟡🔒🟢🎭 **N8N_MCP_ACTIVATION_AUTH_MISSING** | **PLAYWRIGHT_MCP_READY**
+
+**Previous:** `evidence/su-runner-pam-remediation-20260702T160431Z/` ✅🔧 **SU_RUNNER_FIXED**
 
 **Previous:** `evidence/database-locked-remediation-2026-07-02T15-55-51Z/` ✅🔓 **DATABASE_LOCK_REMEDIATION_GREEN**
 
@@ -12,13 +14,27 @@
 
 ## Status
 
-✅🔧 **SU_RUNNER_FIXED** — `su - runner` Hang im LXC-Container behoben. Root Cause: `pam_systemd.so` in `/etc/pam.d/common-session` versucht Session bei unresponsive `systemd-logind` via D-Bus zu registrieren. Repair: `pam_systemd.so` in `common-session` + `runuser-l` auskommentiert. Backups erstellt. Workaround `runuser -u runner` validiert. 0 Secrets. 
+🟡🔒 **N8N_MCP_ACTIVATION_AUTH_MISSING** — n8n 2.26.8 supports MCP but not yet activated in UI. Explicit user authorization required: `Ich autorisiere die sichere n8n MCP Aktivierung in der n8n UI...`
 
-**Previous:** ✅🔓 **DATABASE_LOCK_REMEDIATION_GREEN** — Database lock auf CT 102 erfolgreich resolved via kontrolliertes SIGTERM an stale PID 7103.
+🟢🎭 **PLAYWRIGHT_MCP_READY** — Playwright MCP v0.0.77 available, `--isolated` flag confirmed. Browser ready for UI discovery and E2E testing.
 
-**Previous:** ✅🧹 **HISTORY_REMEDIATION_GREEN** — `.playwright-mcp/` vollständig aus `master` Git-History entfernt via `git filter-repo`. Token-Rotation bestätigt, `--force-with-lease` Push auf `master`, Remote validiert, Docs restored (115 files). 0 neue Leaks.
+**Previous:** ✅🔧 **SU_RUNNER_FIXED** — `su - runner` Hang im LXC-Container behoben.
 
-## Key Files (Current Session: su-runner PAM Remediation Phases 1-18)
+## Key Files (Current Session: n8n MCP & Playwright MCP Readiness)
+
+| File | Description |
+|------|-------------|
+| `preflight.md` | Phase 1 — Git status, Node/npm/npx, Runner SSH, n8n Health, Auth Gate |
+| `n8n-ui-version-readonly.md` | Phase 2 — n8n UI erreichbar (200), Login required, Version not visible |
+| `playwright-mcp-capability.md` | Phase 3 — Playwright MCP v0.0.77, --isolated confirmed, Node v22 available |
+| `playwright-n8n-ui-mcp-discovery.md` | Phase 4 — Playwright UI Discovery: Login page only, no MCP elements visible |
+| `n8n-mcp-activation-gate.md` | Phase 5 — AUTH MISSING decision, Phase 6 skipped |
+| `local-mcp-config-structure.md` | Phase 7 — mcp/n8n-mcp.local.json created, gitignored, placeholders only |
+| `mcp-connectivity-readiness.md` | Phase 8 — MCP client tool available, n8n MCP activation pending |
+| `playwright-mcp-e2e-plan.md` | Phase 9 — E2E smoke test plan (pending authorization) |
+| `secret-hygiene-after-n8n-mcp-prep.md` | Phase 11 — GREEN, 0 neue Leaks, all checks passed |
+
+## Key Files (Previous: su-runner PAM Remediation Phases 1-18)
 
 | File | Description |
 |------|-------------|

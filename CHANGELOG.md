@@ -1,5 +1,40 @@
 # Changelog
 
+## 2026-07-02 — n8n MCP & Playwright MCP Readiness Preparation 🟡 N8N_MCP_ACTIVATION_AUTH_MISSING | 🟢 PLAYWRIGHT_MCP_READY
+
+### Session Summary (Phases 1-15)
+- ✅ Read-only readiness preparation completed; no workflow changes made
+- ✅ Dispatcher health confirmed as **HEALTH_YELLOW**
+- ✅ Secret hygiene remained **GREEN** with 0 new leaks
+- ✅ Evidence captured under `evidence/n8n-mcp-activation-playwright-verification-2026-07-02T161646Z/`
+
+### n8n MCP Discovery
+- n8n MCP support is present, but activation is **not completed** because explicit user authorization is missing
+- Status decision: `N8N_MCP_ACTIVATION_AUTH_MISSING`
+- n8n UI was reachable (HTTP 200), but login was required and MCP UI elements were not visible
+
+### Playwright MCP Capability
+- Playwright MCP v0.0.77 available
+- `--isolated` flag confirmed
+- Status decision: `PLAYWRIGHT_MCP_READY`
+
+### MCP Config Structure
+- Local template created at `mcp/n8n-mcp.local.json`
+- Template is gitignored and contains placeholders only
+- MCP client tool available at `/home/xxammaxx/.local/bin/mcp`
+
+### E2E Plan
+- Playwright E2E plan created and left pending user authorization
+
+### Evidence
+- `evidence/n8n-mcp-activation-playwright-verification-2026-07-02T161646Z/` (9 files)
+
+### Status Decisions
+- `N8N_MCP_ACTIVATION_AUTH_MISSING`
+- `PLAYWRIGHT_MCP_READY`
+
+---
+
 ## 2026-07-02 — su-runner PAM Remediation ✅🔧 SU_RUNNER_FIXED
 
 ### Diagnosis & Repair Executed (18 Phases)

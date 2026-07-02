@@ -1,14 +1,14 @@
 # Linux Mint Operational Readiness
 
-**Last Updated:** 2026-07-02T16:10:00Z  
-**Session:** su-runner PAM remediation (Phases 1-18)  
-**Agent:** Issue Orchestrator (su-runner PAM Remediation)
+**Last Updated:** 2026-07-02T16:16:46Z  
+**Session:** n8n MCP & Playwright MCP Readiness Preparation (Phases 1-15)  
+**Agent:** Issue Orchestrator (n8n MCP & Playwright MCP Readiness)
 
 ---
 
 ## Overall Status: **NEW_MACHINE_OPERATIONAL_READY_WITH_HISTORY_LEAK_NOTE**
 
-Combined operational readiness: **READY** 🟢 — SSH zum Runner GREEN, n8n API reachable, Provider-Env strukturell READY. **DATABASE_LOCK_REMEDIATION_GREEN** — Stale PID 7103 via SIGTERM resolved. **SU_RUNNER_FIXED** — `pam_systemd.so` in LXC-Container auskommentiert, `su - runner` funktioniert jetzt.
+Combined operational readiness: **READY** 🟢 — SSH zum Runner GREEN, n8n API reachable, Provider-Env strukturell READY. **DATABASE_LOCK_REMEDIATION_GREEN** — Stale PID 7103 via SIGTERM resolved. **SU_RUNNER_FIXED** — `pam_systemd.so` in LXC-Container auskommentiert, `su - runner` funktioniert jetzt. **N8N_MCP_ACTIVATION_AUTH_MISSING** — n8n MCP nicht aktiviert (wartet auf Freigabe). **PLAYWRIGHT_MCP_READY** — Playwright MCP v0.0.77 mit `--isolated` verfügbar.
 
 ---
 
@@ -22,6 +22,8 @@ Combined operational readiness: **READY** 🟢 — SSH zum Runner GREEN, n8n API
 | **New Sub-Status** | `N8N_MCP_CAPABLE` — n8n 2.26.8, MCP unterstützt, nicht aktiviert |
 | **New Sub-Status** | `PLAYWRIGHT_MCP_CAPABLE` — `@playwright/mcp` installierbar, `--isolated` |
 | **New Sub-Status** | `MCP_BUILD_PROCESS_PREPARED` — Architektur, Templates, Pläne erstellt |
+| **New Sub-Status** | `PLAYWRIGHT_MCP_READY` — Playwright MCP v0.0.77, `--isolated`, browser ready |
+| **New Sub-Status** | `N8N_MCP_ACTIVATION_AUTH_MISSING` — n8n MCP capable but not activated |
 | **Admin Access** | `ADMIN_ACCESS_AVAILABLE` — SSH root@192.168.1.136 via ed25519 key |
 | **Runner SSH** | `SSH_AUTHORIZED` 🟢 |
 | **Runner Provider Env** | `RUNNER_PROVIDER_ENV_READY` |
@@ -58,6 +60,8 @@ Real n8n JWT tokens in tracked `.playwright-mcp/` files (commits 485dc18, 508884
 | **Runner Evidence Dir** | 🟢 PRESENT | `/opt/dev-fabric/evidence` exists |
 | **DeepSeek Local Secret** | 🟢 PRESENT | `secrets/opencode-provider.env` exists locally (value not inspected) |
 | **Secret Hygiene** | 🟡 KNOWN LEAK | JWT tokens in tracked `.playwright-mcp/` files (pre-existing, no new leaks) |
+| **n8n MCP** | 🟡 AUTH MISSING | n8n 2.26.8 supports MCP (≥2.18.4), not yet activated in UI |
+| **Playwright MCP** | 🟢 READY | Playwright MCP v0.0.77, `--isolated` flag confirmed |
 
 ---
 
@@ -110,6 +114,8 @@ Real n8n JWT tokens in tracked `.playwright-mcp/` files (commits 485dc18, 508884
 | Local secret files | Both `secrets/n8n-api.env` and `secrets/opencode-provider.env` present |
 | Git branch | `master` |
 | Dispatcher health | HEALTH_YELLOW (nur Benign-Warnungen) |
+| Playwright MCP | v0.0.77, --isolated confirmed, browser available |
+| MCP local config | Template at mcp/n8n-mcp.local.json, gitignored, placeholders only |
 
 ---
 
@@ -137,7 +143,19 @@ Real n8n JWT tokens in tracked `.playwright-mcp/` files (commits 485dc18, 508884
 
 ## Evidence
 
-### Current Session: Database Locked Remediation
+### Current Session: n8n MCP & Playwright MCP Readiness
+- `evidence/n8n-mcp-activation-playwright-verification-2026-07-02T161646Z/` (9 files)
+  - `preflight.md` — Phase 1: Preflight (Git, SSH, n8n Health, Auth Gate)
+  - `n8n-ui-version-readonly.md` — Phase 2: UI reachable, login required
+  - `playwright-mcp-capability.md` — Phase 3: v0.0.77, --isolated confirmed
+  - `playwright-n8n-ui-mcp-discovery.md` — Phase 4: Login page only, no MCP elements
+  - `n8n-mcp-activation-gate.md` — Phase 5: AUTH MISSING
+  - `local-mcp-config-structure.md` — Phase 7: Template created, gitignored
+  - `mcp-connectivity-readiness.md` — Phase 8: MCP client available, activation pending
+  - `playwright-mcp-e2e-plan.md` — Phase 9: E2E smoke test plan
+  - `secret-hygiene-after-n8n-mcp-prep.md` — Phase 11: GREEN, 0 new leaks
+
+### Previous Session: Database Locked Remediation
 - `evidence/database-locked-remediation-2026-07-02T15-55-51Z/` (17 files)
   - `preflight.md` — Phase 1: Preflight (Git, SSH, CT Status)
   - `database-lock-current-diagnosis.md` — Phase 2: Lock source confirmed (PID 7103)
