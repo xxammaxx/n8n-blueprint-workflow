@@ -1,7 +1,54 @@
 # Project Status
 
-**Last Updated:** 2026-07-02T16:16:46Z
-**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **NEW_MACHINE_OPERATIONAL_READY** 🟢🖥️ | **N8N_API_READY** 🟢🔑 | **SSH_AUTHORIZED** 🟢🔐 | **SU_RUNNER_FIXED** ✅🔧 | **DATABASE_LOCK_REMEDIATION_GREEN** ✅🔓 | **N8N_MCP_CAPABLE** 🟢🔧 | **PLAYWRIGHT_MCP_CAPABLE** 🟢🔧 | **MCP_BUILD_PROCESS_PREPARED** 🟢📐 | **RUNNER_PROVIDER_ENV_READY** 🟢⚙️ | **HISTORY_REMEDIATION_GREEN** ✅🧹 | **N8N_MCP_ACTIVATION_AUTH_MISSING** 🟡🔒 | **PLAYWRIGHT_MCP_READY** 🟢🎭
+**Last Updated:** 2026-07-02T21:07:00Z
+**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **NEW_MACHINE_OPERATIONAL_READY** 🟢🖥️ | **N8N_API_READY** 🟢🔑 | **SSH_AUTHORIZED** 🟢🔐 | **SU_RUNNER_FIXED** ✅🔧 | **DATABASE_LOCK_REMEDIATION_GREEN** ✅🔓 | **OPENCODE_PROVIDER_KEY_STRUCTURALLY_READY** 🟢⚙️ | **N8N_MCP_ACTIVATION_PREPARED** 🟡📐 | **PLAYWRIGHT_MCP_CAPABLE** 🟢🎭 | **PLAYWRIGHT_E2E_AUTH_MISSING** 🟡🔒 | **PROVIDER_SMOKE_AUTH_MISSING** 🟡🔒 | **SECRET_HYGIENE_GREEN** 🟢🧹
+
+---
+
+## 🟢 n8n MCP + Playwright E2E Prep & API Key Validation (2026-07-02T21:07:00Z)
+
+### n8n API Key
+- **Status:** `N8N_API_READY` 🟢🔑
+- **Validation:** HTTP 200 on `/api/v1/workflows`, non-empty response
+- **No secrets output**
+
+### OpenCode Provider Key
+- **Status:** `OPENCODE_PROVIDER_KEY_STRUCTURALLY_READY` 🟢⚙️
+- **Local:** All keys present, no placeholders, 600 permissions, gitignored
+- **Runner:** All keys present, no placeholders
+- **Drift:** None (local and runner identical)
+- **No secrets output**
+
+### n8n Health
+- **Health:** GREEN (HTTP 200, `{"status":"ok"}`)
+- **Version:** 2.26.8 (running since Jun29)
+- **UI Reachable:** YES (login page shown)
+
+### n8n MCP
+- **Status:** `N8N_MCP_ACTIVATION_PREPARED` 🟡📐
+- **Native MCP:** NOT in n8n 2.26.8
+- **Community Package:** `n8n-nodes-mcp@0.1.37` available on npm
+- **Activation Blocked:** n8n restart required (hard constraint)
+- **Authorization:** USER AUTHORIZED for activation
+- **Existing Test:** mcpSmoke001 (Manual Trigger + Code node, inactive)
+- **Next:** Set `N8N_COMMUNITY_PACKAGES_ENABLED=true`, install `n8n-nodes-mcp`, restart n8n
+
+### Playwright MCP
+- **Status:** `PLAYWRIGHT_MCP_CAPABLE` 🟢🎭
+- **Flags:** `--isolated`, `--headless`, `--browser` confirmed
+- **UI Smoke:** Chromium 1223 headless confirmed n8n login page
+- **E2E:** `PLAYWRIGHT_E2E_AUTH_MISSING` 🟡🔒 (separate authorization needed)
+
+### Provider Smoke
+- **Status:** `PROVIDER_SMOKE_AUTH_MISSING` 🟡🔒 (separate authorization needed)
+
+### Secret Hygiene
+- **Status:** `SECRET_HYGIENE_GREEN` 🟢🧹
+- **Minor issue:** `mcp/n8n-mcp.local.json` tracked-but-gitignored (placeholders only)
+- **Evidence:** 15 files, no secrets
+
+### Evidence
+- **Verzeichnis:** `evidence/n8n-mcp-playwright-e2e-prep-20260702T204149Z/` (15 files)
 
 ---
 

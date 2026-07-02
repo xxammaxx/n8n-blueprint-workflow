@@ -1,5 +1,43 @@
 # Changelog
 
+## 2026-07-02 — n8n MCP + Playwright E2E Prep & API Key Re-Validation 🟢 N8N_API_READY | 🟢 OPENCODE_PROVIDER_KEY_STRUCTURALLY_READY | 🟡 N8N_MCP_ACTIVATION_PREPARED | 🟢 PLAYWRIGHT_MCP_CAPABLE
+
+### Session Summary (Phases 1-20)
+- ✅ n8n API key re-validated: HTTP 200, non-empty response
+- ✅ OpenCode Provider key structurally validated (local + runner, no drift)
+- ✅ n8n health GREEN, version 2.26.8 confirmed
+- ✅ Playwright MCP capability confirmed (isolated, headless, browser)
+- ✅ Playwright UI smoke: n8n login page confirmed via Chromium headless
+- ✅ Secret hygiene remained GREEN with 0 new leaks
+- ✅ Evidence captured under `evidence/n8n-mcp-playwright-e2e-prep-20260702T204149Z/` (15 files)
+
+### n8n MCP Discovery
+- n8n 2.26.8 does NOT have native MCP support
+- Community package `n8n-nodes-mcp@0.1.37` available on npm
+- Existing `mcpSmoke001` workflow (Manual Trigger + Code node approach)
+- Activation blocked by n8n restart constraint (hard constraint)
+- Prerequisites documented: `N8N_COMMUNITY_PACKAGES_ENABLED=true`, install npm package, restart n8n
+
+### Playwright MCP
+- Playwright MCP `--isolated`, `--headless` confirmed
+- UI smoke executed with Chromium 1223 (headless) — login page confirmed
+- E2E plan created but authorization still missing
+
+### Provider Smoke
+- Not authorized → PROVIDER_SMOKE_AUTH_MISSING
+
+### Key Status Decisions
+- `N8N_API_READY` — key validated, API working
+- `OPENCODE_PROVIDER_KEY_STRUCTURALLY_READY` — local + runner identical, no placeholders
+- `N8N_MCP_ACTIVATION_PREPARED` — community node identified, prerequisites documented
+- `N8N_MCP_NATIVE_UNAVAILABLE` — n8n 2.26.8 lacks built-in MCP
+- `PLAYWRIGHT_MCP_CAPABLE` — tooling confirmed
+- `PLAYWRIGHT_E2E_AUTH_MISSING` — separate authorization needed
+- `PROVIDER_SMOKE_AUTH_MISSING` — separate authorization needed
+
+### Evidence
+- `evidence/n8n-mcp-playwright-e2e-prep-20260702T204149Z/` (15 files)
+
 ## 2026-07-02 — n8n MCP & Playwright MCP Readiness Preparation 🟡 N8N_MCP_ACTIVATION_AUTH_MISSING | 🟢 PLAYWRIGHT_MCP_READY
 
 ### Session Summary (Phases 1-15)

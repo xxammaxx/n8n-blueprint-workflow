@@ -1,38 +1,51 @@
 # Evidence Index — Latest
 
-**Last Updated:** 2026-07-02T16:16:46Z
+**Last Updated:** 2026-07-02T21:07:00Z
 
 ## Active Evidence Directory
 
-**Current:** `evidence/n8n-mcp-activation-playwright-verification-2026-07-02T161646Z/` 🟡🔒🟢🎭 **N8N_MCP_ACTIVATION_AUTH_MISSING** | **PLAYWRIGHT_MCP_READY**
+**Current:** `evidence/n8n-mcp-playwright-e2e-prep-20260702T204149Z/` 🟢🔑🟢⚙️🟡📐🟢🎭🟡🔒 **N8N_API_READY** | **OPENCODE_PROVIDER_KEY_STRUCTURALLY_READY** | **N8N_MCP_ACTIVATION_PREPARED** | **PLAYWRIGHT_MCP_CAPABLE** | **PROVIDER_SMOKE_AUTH_MISSING** | **PLAYWRIGHT_E2E_AUTH_MISSING**
+
+**Previous:** `evidence/n8n-mcp-activation-playwright-verification-2026-07-02T161646Z/` 🟡🔒🟢🎭 **N8N_MCP_ACTIVATION_AUTH_MISSING** | **PLAYWRIGHT_MCP_READY**
 
 **Previous:** `evidence/su-runner-pam-remediation-20260702T160431Z/` ✅🔧 **SU_RUNNER_FIXED**
 
-**Previous:** `evidence/database-locked-remediation-2026-07-02T15-55-51Z/` ✅🔓 **DATABASE_LOCK_REMEDIATION_GREEN**
-
-**Previous:** `evidence/playwright-mcp-history-remediation-20260702T152807Z/` ✅🧹 **HISTORY_REMEDIATION_GREEN**
-
 ## Status
 
-🟡🔒 **N8N_MCP_ACTIVATION_AUTH_MISSING** — n8n 2.26.8 supports MCP but not yet activated in UI. Explicit user authorization required: `Ich autorisiere die sichere n8n MCP Aktivierung in der n8n UI...`
+🟢🔑 **N8N_API_READY** — API key re-validated (HTTP 200), API fully functional
 
-🟢🎭 **PLAYWRIGHT_MCP_READY** — Playwright MCP v0.0.77 available, `--isolated` flag confirmed. Browser ready for UI discovery and E2E testing.
+🟢⚙️ **OPENCODE_PROVIDER_KEY_STRUCTURALLY_READY** — Local and runner envs identical, no placeholders, no drift
+
+🟡📐 **N8N_MCP_ACTIVATION_PREPARED** — Community node `n8n-nodes-mcp@0.1.37` identified, prerequisites documented. Blocked by n8n restart constraint. Native MCP not in n8n 2.26.8.
+
+🟢🎭 **PLAYWRIGHT_MCP_CAPABLE** — Isolated/headless/browser confirmed. UI smoke executed (login page confirmed).
+
+🟡🔒 **PLAYWRIGHT_E2E_AUTH_MISSING** — E2E plan ready, awaiting separate authorization.
+
+🟡🔒 **PROVIDER_SMOKE_AUTH_MISSING** — Provider structurally validated, smoke test awaiting separate authorization.
 
 **Previous:** ✅🔧 **SU_RUNNER_FIXED** — `su - runner` Hang im LXC-Container behoben.
 
-## Key Files (Current Session: n8n MCP & Playwright MCP Readiness)
+## Key Files (Current Session: n8n MCP + Playwright E2E Prep)
 
 | File | Description |
 |------|-------------|
-| `preflight.md` | Phase 1 — Git status, Node/npm/npx, Runner SSH, n8n Health, Auth Gate |
-| `n8n-ui-version-readonly.md` | Phase 2 — n8n UI erreichbar (200), Login required, Version not visible |
-| `playwright-mcp-capability.md` | Phase 3 — Playwright MCP v0.0.77, --isolated confirmed, Node v22 available |
-| `playwright-n8n-ui-mcp-discovery.md` | Phase 4 — Playwright UI Discovery: Login page only, no MCP elements visible |
-| `n8n-mcp-activation-gate.md` | Phase 5 — AUTH MISSING decision, Phase 6 skipped |
-| `local-mcp-config-structure.md` | Phase 7 — mcp/n8n-mcp.local.json created, gitignored, placeholders only |
-| `mcp-connectivity-readiness.md` | Phase 8 — MCP client tool available, n8n MCP activation pending |
-| `playwright-mcp-e2e-plan.md` | Phase 9 — E2E smoke test plan (pending authorization) |
-| `secret-hygiene-after-n8n-mcp-prep.md` | Phase 11 — GREEN, 0 neue Leaks, all checks passed |
+| `preflight.md` | Phase 1 — Git status, Node/npm/npx, Runner SSH, CT status, Auth Gate |
+| `secret-hygiene-before-n8n-mcp-playwright.md` | Phase 2 — Secret hygiene GREEN before prep |
+| `n8n-api-key-validation.md` | Phase 3 — API key structural + read-only validation (HTTP 200) |
+| `opencode-provider-key-structural-validation.md` | Phase 4 — Provider key local + runner structural validation |
+| `n8n-health-version-check.md` | Phase 5 — n8n health GREEN, version 2.26.8, CT 101 status |
+| `playwright-mcp-capability-recheck.md` | Phase 6 — Playwright MCP capability recheck |
+| `n8n-ui-smoke-playwright.md` | Phase 7 — Playwright UI smoke (Chromium headless, login page confirmed) |
+| `n8n-mcp-ui-capability-check.md` | Phase 8 — MCP capability check (no native MCP in 2.26.8) |
+| `n8n-mcp-activation-plan.md` | Phase 9 — MCP activation plan (community node approach) |
+| `mcp-local-config-prep.md` | Phase 10 — MCP local config templates + hygiene |
+| `playwright-mcp-e2e-smoke-plan.md` | Phase 11 — E2E smoke plan (awaiting authorization) |
+| `n8n-mcp-activation-attempt.md` | Phase 12 — Activation attempt (blocked by restart constraint) |
+| `provider-smoke-test-attempt.md` | Phase 13 — Provider smoke skipped (no authorization) |
+| `runner-readonly-recheck-after-mcp-prep.md` | Phase 14 — Runner recheck (GREEN) |
+| `dispatcher-health-after-n8n-mcp-playwright-prep.md` | Phase 15 — Dispatcher HEALTH_YELLOW |
+| `secret-hygiene-after-n8n-mcp-playwright-prep.md` | Phase 16 — Secret hygiene GREEN (0 new leaks) |
 
 ## Key Files (Previous: su-runner PAM Remediation Phases 1-18)
 
