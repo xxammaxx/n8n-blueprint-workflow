@@ -1,18 +1,37 @@
 # Evidence Index — Latest
 
-**Last Updated:** 2026-06-29T15:12:21Z
+**Last Updated:** 2026-07-02T15:20:00Z
 
 ## Active Evidence Directory
 
-**Current:** `evidence/linux-mint-readiness-blocker-fix-20260629T151221Z/` 🟢🔑🟡🔐
+**Current:** `evidence/runner-post-ssh-stabilization-database-locked-n8n-mcp-playwright-20260702T151206Z/` 🟢🔍🔧📐🟡⚠️
 
-**Previous:** `evidence/linux-mint-operational-readiness-2026-06-29T14-00-47Z/` 🟡🖥️
+**Previous:** `evidence/runner-admin-access-recovery-20260629T191154Z/` 🟢🔐🟢🖥️🟡⚠️
 
 ## Status
 
-🟢🔑🟡🔐 **N8N_API_READY | SSH_USER_ACTION_REQUIRED** — n8n API key validated successfully (HTTP 200, no placeholder). SSH runner authorization still pending: public key exists locally but not yet on runner `192.168.1.53`. No runtime changes, no secrets output. Next step: user must authorize SSH public key on runner. See evidence directory for full details.
+🟢🔍🔧📐🟡⚠️ **NEW_MACHINE_OPERATIONAL_READY_WITH_HISTORY_LEAK_NOTE** + **SU_RUNNER_HANG_CONFIRMED** + **DATABASE_LOCK_RUNNER_CT102_SUSPECTED** + **N8N_MCP_CAPABLE** + **PLAYWRIGHT_MCP_CAPABLE** + **MCP_BUILD_PROCESS_PREPARED** — Post-SSH-Stabilisierungscheck abgeschlossen: SSH GREEN, n8n API GREEN. `su - runner` hängt (PAM-Problem, Workaround: `runuser`). `database locked` diagnostiziert (OpenCode SQLite auf CT 102 mit 1.3MB WAL). n8n MCP (v2.26.8) und Playwright MCP technisch unterstützt und vorbereitet: Architektur (`docs/MCP_BUILD_PROCESS.md`), Config-Templates (`mcp/`), Preflight-Plan, Provider-Smoke-Plan. Alle 30+ neuen Dateien secret-clean. 0 Reparaturen ausgeführt, 0 Secrets exposed, 0 Runtime-Änderungen. Siehe Evidence-Verzeichnis für vollständige 24-Phasen-Dokumentation.
 
-## Key Files (Current Session: n8n API Validation)
+## Key Files (Current Session: Runner Admin Access Recovery Phases 1-17)
+
+| File | Description |
+|------|-------------|
+| `preflight.md` | Phase 1 — Preflight: Zielhost, Zielkey, Constraints, Git-Status |
+| `network-access-check.md` | Phase 2 — Netzwerk/Port-Check: Alle Hosts/Ports erreichbar |
+| `proxmox-admin-access-options.md` | Phase 3 — Proxmox Admin: root@192.168.1.136 via ed25519 key ✅ |
+| `runner-container-vm-identification.md` | Phase 4 — Runner = CT 102 lxc-dev-runner |
+| `runner-user-home-check.md` | Phase 5 — User runner existiert, Permissions korrekt, Root Cause gefunden |
+| `authorized-keys-repair.md` | Phase 6 — Backup + Key appended, Permissions fixed |
+| `sshd-config-readonly-check.md` | Phase 7 — SSHD Config korrekt (PubkeyAuthentication yes) |
+| `ssh-validation-after-admin-repair.md` | Phase 8 — SSH SUCCESS: runner@192.168.1.53 → lxc-dev-runner ✅ |
+| `runner-readonly-check-after-admin-repair.md` | Phase 10 — Runner-Infrastruktur: Node, Loader, Dispatch, Evidence ✅ |
+| `n8n-api-recheck-after-admin-repair.md` | Phase 11 — n8n API HTTP 200 ✅ |
+| `dispatcher-health-after-admin-repair.md` | Phase 12 — HEALTH_YELLOW (Benign-Warnungen) |
+| `secret-hygiene-after-admin-repair.md` | Phase 13 — 0 new secrets, KNOWN_PREEXISTING_HISTORY_LEAK |
+
+## Key Files (Previous: Runner SSH Readiness Phase 1-6)
+
+## Key Files (Previous: n8n API Validation)
 
 | File | Description |
 |------|-------------|

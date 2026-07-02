@@ -1,7 +1,7 @@
 # Project Status
 
-**Last Updated:** 2026-06-29T15:12:21Z
-**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **COMMENT_SYNC_24H_OBSERVATION_GREEN** 🟢✅ | **BRANCH_GOVERNANCE_DEFAULT_MASTER_APPLIED** 🟢✅ | **DUMMY_ISSUES_CLEANUP_GREEN** 🟢✅ | **FINAL_OPERATIONS_BASELINE_GREEN** 🟢✅ | **REPO_HYGIENE_GREEN** 🟢✅ | **SECRET_HYGIENE: RED_SECRET_LEAK** 🔴⚠️ | **SECRET_REMEDIATION: TOKEN_ROTATION_PENDING** 🟡⏳ | **MIGRATION_HANDOFF_PREPARED** 🟢📦 | **LINUX_MINT_OPERATIONAL_READINESS: NEW_MACHINE_READY_WITH_NOTES** 🟡🖥️ | **N8N_API_READY** 🟢🔑 | **SSH_USER_ACTION_REQUIRED** 🟡🔐
+**Last Updated:** 2026-07-02T15:20:00Z
+**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **NEW_MACHINE_OPERATIONAL_READY_WITH_HISTORY_LEAK_NOTE** 🟢🖥️ | **N8N_API_READY** 🟢🔑 | **SSH_AUTHORIZED** 🟢🔐 | **SU_RUNNER_HANG_CONFIRMED** 🟡🔍 | **DATABASE_LOCK_RUNNER_CT102_SUSPECTED** 🟡🔍 | **N8N_MCP_CAPABLE** 🟢🔧 | **PLAYWRIGHT_MCP_CAPABLE** 🟢🔧 | **MCP_BUILD_PROCESS_PREPARED** 🟢📐 | **RUNNER_PROVIDER_ENV_READY** 🟢⚙️
 
 ---
 
@@ -354,6 +354,71 @@ manual_reason=none
 
 ---
 
+## 🔴 Runner SSH Authorization Repair (2026-06-29T16:36:00Z) — Phases 7-16
+
+### SSH Validation AFTER User Key Authorization on Runner
+
+| Check | Result |
+|-------|--------|
+| SSH BatchMode test to `runner@192.168.1.53` with `id_ed25519` | 🔴 **FAILED** — Permission denied (publickey,password) |
+| Key offered to server | ✅ Yes — fingerprint: `SHA256:/aGuvMjthBM33jwOERPc/vhQeB85MQrj3s4G6nXYcNg` |
+| Server accepted key | ❌ No — "Authentications that can continue: publickey,password" after offering |
+| Second key (`docvault_n8n_docbot`) | ❌ Also rejected |
+| Status | **SSH_KEY_STILL_NOT_AUTHORIZED** 🔴🔐 |
+
+### SSH Debug (Phase 9)
+- Key IS offered with correct fingerprint — local identity is valid
+- Server DOES NOT accept the key — likely wrong key in `authorized_keys` or permission issue
+- Probable cause: wrong public key was added, or file permissions incorrect on runner
+
+### n8n API Recheck (Phase 10)
+
+| Check | Result |
+|-------|--------|
+| API read-only test (HTTP) | 🟢 **200** — non-empty response |
+| API Key valid | ✅ Confirmed — no regression |
+| Status | **N8N_API_READY** 🟢🔑 |
+
+### Runner Read-Only (Phase 8)
+
+⏭️ SKIPPED — SSH still blocked
+
+### Secret Hygiene Recheck (Phase 12)
+
+| Check | Result |
+|-------|--------|
+| `secrets/` tracked in git | SAFE (0 files) |
+| Database files tracked | SAFE (0 files) |
+| `.playwright-mcp/` tracked | 🔴 48 files — 1 contains n8n JWT tokens (pre-existing, commit `485dc18`) |
+| New secrets in this session | 🟢 **NONE** — 0 new leaks |
+| Evidence files clean | 🟢 **YES** — all new evidence secret-clean |
+| Status | **KNOWN_PREEXISTING_HISTORY_LEAK** (unchanged) |
+
+### Dispatcher Health (Phase 11)
+
+- 🟡 `HEALTH_YELLOW` — n8n reachable ✅, API green ✅, workflow local ✅, SSH blocked 🔴
+- 6/11 PASS, 3 WARN (known false positives), 1 FAIL (secret-hygiene script), 1 SKIP (API key not in env)
+- No real errors — known false positives: powershell not on Linux, git untracked evidence dirs, placeholder patterns
+
+### Operational Readiness (Phase 13)
+
+- **Overall:** `SSH_KEY_STILL_NOT_AUTHORIZED` — **NOT OPERATIONAL READY**
+- **Updated:** `LINUX_MINT_OPERATIONAL_READINESS.md` — reflects current state
+- **No runtime changes** — Read-only validation session
+- **No issues modified**
+
+### Evidence
+- `evidence/runner-ssh-authorization-repair-2026-06-29T162037Z/` (10 files)
+  - Phases 1-6 (previous): preflight, keys, selection, authorization instructions
+  - Phase 7: `runner-ssh-validation-after-authorization.md`
+  - Phase 9: `ssh-debug-redacted.md`
+  - Phase 10: `n8n-api-recheck-after-ssh-repair.md`
+  - Phase 11: `dispatcher-health-after-ssh-repair.md`
+  - Phase 12: `secret-hygiene-after-ssh-repair.md`
+  - Phase 13: `readiness-summary.md`
+
+---
+
 ## Next Actions
 
 **Priority 1:** ✅ DeepSeek Provider Smoke — DONE (DEEPSEEK_PROVIDER_SMOKE_GREEN)
@@ -365,6 +430,8 @@ manual_reason=none
 **Priority 7:** ✅ **DeepSeek Dummy Agent Test** — DONE (`GREEN_PARTIAL`: dispatcher+runner OK, provider not in dispatch path)
 **Priority 8:** ✅ **Provider Dispatch Integration** — DONE (`DEEPSEEK_DUMMY_AGENT_GREEN`: DeepSeek provider loaded in dispatch path, mode upgraded from manual-terminal to opencode-run)
 **Priority 9:** 🔜 Refresh Playwright n8n UI session for UI-based operations (plan created)
+**Priority 10:** 🔴 **SSH Key Authorization on Runner** — User authorized key but still rejected. Verify correct public key in `/home/runner/.ssh/authorized_keys` (fingerprint `SHA256:/aGuvMjthBM33jwOERPc/vhQeB85MQrj3s4G6nXYcNg`) + check permissions (`chmod 700 ~/.ssh`, `chmod 600 ~/.ssh/authorized_keys`)
+**Priority 11:** 🟡 **`.playwright-mcp/` History-Remediation** — Separate task: Token Rotation → History Rewrite
 
 ---
 

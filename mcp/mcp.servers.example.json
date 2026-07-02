@@ -1,0 +1,16 @@
+{
+  "$schema": "https://raw.githubusercontent.com/modelcontextprotocol/specification/main/schema/mcp.servers.schema.json",
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest", "--isolated", "--headless"]
+    },
+    "n8n": {
+      "type": "remote",
+      "url": "PASTE_N8N_MCP_URL_HERE",
+      "headers": {
+        "Authorization": "Bearer PASTE_N8N_MCP_TOKEN_HERE"
+      }
+    }
+  }
+}

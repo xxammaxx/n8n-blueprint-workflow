@@ -1,0 +1,14 @@
+{
+  "$schema": "https://raw.githubusercontent.com/modelcontextprotocol/specification/main/schema/mcp.servers.schema.json",
+  "mcpServers": {
+    "n8n-sse": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "supergateway",
+        "--sse",
+        "PASTE_N8N_MCP_SSE_OR_WEBHOOK_URL_HERE"
+      ]
+    }
+  }
+}

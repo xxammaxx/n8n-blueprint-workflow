@@ -1,5 +1,262 @@
 # Changelog
 
+## 2026-07-02 — Post-SSH Stabilization + DB Lock + MCP Preparation — Phases 1-24 🟢🔍🔧📐
+
+### Session Summary
+- 🟢 **SSH Stabilization Validated** — Runner SSH weiterhin GREEN
+- 🟢 **n8n API** — HTTP 200 (unverändert)
+- 🟡 **`su - runner` Hang Diagnose** — `SU_RUNNER_HANG_CONFIRMED` (PAM-Problem, nicht Profile). Workaround: `runuser -u runner`
+- 🟡 **`database locked` Diagnose** — `DATABASE_LOCK_RUNNER_CT102_SUSPECTED`. OpenCode PID 7103 hält SQLite-DB mit 1.3MB WAL
+- 🟢 **n8n MCP Capability** — `N8N_MCP_CAPABLE` (v2.26.8 > 2.18.4+), noch nicht aktiviert
+- 🟢 **Playwright MCP Capability** — `PLAYWRIGHT_MCP_CAPABLE`, `--isolated` verfügbar
+- 🟢 **MCP Build Process** — `MCP_BUILD_PROCESS_PREPARED`: Architecture (`docs/MCP_BUILD_PROCESS.md`), Config Templates (`mcp/`), Preflight Plan
+- 🟢 **Provider Env** — `RUNNER_PROVIDER_ENV_READY` (strukturell komplett)
+- 🟢 **Secret Hygiene** — 0 neue Leaks, bekannter `.playwright-mcp/` History-Leak unverändert
+- 📋 **Evidence:** 30+ files in `evidence/runner-post-ssh-stabilization-database-locked-n8n-mcp-playwright-20260702T151206Z/`
+- ❌ **Keine Reparaturen** — Nur Diagnose + Konzepte; 0 Runtime-Änderungen
+
+### Key Deliverables
+- `docs/MCP_BUILD_PROCESS.md` — Vollständige MCP-Build-Prozess-Architektur mit Mermaid-Diagramm
+- `mcp/mcp.servers.example.json` — n8n MCP + Playwright MCP Konfigurations-Template
+- `mcp/mcp.sse-supergateway.example.json` — SSE/Supergateway Fallback Template
+- `.gitignore` — MCP local config Protection (`mcp/*.local.json`, `.mcp.local.json`, `.mcp/`)
+- 7 Repair/Diagnosis-Pläne (nur lesend, keine Ausführung):
+  - `database-locked-repair-plan.md` — 6 Optionen
+  - `runner-profile-repair-plan.md` — PROFILE_SAFE, keine Reparatur nötig
+  - `provider-smoke-test-plan.md` — Kostenbegrenzter Test-Plan
+  - `mcp-preflight-script-report.md` — Preflight-Script-Plan
+
+### New Status Decisions
+- `SU_RUNNER_HANG_CONFIRMED` — PAM/`su`-Problem, Workaround vorhanden
+- `DATABASE_LOCK_RUNNER_CT102_SUSPECTED` — OpenCode PID 7103
+- `N8N_MCP_CAPABLE` — n8n 2.26.8 unterstützt MCP
+- `PLAYWRIGHT_MCP_CAPABLE` — `@playwright/mcp` installierbar
+- `MCP_BUILD_PROCESS_PREPARED` — Architektur dokumentiert
+- `RUNNER_PROVIDER_ENV_READY` — Alle Keys vorhanden
+
+---
+
+## 2026-07-01 — Runner Admin Access Recovery — Phases 1-17 🟢🔐🟢🖥️ SSH_AUTHORIZED | PROXMOX_ADMIN_ACCESS
+
+### Session Summary
+- 🟢 **SSH_AUTHORIZED** — SSH zu `runner@192.168.1.53` erfolgreich via Proxmox `pct exec 102` repariert
+- 🟢 **PROXMOX_ADMIN_ACCESS** — `root@192.168.1.136` akzeptiert ed25519 key; `pct exec` funktioniert
+- 🟢 **Root Cause:** Target key fehlte in `/home/runner/.ssh/authorized_keys` (nur `root@pve` key vorhanden)
+- 🟢 **n8n API:** HTTP 200 — unverändert GREEN
+- 🟡 **Secret Hygiene:** KNOWN_PREEXISTING_HISTORY_LEAK — keine neuen Leaks
+- 📋 **Evidence:** 12 Files in `evidence/runner-admin-access-recovery-20260629T191154Z/`
+
+### Phase 1 — Preflight
+- Evidence-Verzeichnis erstellt: `evidence/runner-admin-access-recovery-20260629T191154Z/`
+- Linux Mint 22.1, master branch, Zielkey-Fingerprint bestätigt
+
+### Phase 2 — Network/Port Check
+- Alle Hosts pingable: Runner (192.168.1.53), Proxmox (192.168.1.136), n8n (192.168.1.52)
+- Alle Ports offen: SSH (22), Proxmox API (8006), n8n (5678)
+
+### Phase 3 — Proxmox Admin Access (KEY BREAKTHROUGH)
+- 🟢 **SSH root@192.168.1.136 mit ed25519 key ERFOLGREICH** — Hostname `pve`, User `root`
+- 🟢 Proxmox Web UI auf Port 8006 erreichbar
+
+### Phase 4 — Runner CT Identified
+- 🟢 Runner = CT 102, Name `lxc-dev-runner`, IP 192.168.1.53
+- Infrastructure map: 8 CTs + 3 VMs dokumentiert
+
+### Phase 5 — Runner User Check
+- 🟢 User `runner` (uid=1000) existiert, /home/runner/.ssh vorhanden
+- 🟢 Permissions korrekt: .ssh=700, authorized_keys=600, owner runner:runner
+
+### Phase 6 — Authorized Keys Backup and Repair
+- 🟢 Backup erstellt: `authorized_keys.bak.20260701T085053Z`
+- 🟢 Target key appended (bestehender `root@pve` key erhalten)
+- 🟢 Fingerprint nach Reparatur bestätigt: SHA256:/aGuvMjthBM33jwOERPc/vhQeB85MQrj3s4G6nXYcNg
+
+### Phase 7 — SSHD Config Check
+- 🟢 PubkeyAuthentication: yes, AuthorizedKeysFile: default, keine AllowUsers/DenyUsers
+
+### Phase 8 — SSH Validation
+- 🟢 **SSH SUCCESS:** `runner@192.168.1.53` → `lxc-dev-runner`, user `runner`
+- Root cause confirmed: fehlender Public Key in authorized_keys
+
+### Phase 10 — Runner Read-Only Check
+- 🟢 Node.js v22.23.0, npm 10.9.8, Git 2.39.5
+- 🟢 Loader, Dispatch Script, Evidence Dir alle vorhanden
+- 🟡 OpenCode nicht direkt in PATH (loader script benötigt)
+- ⚠️ `su - runner` hängt (vermutlich .profile issue)
+
+### Phase 11 — n8n API Recheck
+- 🟢 HTTP 200, non-empty response
+
+### Phase 12 — Dispatcher Health
+- 🟡 HEALTH_YELLOW — Benign-Warnungen: powershell, untracked evidence, placeholder patterns
+
+### Phase 13 — Secret Hygiene
+- 🟡 44 preexisting violations (6 potential secrets + 38 placeholders — ALL in OLD evidence dirs)
+- 🟢 0 new violations in current evidence directory
+- 🟢 Keine neuen Secrets, JWTs, API Keys, Tokens
+
+### Phases 14-17 — Documentation & Validation
+- LINUX_MINT_OPERATIONAL_READINESS.md aktualisiert (OPERATIONAL READY)
+- STATUS.md, CHANGELOG.md, evidence-index/latest.md aktualisiert
+- validation-report.md und final-report.md erstellt
+- Kein Commit/Push (History-Leak nicht remediated)
+
+### Nächste Schritte
+1. SSH-Profil-Debugging (`su - runner` hängt)
+2. OpenCode im Runner-PATH verifizieren (nach Provider-Env)
+3. Provider-Smoke-Test (wenn freigegeben)
+4. `.playwright-mcp/` History-Remediation separat
+
+---
+
+## 2026-06-29 — Runner SSH Server-Side Repair — Phases 1-15 🔴🔐🔴🔒 SSH_KEY_STILL_NOT_AUTHORIZED | ADMIN_ACCESS_BLOCKED
+
+### Session Summary
+- 🔴 **SSH_KEY_STILL_NOT_AUTHORIZED** — SSH zu `runner@192.168.1.53` weiterhin blockiert
+- 🔴 **ADMIN_ACCESS_BLOCKED** — Kein root/Admin-Zugriff zum Runner für server-seitige Reparatur
+- 🔴 **Getestete Zugänge (ALLE FEHLGESCHLAGEN):** SSH root (beide Keys), Proxmox API Port 8006, Proxmox CLI, Docker remote
+- 🟢 **n8n API:** HTTP 200 — unverändert GREEN
+- 🟡 **Secret Hygiene:** KNOWN_PREEXISTING_HISTORY_LEAK — keine neuen Leaks
+- 📋 **Reparatur-Skripte** in `evidence/runner-ssh-server-side-repair-20260629T185253Z/` bereitgestellt
+
+### Phase 1 — Preflight
+- Evidence-Verzeichnis erstellt: `evidence/runner-ssh-server-side-repair-20260629T185253Z/`
+- Zielhost: 192.168.1.53, Zieluser: runner, Zielkey: SHA256:/aGuvMjthBM33jwOERPc/vhQeB85MQrj3s4G6nXYcNg
+- Constraints dokumentiert: kein Commit/Push, keine Secrets, nur SSH-Autorisierung + Read-Only
+
+### Phase 2-4 — Runner User, Authorized Keys, SSHD Config (BLOCKED)
+- Alle drei Phasen durch `ADMIN_ACCESS_BLOCKED` nicht ausführbar
+- Reparatur-Skripte vollständig dokumentiert (authorized-keys-repair.md, sshd-config-readonly-check.md)
+- Indirekte Client-Hinweise: `PubkeyAuthentication` wahrscheinlich `yes` (da `publickey` in Auth-Methoden gelistet)
+
+### Phase 5 — SSH Test (VORHER-Zustand, keine Reparatur)
+- SSH fehlgeschlagen: `Permission denied (publickey,password)`
+- Key angeboten (korrekter Fingerprint), aber NICHT akzeptiert
+
+### Phase 8 — n8n API Recheck
+- 🟢 HTTP 200, non-empty response — n8n API weiterhin GREEN
+
+### Phase 9 — Dispatcher Health
+- 🟡 HEALTH_YELLOW — nur bekannte Benign-Warnungen (powershell, untracked evidence, placeholder patterns)
+
+### Phase 10 — Secret Hygiene
+- 🟡 Keine neuen Secrets in dieser Session
+- 🟡 KNOWN_PREEXISTING_HISTORY_LEAK (`.playwright-mcp/` JWT Tokens, commit `485dc18`)
+
+### Phase 11-15 — Dokumentation & Reports
+- LINUX_MINT_OPERATIONAL_READINESS.md aktualisiert (ADMIN_ACCESS_BLOCKED)
+- STATUS.md, CHANGELOG.md, evidence-index/latest.md aktualisiert
+- validation-report.md und final-report.md erstellt
+- Kein Commit/Push (History-Leak nicht remediated)
+
+### Nächste Schritte
+1. Admin-Zugriff auf `192.168.1.53` herstellen (Proxmox Console oder root SSH)
+2. Reparatur-Skript aus `authorized-keys-repair.md` ausführen
+3. SSH-Validierung wiederholen
+4. `.playwright-mcp/` History-Remediation separat
+
+---
+
+## 2026-06-29 — Runner SSH Authorization Repair — Phases 7-16 🔴🔐 SSH_KEY_STILL_NOT_AUTHORIZED
+
+### SSH Validation AFTER User Key Authorization (Phase 7)
+- 🔴 **SSH_KEY_STILL_NOT_AUTHORIZED** — Both ED25519 keys still rejected by `runner@192.168.1.53`
+- 🔴 **Key `id_ed25519`** (SHA256:/aGuvMjthBM33jwOERPc/vhQeB85MQrj3s4G6nXYcNg): Offered ✅, Accepted ❌ — Permission denied
+- 🔴 **Key `docvault_n8n_docbot`** (SHA256:cheKw9D...): Offered ✅, Accepted ❌ — Permission denied
+- 🔴 **Root cause:** Server does not accept either key despite user confirming authorization — likely wrong public key or permissions
+
+### SSH Debug (Phase 9)
+- Key IS offered with correct fingerprint — local identity valid
+- Server DOES NOT accept key — "Authentications that can continue: publickey,password" persists after offering
+- Probable causes: wrong key in authorized_keys, incorrect file/dir permissions, or SSHD config
+
+### Runner Read-Only (Phase 8)
+- ⏭️ SKIPPED — SSH blocked, cannot validate runner state
+
+### n8n API Recheck (Phase 10)
+- 🟢 **N8N_API_READY** — HTTP 200, non-empty response, no regression
+
+### Dispatcher Health (Phase 11)
+- 🟡 **HEALTH_YELLOW** — 6/11 PASS, 3 WARN (known), 1 FAIL (secret-hygiene script), 1 SKIP (API key)
+- 🟢 n8n reachable ✅, workflow active (18 nodes) ✅, protected issues 5/5 ✅
+- 🔴 SSH runner blocked — cannot validate runner health
+
+### Secret Hygiene (Phase 12)
+- 🟡 **KNOWN_PREEXISTING_HISTORY_LEAK** — `.playwright-mcp/` JWT in commit `485dc18` (unchanged)
+- 🟢 0 new secrets introduced — all new evidence files clean
+- 🟢 `secrets/` 0 tracked, DB/backup 0 tracked
+- 🟢 42 hygiene violations all false positives (36 placeholders + 6 documented structure refs)
+
+### Operational Readiness (Phase 13)
+- 🔴 **Overall:** `SSH_KEY_STILL_NOT_AUTHORIZED` — NOT OPERATIONAL READY
+- 🟢 **Updated:** `LINUX_MINT_OPERATIONAL_READINESS.md` — full component status, SSH debug findings
+- 🟢 **No runtime changes** — read-only validation only
+
+### Evidence (Phases 7-16)
+- `evidence/runner-ssh-authorization-repair-2026-06-29T162037Z/` (10 files total)
+  - Phase 7: `runner-ssh-validation-after-authorization.md`
+  - Phase 9: `ssh-debug-redacted.md`
+  - Phase 10: `n8n-api-recheck-after-ssh-repair.md`
+  - Phase 11: `dispatcher-health-after-ssh-repair.md`
+  - Phase 12: `secret-hygiene-after-ssh-repair.md`
+  - Phase 13: `readiness-summary.md`
+  - Plus Phase 1-6 files from previous session
+
+### Updated Documents (Local Only — Not Committed)
+- STATUS.md, CHANGELOG.md, evidence-index/latest.md, LINUX_MINT_OPERATIONAL_READINESS.md
+
+### No Runtime Changes
+- ✅ No workflow, SQLite, runner, issue, or branch changes
+- ✅ No secrets output, no private keys output
+- ✅ No commit, no push — known secret leak prevents commit
+
+### Next
+- 🔴 User must verify correct public key + permissions on runner
+- 🔴 After SSH fix: re-run validation to confirm runner accessibility
+
+---
+
+## 2026-06-29 — Runner SSH Readiness Validation 🔴🔐 SSH_KEY_NOT_AUTHORIZED + RED_SECRET_LEAK
+
+### Aktion 2: SSH Runner Connectivity Test AFTER User Key Authorization
+- 🔴 **SSH_KEY_NOT_AUTHORIZED** — Both ED25519 keys rejected by `runner@192.168.1.53`
+- 🔴 **Keys tested:** `id_ed25519` (docvault-ai-vscode) + `docvault_n8n_docbot` (docvault-n8n-docbot) — both Permission denied
+- 🔴 **Server:** Responds with `publickey,password` authentication — key(s) not in `authorized_keys`
+- 🔴 **Runner Validation:** Phases 3-4 skipped (SSH blocked)
+
+### Aktion 1 Confirmed: n8n API remains GREEN
+- 🟢 **N8N_API_READY** — Recheck confirmed HTTP 200 with non-empty response
+- 🟢 No regression from prior validation
+
+### Secret Hygiene: RED_SECRET_LEAK (unchanged)
+- 🔴 `.playwright-mcp/` remains tracked in git index (48 files, 1 contains n8n JWT tokens)
+- 🔴 Git grep confirmed real JWT patterns in `console-2026-06-27T06-36-53-859Z.log`
+- 🔴 No `secrets/`, `.env.local`, or DB files tracked
+- 🟢 No new secret leaks introduced in this session
+
+### Dispatcher Health
+- 🟡 `HEALTH_YELLOW` — n8n reachable ✅, API green ✅, workflow local OK ✅, SSH blocked 🔴, secret-hygiene script FAIL (known pattern)
+- No real errors — 3 known false positives
+
+### Operational Readiness
+- 🔴 **Overall:** `SSH_KEY_NOT_AUTHORIZED` + `RED_SECRET_LEAK` — NOT operational ready
+- 🟢 **New document:** `LINUX_MINT_OPERATIONAL_READINESS.md` created with full component status
+- 🟢 **No runtime changes** — Read-only validation only
+- 🟢 **No issues modified** — Per session constraints
+- 🟢 **No secrets output** — All 12 phases clean
+
+### Required User Actions
+1. 🔴 **SSH Key:** User must add correct public key to `runner@192.168.1.53:~/.ssh/authorized_keys`
+2. 🔴 **Secret Remediation:** Token rotation + `.playwright-mcp/` cleanup still pending
+
+### Evidence
+- `evidence/linux-mint-runner-ssh-readiness-2026-06-29T15-32-01Z/` (9+ files: preflight, runner-ssh-connectivity, n8n-api-recheck, dispatcher-health, secret-hygiene, LINUX_MINT_OPERATIONAL_READINESS, validation-report, final-report)
+
+### Updated Documents
+- STATUS.md, CHANGELOG.md, evidence-index/latest.md, LINUX_MINT_OPERATIONAL_READINESS.md (new)
+
+---
+
 ## 2026-06-29 — n8n API Key Validation 🟢🔑 N8N_API_READY, SSH Pending 🟡🔐
 
 ### Aktion 1: n8n API Read-Only Validation
