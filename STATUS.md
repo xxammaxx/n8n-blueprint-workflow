@@ -1,7 +1,7 @@
 # Project Status
 
-**Last Updated:** 2026-07-02T15:20:00Z
-**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **NEW_MACHINE_OPERATIONAL_READY_WITH_HISTORY_LEAK_NOTE** 🟢🖥️ | **N8N_API_READY** 🟢🔑 | **SSH_AUTHORIZED** 🟢🔐 | **SU_RUNNER_HANG_CONFIRMED** 🟡🔍 | **DATABASE_LOCK_RUNNER_CT102_SUSPECTED** 🟡🔍 | **N8N_MCP_CAPABLE** 🟢🔧 | **PLAYWRIGHT_MCP_CAPABLE** 🟢🔧 | **MCP_BUILD_PROCESS_PREPARED** 🟢📐 | **RUNNER_PROVIDER_ENV_READY** 🟢⚙️
+**Last Updated:** 2026-07-02T15:42:00Z
+**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **NEW_MACHINE_OPERATIONAL_READY** 🟢🖥️ | **N8N_API_READY** 🟢🔑 | **SSH_AUTHORIZED** 🟢🔐 | **SU_RUNNER_HANG_CONFIRMED** 🟡🔍 | **DATABASE_LOCK_RUNNER_CT102_SUSPECTED** 🟡🔍 | **N8N_MCP_CAPABLE** 🟢🔧 | **PLAYWRIGHT_MCP_CAPABLE** 🟢🔧 | **MCP_BUILD_PROCESS_PREPARED** 🟢📐 | **RUNNER_PROVIDER_ENV_READY** 🟢⚙️ | **HISTORY_REMEDIATION_GREEN** ✅🧹
 
 ---
 
@@ -430,8 +430,8 @@ manual_reason=none
 **Priority 7:** ✅ **DeepSeek Dummy Agent Test** — DONE (`GREEN_PARTIAL`: dispatcher+runner OK, provider not in dispatch path)
 **Priority 8:** ✅ **Provider Dispatch Integration** — DONE (`DEEPSEEK_DUMMY_AGENT_GREEN`: DeepSeek provider loaded in dispatch path, mode upgraded from manual-terminal to opencode-run)
 **Priority 9:** 🔜 Refresh Playwright n8n UI session for UI-based operations (plan created)
-**Priority 10:** 🔴 **SSH Key Authorization on Runner** — User authorized key but still rejected. Verify correct public key in `/home/runner/.ssh/authorized_keys` (fingerprint `SHA256:/aGuvMjthBM33jwOERPc/vhQeB85MQrj3s4G6nXYcNg`) + check permissions (`chmod 700 ~/.ssh`, `chmod 600 ~/.ssh/authorized_keys`)
-**Priority 11:** 🟡 **`.playwright-mcp/` History-Remediation** — Separate task: Token Rotation → History Rewrite
+**Priority 10:** 🟢 **SSH Key Authorization on Runner** — ✅ RESOLVED (SSH_AUTHORIZED via Proxmox pct exec 102 repair)
+**Priority 11:** ✅ **`.playwright-mcp/` History-Remediation** — **DONE** (`HISTORY_REMEDIATION_GREEN`: `git filter-repo` purged `.playwright-mcp/` from master history, `--force-with-lease` push, remote verified clean, docs restored)
 
 ---
 
@@ -682,6 +682,32 @@ The GitHub comment now correctly reads real Runner Evidence from `status.json` i
 - 48 `.playwright-mcp/` Dateien getrackt, 47 clean
 - Remote Exposure in Commit `485dc18`
 - Empfehlung: Option A — History Rewrite mit `git filter-repo`
+
+---
+
+---
+
+## ✅ HISTORY_REMEDIATION_GREEN — `.playwright-mcp/` History Rewrite (2026-07-02T15:42:00Z)
+
+### Remediation Summary
+- ✅ **HISTORY_REMEDIATION_GREEN** — `.playwright-mcp/` vollständig aus `master` Git-History entfernt
+- ✅ **Token-Rotation bestätigt** (Nutzer)
+- ✅ **Force-with-lease Push** auf `master` ausgeführt (kein `--mirror`, kein Push auf `main`, keine Branches gelöscht)
+- ✅ **Remote validiert** — `.playwright-mcp/` nicht mehr in `origin/master`, 0 JWT-Muster
+- ✅ **Lokale Docs restored** — 115 Dateien (MCP Build Process, Evidence, Readiness) committed und normal gepusht
+- ✅ **Secret Hygiene** — 0 neue Leaks, alle Phasen GREEN
+
+### Rewrite Details
+| Property | Value |
+|----------|-------|
+| Tool | `git filter-repo --path .playwright-mcp/ --invert-paths --force` |
+| Removed | 48 Dateien (19 console logs + 29 page snapshots) |
+| Old HEAD | 4103436 |
+| New HEAD | 5993951 (rewrite) → bb97243 (docs commit) |
+| Force Push | `--force-with-lease` auf `master` |
+
+### Evidence
+- `evidence/playwright-mcp-history-remediation-20260702T152807Z/` (17 files: 19-Phasen-Dokumentation)
 
 ---
 

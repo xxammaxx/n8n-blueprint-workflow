@@ -1,16 +1,18 @@
 # Evidence Index — Latest
 
-**Last Updated:** 2026-07-02T15:20:00Z
+**Last Updated:** 2026-07-02T15:42:00Z
 
 ## Active Evidence Directory
 
-**Current:** `evidence/runner-post-ssh-stabilization-database-locked-n8n-mcp-playwright-20260702T151206Z/` 🟢🔍🔧📐🟡⚠️
+**Current:** `evidence/playwright-mcp-history-remediation-20260702T152807Z/` ✅🧹 **HISTORY_REMEDIATION_GREEN**
 
-**Previous:** `evidence/runner-admin-access-recovery-20260629T191154Z/` 🟢🔐🟢🖥️🟡⚠️
+**Previous:** `evidence/runner-post-ssh-stabilization-database-locked-n8n-mcp-playwright-20260702T151206Z/` 🟢🔍🔧📐🟡⚠️
 
 ## Status
 
-🟢🔍🔧📐🟡⚠️ **NEW_MACHINE_OPERATIONAL_READY_WITH_HISTORY_LEAK_NOTE** + **SU_RUNNER_HANG_CONFIRMED** + **DATABASE_LOCK_RUNNER_CT102_SUSPECTED** + **N8N_MCP_CAPABLE** + **PLAYWRIGHT_MCP_CAPABLE** + **MCP_BUILD_PROCESS_PREPARED** — Post-SSH-Stabilisierungscheck abgeschlossen: SSH GREEN, n8n API GREEN. `su - runner` hängt (PAM-Problem, Workaround: `runuser`). `database locked` diagnostiziert (OpenCode SQLite auf CT 102 mit 1.3MB WAL). n8n MCP (v2.26.8) und Playwright MCP technisch unterstützt und vorbereitet: Architektur (`docs/MCP_BUILD_PROCESS.md`), Config-Templates (`mcp/`), Preflight-Plan, Provider-Smoke-Plan. Alle 30+ neuen Dateien secret-clean. 0 Reparaturen ausgeführt, 0 Secrets exposed, 0 Runtime-Änderungen. Siehe Evidence-Verzeichnis für vollständige 24-Phasen-Dokumentation.
+✅🧹 **HISTORY_REMEDIATION_GREEN** — `.playwright-mcp/` vollständig aus `master` Git-History entfernt via `git filter-repo`. Token-Rotation bestätigt, `--force-with-lease` Push auf `master`, Remote validiert, Docs restored (115 files). 0 neue Leaks. Siehe Evidence-Verzeichnis für vollständige 19-Phasen-Dokumentation.
+
+**Previous:** 🟢🔍🔧📐🟡⚠️ **NEW_MACHINE_OPERATIONAL_READY** + **SU_RUNNER_HANG_CONFIRMED** + **DATABASE_LOCK_RUNNER_CT102_SUSPECTED** + **N8N_MCP_CAPABLE** + **PLAYWRIGHT_MCP_CAPABLE** + **MCP_BUILD_PROCESS_PREPARED** — Post-SSH-Stabilisierungscheck abgeschlossen. Siehe `evidence/runner-post-ssh-stabilization-.../` für 24-Phasen-Dokumentation.
 
 ## Key Files (Current Session: Runner Admin Access Recovery Phases 1-17)
 

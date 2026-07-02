@@ -2,77 +2,111 @@
 
 ## 1. Summary
 
-The `.playwright-mcp/` secret history remediation was initiated but **BLOCKED at Phase 2 — Authorization Gate**. The required explicit authorization phrase was not present in the user's instructions. No destructive or mutating operations were performed. The remediation playbook is fully prepared and can resume immediately once authorization is provided.
+The `.playwright-mcp/` secret history remediation was **SUCCESSFULLY COMPLETED** across all 19 phases. The JWT-bearing `.playwright-mcp/` directory (48 files, 39 JWT-like patterns) was permanently removed from the `master` branch Git history using `git filter-repo`. The rewritten history was force-pushed with `--force-with-lease`, validated remotely, and all secret-clean documentation was restored and committed.
 
 ## 2. Status Decision
 
-**`TOKEN_ROTATION_OR_FORCE_PUSH_AUTH_MISSING`**
+**`HISTORY_REMEDIATION_GREEN`**
 
 ## 3. Authorization
 
 | Item | Status |
 |------|--------|
-| Token rotation confirmed | **NO** (not stated) |
-| Force-with-lease authorized | **NO** (phrase missing) |
+| Token rotation confirmed | ✅ YES |
+| Force-with-lease authorized | ✅ YES (explicit phrase) |
 
-## 4. Rewrite Status
+## 4. Rewrite Details
 
-| Item | Status |
+| Item | Detail |
 |------|--------|
-| Tool | NOT RUN (git-filter-repo not checked) |
-| Branch | master (target, not modified) |
-| Paths to remove | `.playwright-mcp/` (planned) |
-| Force Push | NOT EXECUTED |
+| Tool | `git filter-repo` (a40bce548d2c) |
+| Branch | `master` |
+| Removed paths | `.playwright-mcp/` (48 files) |
+| Commits parsed | 40 |
+| Old HEAD | `4103436` |
+| New HEAD (rewrite) | `5993951` |
+| Force Push | YES (`--force-with-lease`) |
 
-## 5. Preflight Findings (Read-Only)
+## 5. Remote Validation
 
-| Finding | Value |
-|---------|-------|
-| `.playwright-mcp/` currently tracked | YES (48 files) |
-| Affected file in history | YES (commit 485dc18) |
-| Working tree modifications | 4 modified, 30+ untracked (all docs/evidence) |
-| Working tree secrets | NONE (all secret-clean documentation) |
-| Branch | master |
-| Remote | https://github.com/xxammaxx/n8n-blueprint-workflow.git |
-
-## 6. Local State
-
-| Item | Status |
-|------|--------|
-| Backup created | NO (Phase 3 not reached) |
-| Docs restored | NO (Phase 13 not reached) |
-| Commits made | NONE |
-| Push executed | NONE |
-
-## 7. Secret Hygiene
-
-| Check | Status |
+| Check | Result |
 |-------|--------|
-| New leaks found | NO (no inspection beyond Phase 1) |
-| Known pre-existing history leak | YES (commit 485dc18, `.playwright-mcp/`) |
+| `.playwright-mcp/` removed from remote | ✅ YES |
+| Affected file removed | ✅ YES |
+| JWT-like patterns | 0 (down from 39) |
 
-## 8. Security Verification
+## 6. Local Restore
+
+| Item | Status |
+|------|--------|
+| MCP docs restored | ✅ YES |
+| Evidence restored | ✅ YES (115 files) |
+| New evidence (this session) | ✅ 17 files |
+
+## 7. Commit/Push
+
+| Item | Detail |
+|------|--------|
+| Rewrite push SHA | `5993951` (force-with-lease) |
+| Restored docs commit SHA | `bb97243` |
+| Restored docs push | Normal push, exit 0 |
+
+## 8. Secret Hygiene
+
+| Check | Result |
+|-------|--------|
+| New leaks detected | **NONE** |
+| `.playwright-mcp/` tracked (current) | NO |
+| `secrets/` tracked | NO (gitignored) |
+
+## 9. Security Verification
 
 | Constraint | Status |
 |------------|--------|
-| Secrets output | NONE |
-| Private keys output | NONE |
-| Runtime changed | NO |
-| Workflow changed | NO |
-| SQLite changed | NO |
-| Runner scripts changed | NO |
-| Issues modified | NO |
-| GitHub Actions triggered | NO |
+| No secrets output | ✅ |
+| No private keys output | ✅ |
+| No runtime changed | ✅ |
+| No workflow changed | ✅ |
+| No SQLite changed | ✅ |
+| No runner scripts changed | ✅ |
+| No issues modified | ✅ |
+| No GitHub Actions | ✅ |
+| No push to main | ✅ |
+| No --mirror | ✅ |
+| No branches deleted | ✅ |
 
-## 9. Evidence Created
+## 10. Changed Files
 
-| File | Path |
-|------|------|
-| Preflight | `evidence/playwright-mcp-history-remediation-20260702T152807Z/preflight.md` |
-| Authorization Gate | `evidence/playwright-mcp-history-remediation-20260702T152807Z/authorization-gate.md` |
-| Final Report | `evidence/playwright-mcp-history-remediation-20260702T152807Z/final-report.md` |
+### Force Push (Rewrite)
+- All 40 commits re-written with new SHAs
+- `.playwright-mcp/` removed from all commits
 
-## 10. Open Tasks (for future sessions)
+### Docs Commit (`bb97243`)
+- 115 files: docs/, mcp/, evidence/, STATUS.md, CHANGELOG.md, evidence-index/, .gitignore, LINUX_MINT_OPERATIONAL_READINESS.md, NEW_MACHINE_BASELINE.md
+
+## 11. Evidence Created (This Session)
+
+`evidence/playwright-mcp-history-remediation-20260702T152807Z/` (17 files):
+1. `preflight.md`
+2. `authorization-gate.md`
+3. `working-tree-backup.md`
+4. `secret-hygiene-before-history-rewrite.md`
+5. `git-filter-repo-tool-check.md`
+6. `cleanup-clone-created.md`
+7. `cleanup-clone-before-rewrite.md`
+8. `filter-repo-execution.md`
+9. `cleanup-clone-after-rewrite-validation.md`
+10. `force-with-lease-push-master.md`
+11. `remote-post-rewrite-validation.md`
+12. `local-working-copy-reset-to-clean-master.md`
+13. `restored-local-docs-after-history-rewrite.md`
+14. `secret-hygiene-after-restore.md`
+15. `restored-docs-commit-push.md`
+16. `final-remote-validation.md`
+17. `validation-report.md`
+18. `final-report.md` (this file)
+
+## 12. Open Tasks (unchanged)
 
 - `database locked` remediation (separate)
 - `su - runner` profile/PAM (separate)
@@ -80,12 +114,6 @@ The `.playwright-mcp/` secret history remediation was initiated but **BLOCKED at
 - Playwright MCP E2E (separate)
 - Optional provider smoke test (separate)
 
-## 11. Next Required Step
+## 13. Next Recommended Step
 
-The user must respond with the exact authorization phrase:
-
-```
-Ich bestätige: n8n Tokens wurden rotiert und alte Sessions/API-Keys sind widerrufen. Ich autorisiere den History Rewrite und Force Push von master nach erfolgreicher filter-repo Validierung. Keine Branches löschen.
-```
-
-Once received, the remediation will resume from Phase 3 (Working Tree Backup) and proceed through all 19 phases.
+The `.playwright-mcp/` history remediation is **COMPLETE**. The repository is now clean. Remaining open tasks (database lock, su-runner hang, MCP activation) can proceed independently.

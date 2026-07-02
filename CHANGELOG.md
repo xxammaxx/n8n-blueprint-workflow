@@ -1,5 +1,32 @@
 # Changelog
 
+## 2026-07-02 — `.playwright-mcp/` History Remediation ✅🧹 HISTORY_REMEDIATION_GREEN
+
+### Remediation Completed (19 Phases)
+- ✅ **HISTORY_REMEDIATION_GREEN** — `.playwright-mcp/` (48 Dateien mit n8n JWTs) aus gesamter `master` Git-History entfernt
+- ✅ **Token-Rotation** bestätigt (Nutzer) vor Remediation
+- ✅ **Backup** — Working Tree (secret-clean docs) gesichert vor Rewrite
+- ✅ **Secret Hygiene** — 0 neue Leaks in allen Phasen (pre/post rewrite)
+- ✅ **git filter-repo** — `--path .playwright-mcp/ --invert-paths --force`, 40 commits parsed, 0.16s
+- ✅ **Force-with-lease Push** — `master` (kein `--mirror`, kein Push auf `main`, keine Branches gelöscht)
+- ✅ **Remote Validation** — Fresh clone bestätigt: `.playwright-mcp/` entfernt, 0 JWT-Muster
+- ✅ **Local Reset** — `git reset --hard origin/master` auf bereinigten `master`
+- ✅ **Docs Restore** — 115 Dateien (MCP Build Process, Evidence, Readiness) aus Backup wiederhergestellt
+- ✅ **Commit bb97243** — `docs(ops): add mcp build process and post-ssh readiness evidence` (normal push)
+- ✅ **Final Validation** — remote `master` sauber, alle JWT-Muster entfernt, keine unpushed Commits
+
+### Rewrite Details
+| Before | After |
+|--------|-------|
+| HEAD `4103436` (.playwright-mcp/ tracked) | HEAD `5993951` (rewrite) → `bb97243` (docs) |
+| 48 `.playwright-mcp/` files | 0 |
+| 39 JWT-like files | 0 |
+
+### Evidence
+- `evidence/playwright-mcp-history-remediation-20260702T152807Z/` (17 files)
+
+---
+
 ## 2026-07-02 — Post-SSH Stabilization + DB Lock + MCP Preparation — Phases 1-24 🟢🔍🔧📐
 
 ### Session Summary
