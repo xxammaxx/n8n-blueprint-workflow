@@ -1,10 +1,12 @@
 # Evidence Index — Latest
 
-**Last Updated:** 2026-07-02T21:24:XXZ
+**Last Updated:** 2026-07-02T21:51:43Z
 
 ## Active Evidence Directory
 
-**Current:** `evidence/playwright-mcp-e2e-smoke-20260702T211928Z/` 🟢🎭🟡🔒 **PLAYWRIGHT_E2E_SMOKE_GREEN** | **N8N_UI_LOGIN_REQUIRED**
+**Current:** `evidence/dispatcher-ui-smoke-after-login-20260702T213341Z/` 🟢🎭✅ **DISPATCHER_UI_SMOKE_GREEN**
+
+**Previous:** `evidence/playwright-mcp-e2e-smoke-20260702T211928Z/` 🟢🎭🟡🔒 **PLAYWRIGHT_E2E_SMOKE_GREEN** | **N8N_UI_LOGIN_REQUIRED**
 
 **Previous:** `evidence/mcp-local-config-git-hygiene-20260702T211120Z/` 🟢🧹 **MCP_LOCAL_CONFIG_GIT_HYGIENE_GREEN**
 

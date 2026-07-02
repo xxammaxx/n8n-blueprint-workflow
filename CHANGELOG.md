@@ -1,5 +1,26 @@
 # Changelog
 
+## 2026-07-02 — Dispatcher UI Smoke nach manuellem Login 🟢🎭✅ DISPATCHER_UI_SMOKE_GREEN
+
+### Session Summary (12 Phases)
+- 🟢 **DISPATCHER_UI_SMOKE_GREEN** — Dispatcher Workflow nach manuellem Login in n8n UI visuell bestätigt
+- 🟢 **Manual Login:** Automatische URL-Erkennung (Smart Polling), 42s + 24s
+- 🟢 **Dispatcher Workflow:** `Sv12QTo56NoPUu2D` gefunden — "GitHub Ready Issue -> Runner Agent Dispatch", active, published, 18 nodes
+- 🟢 **UI Status:** Kein Dirty State, keine Error-Banner, Schedule + Manual Trigger sichtbar
+- 🟢 **n8n API Cross-Check:** HTTP 200, Dispatcher active=True, 9 workflows total
+- 🟢 **Runner Recheck:** SSH GREEN, OpenCode 1.17.9, Loader + Dispatch present
+- 🟢 **Secret Hygiene:** GREEN — 0 echte Leaks pre + post UI Smoke
+- 🟢 **12/12 Hard Constraints:** All PASS — 0 changes, 0 credentials, 0 issues, 0 agent runs
+
+### Key Status Changes
+- `N8N_UI_LOGIN_REQUIRED` → resolved — Manual login executed, dispatcher UI verified
+- New: `DISPATCHER_UI_SMOKE_GREEN` — Dispatcher workflow visually confirmed in n8n UI
+
+### Evidence
+- `evidence/dispatcher-ui-smoke-after-login-20260702T213341Z/` (10+ files: preflight, secret hygiene pre/post, manual login gate, dispatcher workflow UI smoke, API cross-check, runner recheck, dispatcher health, validation, final report)
+
+---
+
 ## 2026-07-02 — Playwright E2E Smoke Test 🟢🎭 PLAYWRIGHT_E2E_SMOKE_GREEN
 
 ### Session Summary (14 Phases)

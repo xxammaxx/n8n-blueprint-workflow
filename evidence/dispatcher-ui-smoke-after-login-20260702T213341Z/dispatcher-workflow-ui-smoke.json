@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-07-02T21:51:43.202Z",
+  "phase": "dispatcher-workflow-ui-smoke",
+  "status": "DISPATCHER_UI_SMOKE_GREEN",
+  "loginDetected": true,
+  "workflowId": "Sv12QTo56NoPUu2D",
+  "wfTitle": "▶️ GitHub Ready Issue -> Runner Agent Dispatch - n8n[DEV]",
+  "wfUrl": "http://192.168.1.52:5678/workflow/Sv12QTo56NoPUu2D",
+  "needsReLogin": true,
+  "findings": {
+    "bodyTextLength": 912,
+    "bodyTextPreview": "Personal\n/\nGitHub Ready Issue -> Runner Agent Dispatch\nsource-of-truth\ndispatcher\ngithub\n0 / 3\nPublished\nEditor\nExecutions\nEvaluations\n1 item\nManual Trigger (Smoke Test)\nExecute workflow\nFetch Issue from GitHub\nGuardrails & Validate\nRemove agent:ready Label\nAdd agent:running Label\nPrepare RUN_INPUT.json\nSSH Write RUN_INPUT to Runner\nexecute: command\nSSH Start Runner Script\nexecute: command\nWait (5s)\nSSH Read status.json\nexecute: command\nFormat Evidence Comment\nCreate GitHub Comment on Issue\nAdd Labels (agent:needs-review, evidence:attached)\nRemove agent:running Label (404-tolerant)\nFormat Final Result\nSchedule Trigger (15 min)\nExecute workflow\nGitHub Search Issues (agent:ready)\nGET: https://api.github.com/search/issues?q=is:issue+is:open+label:agent:ready+repo:xxammaxx/n8n-blueprint-workfl",
+    "hasActiveText": true,
+    "hasDirtyState": false,
+    "hasErrorText": false,
+    "hasDispatcherName": true,
+    "nodeCount": 146,
+    "hasScheduleTrigger": true,
+    "hasManualTrigger": true,
+    "canvasElementsCount": 172,
+    "urlContainsWorkflowId": true
+  }
+}

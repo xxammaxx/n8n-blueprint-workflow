@@ -1,7 +1,42 @@
 # Project Status
 
-**Last Updated:** 2026-07-02T21:24:XXZ
-**Current Status:** **PLAYWRIGHT_E2E_SMOKE_GREEN** 🟢🎭 | **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **NEW_MACHINE_OPERATIONAL_READY** 🟢🖥️ | **N8N_API_READY** 🟢🔑 | **SSH_AUTHORIZED** 🟢🔐 | **SU_RUNNER_FIXED** ✅🔧 | **DATABASE_LOCK_REMEDIATION_GREEN** ✅🔓 | **OPENCODE_PROVIDER_KEY_STRUCTURALLY_READY** 🟢⚙️ | **N8N_MCP_ACTIVATION_PREPARED** 🟡📐 | **PLAYWRIGHT_MCP_CAPABLE** 🟢🎭 | **N8N_UI_LOGIN_REQUIRED** 🟡🔒 | **PROVIDER_SMOKE_AUTH_MISSING** 🟡🔒 | **SECRET_HYGIENE_GREEN** 🟢🧹 | **MCP_LOCAL_CONFIG_GIT_HYGIENE_GREEN** 🟢🧹
+**Last Updated:** 2026-07-02T21:51:43Z
+**Current Status:** **DISPATCHER_UI_SMOKE_GREEN** 🟢🎭✅ | **PLAYWRIGHT_E2E_SMOKE_GREEN** 🟢🎭 | **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **NEW_MACHINE_OPERATIONAL_READY** 🟢🖥️ | **N8N_API_READY** 🟢🔑 | **SSH_AUTHORIZED** 🟢🔐 | **SU_RUNNER_FIXED** ✅🔧 | **DATABASE_LOCK_REMEDIATION_GREEN** ✅🔓 | **OPENCODE_PROVIDER_KEY_STRUCTURALLY_READY** 🟢⚙️ | **N8N_MCP_ACTIVATION_PREPARED** 🟡📐 | **PLAYWRIGHT_MCP_CAPABLE** 🟢🎭 | **PROVIDER_SMOKE_AUTH_MISSING** 🟡🔒 | **SECRET_HYGIENE_GREEN** 🟢🧹 | **MCP_LOCAL_CONFIG_GIT_HYGIENE_GREEN** 🟢🧹
+
+---
+
+## 🟢 Dispatcher UI Smoke nach manuellem Login (2026-07-02T21:51:43Z)
+
+### Session Summary (12 Phasen)
+- 🟢 **DISPATCHER_UI_SMOKE_GREEN** — Dispatcher Workflow nach manuellem Login in n8n UI visuell bestätigt
+- 🟢 **Manual Login:** Erfolgreich — 42s (Phase 3), 24s (Phase 4), automatische URL-Erkennung
+- 🟢 **Dispatcher Workflow:** `Sv12QTo56NoPUu2D` gefunden — "GitHub Ready Issue -> Runner Agent Dispatch"
+- 🟢 **Workflow Status:** Published, Active, 18 Nodes, Schedule Trigger (15 min), Manual Trigger
+- 🟢 **Keine Errors:** Kein Dirty State, keine Error-Banner, kein Unsaved
+- 🟢 **n8n API Cross-Check:** HTTP 200, 9 Workflows, Dispatcher active=True
+- 🟢 **Runner Recheck:** SSH GREEN, OpenCode 1.17.9, Loader + Dispatch present
+- 🟢 **Secret Hygiene:** GREEN — 0 echte Leaks (pre + post UI Smoke)
+- 🟢 **Keine Änderungen:** 0 Workflow-Änderungen, 0 Credentials, 0 Issues, 0 Agent Runs
+
+### Key Findings
+| Check | Result |
+|-------|--------|
+| Manual Login (Phase 3) | ✅ YES — Smart polling detected login (42s, 21 polls) |
+| Dashboard sichtbar | ✅ YES — URL → /home/workflows |
+| Dispatcher Workflow gefunden | ✅ YES — Title: "▶️ GitHub Ready Issue -> Runner Agent Dispatch" |
+| Active/Published | ✅ YES — "Published" im Body-Text |
+| Schedule Trigger | ✅ YES — "Schedule Trigger (15 min)" |
+| Manual Trigger | ✅ YES — "Manual Trigger (Smoke Test)" |
+| No Errors/Dirty State | ✅ YES — Clean |
+| n8n API | ✅ HTTP 200 — Dispatcher active=True |
+| Runner SSH | ✅ GREEN — All tools present |
+| Secret Hygiene | ✅ GREEN — 0 new leaks |
+| Workflow Changes | 0 — Read-only only |
+| Credentials Opened | 0 — None opened |
+| Issues Modified | 0 — Per constraint |
+
+### Evidence
+- **Verzeichnis:** `evidence/dispatcher-ui-smoke-after-login-20260702T213341Z/` (10+ files)
 
 ---
 

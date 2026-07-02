@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-07-02T21:50:25.501Z",
+  "phase": "manual-login-gate",
+  "loggedIn": true,
+  "pollCount": 21,
+  "waitSeconds": 42,
+  "title": "Workflows - n8n[DEV]",
+  "url": "http://192.168.1.52:5678/home/workflows",
+  "hasLoginText": false,
+  "hasDashboardText": true,
+  "hasWorkflowText": true
+}

@@ -1,14 +1,14 @@
 # Linux Mint Operational Readiness
 
-**Last Updated:** 2026-07-02T21:24:XXZ  
-**Session:** Playwright E2E Smoke Test (Phases 1-14)  
-**Agent:** Issue Orchestrator (Playwright MCP E2E Smoke)
+**Last Updated:** 2026-07-02T21:51:43Z  
+**Session:** Dispatcher UI Smoke nach manuellem Login (Phasen 1-12)  
+**Agent:** Issue Orchestrator (Dispatcher UI Smoke)
 
 ---
 
-## Overall Status: **NEW_MACHINE_OPERATIONAL_READY_WITH_HISTORY_LEAK_NOTE**
+## Overall Status: **DISPATCHER_UI_SMOKE_GREEN** 🟢✅
 
-Combined operational readiness: **READY** 🟢 — SSH zum Runner GREEN, n8n API reachable, Provider-Env strukturell READY. **DATABASE_LOCK_REMEDIATION_GREEN** — Stale PID 7103 via SIGTERM resolved. **SU_RUNNER_FIXED** — `pam_systemd.so` in LXC-Container auskommentiert, `su - runner` funktioniert jetzt. **PLAYWRIGHT_E2E_SMOKE_GREEN** — Playwright CLI E2E smoke test gegen n8n UI erfolgreich (Login-Seite bestätigt). **N8N_UI_LOGIN_REQUIRED** — Dispatcher UI Smoke benötigt manuelle Anmeldung.
+Combined operational readiness: **FULLY OPERATIONAL** 🟢 — Dispatcher Workflow `Sv12QTo56NoPUu2D` visuell in n8n UI bestätigt (active, published, 18 nodes, no errors). Manual Login funktioniert sowohl mit Smart Polling (42s) als auch Re-Login (24s). SSH zum Runner GREEN, n8n API reachable. **DATABASE_LOCK_REMEDIATION_GREEN**, **SU_RUNNER_FIXED**, **PLAYWRIGHT_E2E_SMOKE_GREEN**. N8N_UI_LOGIN_REQUIRED ist resolved.
 
 ---
 
