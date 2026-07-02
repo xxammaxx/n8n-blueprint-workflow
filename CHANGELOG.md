@@ -1,5 +1,26 @@
 # Changelog
 
+## 2026-07-02 — Playwright E2E Smoke Test 🟢🎭 PLAYWRIGHT_E2E_SMOKE_GREEN
+
+### Session Summary (14 Phases)
+- 🟢 **PLAYWRIGHT_E2E_SMOKE_GREEN** — Playwright CLI E2E smoke test against n8n UI completed
+- 🟢 **n8n UI Smoke:** Login page reached (HTTP 200, "n8n.io - Workflow Automation"), isolated session
+- 🟡 **N8N_UI_LOGIN_REQUIRED:** Manual login needed — Dispatcher UI smoke skipped
+- 🟢 **n8n API Cross-Check:** HTTP 200, Dispatcher `Sv12QTo56NoPUu2D` confirmed active (18 nodes)
+- 🟢 **Runner Recheck:** SSH GREEN, OpenCode 1.17.9, Node v22.23.0, loader + dispatch present
+- 🟡 **PLAYWRIGHT_MCP_TOOL_GAP:** CLI fallback used (v1.61.1, Chromium system) — no direct MCP transport
+- 🟢 **Secret Hygiene:** GREEN — 0 new leaks pre + post E2E
+- 🟢 **14/14 Hard Constraints:** All PASS — 0 changes, 0 credentials, 0 issues, 0 agent runs
+
+### Key Status Changes
+- `PLAYWRIGHT_E2E_AUTH_MISSING` → `N8N_UI_LOGIN_REQUIRED` — E2E authorized and executed, login gate encountered
+- New: `PLAYWRIGHT_E2E_SMOKE_GREEN` — UI smoke test phase completed successfully
+
+### Evidence
+- `evidence/playwright-mcp-e2e-smoke-20260702T211928Z/` (13+ files: preflight, secret hygiene pre/post, playwright capability, UI smoke, manual login gate, dispatcher smoke, API cross-check, runner recheck, dispatcher health, validation, final report)
+
+---
+
 ## 2026-07-02 — MCP Local Config Git Hygiene 🟢🧹 MCP_LOCAL_CONFIG_GIT_HYGIENE_GREEN
 
 ### Hygiene Run Completed (9 Phases)

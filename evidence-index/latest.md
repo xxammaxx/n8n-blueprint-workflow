@@ -1,10 +1,12 @@
 # Evidence Index — Latest
 
-**Last Updated:** 2026-07-02T21:11:20Z
+**Last Updated:** 2026-07-02T21:24:XXZ
 
 ## Active Evidence Directory
 
-**Current:** `evidence/mcp-local-config-git-hygiene-20260702T211120Z/` 🟢🧹 **MCP_LOCAL_CONFIG_GIT_HYGIENE_GREEN**
+**Current:** `evidence/playwright-mcp-e2e-smoke-20260702T211928Z/` 🟢🎭🟡🔒 **PLAYWRIGHT_E2E_SMOKE_GREEN** | **N8N_UI_LOGIN_REQUIRED**
+
+**Previous:** `evidence/mcp-local-config-git-hygiene-20260702T211120Z/` 🟢🧹 **MCP_LOCAL_CONFIG_GIT_HYGIENE_GREEN**
 
 **Previous:** `evidence/n8n-mcp-playwright-e2e-prep-20260702T204149Z/` 🟢🔑🟢⚙️🟡📐🟢🎭🟡🔒 **N8N_API_READY** | **OPENCODE_PROVIDER_KEY_STRUCTURALLY_READY** | **N8N_MCP_ACTIVATION_PREPARED** | **PLAYWRIGHT_MCP_CAPABLE** | **PROVIDER_SMOKE_AUTH_MISSING** | **PLAYWRIGHT_E2E_AUTH_MISSING**
 
@@ -15,6 +17,27 @@
 ## Status
 
 🟢🧹 **MCP_LOCAL_CONFIG_GIT_HYGIENE_GREEN** — `mcp/n8n-mcp.local.json` confirmed gitignored (never tracked), placeholders only, no secret leaks
+
+## Key Files (Current Session: Playwright E2E Smoke Test)
+
+| File | Description |
+|------|-------------|
+| `preflight.md` | Phase 1 — Preflight: Git, n8n health, Runner SSH, E2E auth confirmed |
+| `secret-hygiene-before-playwright-e2e.md` | Phase 2 — Secret hygiene GREEN before E2E |
+| `playwright-mcp-capability-recheck.md` | Phase 3 — PLAYWRIGHT_CLI_FALLBACK_USED (v1.61.1, Chromium) |
+| `n8n-ui-smoke-isolated.md` | Phase 4 — Isolated UI smoke: Login page confirmed |
+| `manual-login-gate.md` | Phase 5 — N8N_UI_LOGIN_REQUIRED — manual login needed |
+| `dispatcher-workflow-ui-smoke.md` | Phase 6 — Dispatcher UI smoke skipped (login required) |
+| `n8n-api-cross-check.md` | Phase 7 — API: Dispatcher confirmed active, 18 nodes |
+| `runner-readonly-recheck-after-playwright-e2e.md` | Phase 8 — Runner SSH GREEN |
+| `dispatcher-health-after-playwright-e2e.md` | Phase 9 — Dispatcher HEALTH_YELLOW |
+| `secret-hygiene-after-playwright-e2e.md` | Phase 10 — Secret hygiene GREEN (post E2E) |
+| `validation-report.md` | Phase 12 — Constraint validation |
+| `final-report.md` | Phase 14 — Final report |
+
+## Status
+
+🟢🎭🟡🔒 **PLAYWRIGHT_E2E_SMOKE_GREEN** | **N8N_UI_LOGIN_REQUIRED** — Playwright CLI E2E smoke test completed against n8n UI. Login gate encountered — UI reachable but manual login needed for Dispatcher workflow visual check. API cross-check confirmed Dispatcher active (Sv12QTo56NoPUu2D, 18 nodes). Secret hygiene GREEN pre + post E2E.
 
 ## Key Files (Current Session: MCP Local Config Git Hygiene)
 

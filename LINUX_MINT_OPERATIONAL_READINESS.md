@@ -1,14 +1,14 @@
 # Linux Mint Operational Readiness
 
-**Last Updated:** 2026-07-02T16:16:46Z  
-**Session:** n8n MCP & Playwright MCP Readiness Preparation (Phases 1-15)  
-**Agent:** Issue Orchestrator (n8n MCP & Playwright MCP Readiness)
+**Last Updated:** 2026-07-02T21:24:XXZ  
+**Session:** Playwright E2E Smoke Test (Phases 1-14)  
+**Agent:** Issue Orchestrator (Playwright MCP E2E Smoke)
 
 ---
 
 ## Overall Status: **NEW_MACHINE_OPERATIONAL_READY_WITH_HISTORY_LEAK_NOTE**
 
-Combined operational readiness: **READY** 🟢 — SSH zum Runner GREEN, n8n API reachable, Provider-Env strukturell READY. **DATABASE_LOCK_REMEDIATION_GREEN** — Stale PID 7103 via SIGTERM resolved. **SU_RUNNER_FIXED** — `pam_systemd.so` in LXC-Container auskommentiert, `su - runner` funktioniert jetzt. **N8N_MCP_ACTIVATION_AUTH_MISSING** — n8n MCP nicht aktiviert (wartet auf Freigabe). **PLAYWRIGHT_MCP_READY** — Playwright MCP v0.0.77 mit `--isolated` verfügbar.
+Combined operational readiness: **READY** 🟢 — SSH zum Runner GREEN, n8n API reachable, Provider-Env strukturell READY. **DATABASE_LOCK_REMEDIATION_GREEN** — Stale PID 7103 via SIGTERM resolved. **SU_RUNNER_FIXED** — `pam_systemd.so` in LXC-Container auskommentiert, `su - runner` funktioniert jetzt. **PLAYWRIGHT_E2E_SMOKE_GREEN** — Playwright CLI E2E smoke test gegen n8n UI erfolgreich (Login-Seite bestätigt). **N8N_UI_LOGIN_REQUIRED** — Dispatcher UI Smoke benötigt manuelle Anmeldung.
 
 ---
 
@@ -24,6 +24,8 @@ Combined operational readiness: **READY** 🟢 — SSH zum Runner GREEN, n8n API
 | **New Sub-Status** | `MCP_BUILD_PROCESS_PREPARED` — Architektur, Templates, Pläne erstellt |
 | **New Sub-Status** | `PLAYWRIGHT_MCP_READY` — Playwright MCP v0.0.77, `--isolated`, browser ready |
 | **New Sub-Status** | `N8N_MCP_ACTIVATION_AUTH_MISSING` — n8n MCP capable but not activated |
+| **New Sub-Status** | `PLAYWRIGHT_E2E_SMOKE_GREEN` — Playwright CLI E2E smoke test against n8n UI successful |
+| **New Sub-Status** | `N8N_UI_LOGIN_REQUIRED` — Manual login needed for Dispatcher UI smoke |
 | **Admin Access** | `ADMIN_ACCESS_AVAILABLE` — SSH root@192.168.1.136 via ed25519 key |
 | **Runner SSH** | `SSH_AUTHORIZED` 🟢 |
 | **Runner Provider Env** | `RUNNER_PROVIDER_ENV_READY` |
@@ -61,7 +63,7 @@ Real n8n JWT tokens in tracked `.playwright-mcp/` files (commits 485dc18, 508884
 | **DeepSeek Local Secret** | 🟢 PRESENT | `secrets/opencode-provider.env` exists locally (value not inspected) |
 | **Secret Hygiene** | 🟡 KNOWN LEAK | JWT tokens in tracked `.playwright-mcp/` files (pre-existing, no new leaks) |
 | **n8n MCP** | 🟡 AUTH MISSING | n8n 2.26.8 supports MCP (≥2.18.4), not yet activated in UI |
-| **Playwright MCP** | 🟢 READY | Playwright MCP v0.0.77, `--isolated` flag confirmed |
+| **Playwright MCP** | 🟢 E2E SMOKE GREEN | Playwright CLI v1.61.1, Chromium system, isolated session, login page confirmed |
 
 ---
 
