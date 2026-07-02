@@ -1,5 +1,33 @@
 # Changelog
 
+## 2026-07-02 — su-runner PAM Remediation ✅🔧 SU_RUNNER_FIXED
+
+### Diagnosis & Repair Executed (18 Phases)
+- ✅ **SU_RUNNER_FIXED** — `su - runner`, `su runner`, `runuser -l runner` hängen nicht mehr
+- ✅ **Root Cause:** `pam_systemd.so` in `/etc/pam.d/common-session` und `/etc/pam.d/runuser-l` — versucht Session bei `systemd-logind` via D-Bus zu registrieren, aber logind ist im LXC-Container nicht voll funktionsfähig (systemd "degraded")
+- ✅ **Repair:** `session optional pam_systemd.so` in beiden Dateien auskommentiert
+- ✅ **Backups:** `common-session.bak-20260702T160431Z` + `runuser-l.bak-20260702T160431Z` auf CT 102
+- ✅ **Workaround bestätigt:** `runuser -u runner -- <cmd>` funktioniert unabhängig
+- ✅ **Alternative verworfen:** sudo nicht installiert im Container
+- ✅ **Keine Secrets:** 0 Leaks in allen 18 Phasen
+- ✅ **18/18 Hard Constraints:** Alle PASS
+
+### Pre/Post Comparison
+| Command | Before | After |
+|---------|--------|-------|
+| `su - runner` | HANG (124) | WORKS (0) |
+| `su runner` | HANG (124) | WORKS (0) |
+| `runuser -l runner` | HANG (124) | WORKS (0) |
+| `runuser -u runner` | WORKS (0) | WORKS (0) |
+
+### Evidence
+- `evidence/su-runner-pam-remediation-20260702T160431Z/` (15+ files)
+
+### Status Change
+- `SU_RUNNER_HANG_CONFIRMED` 🟡🔍 → `SU_RUNNER_FIXED` ✅🔧
+
+---
+
 ## 2026-07-02 — Database Locked Remediation ✅🔓 DATABASE_LOCK_REMEDIATION_GREEN
 
 ### Remediation Executed (15 Phases)

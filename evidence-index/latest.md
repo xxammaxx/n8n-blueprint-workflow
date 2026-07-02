@@ -1,20 +1,44 @@
 # Evidence Index — Latest
 
-**Last Updated:** 2026-07-02T15:55:51Z
+**Last Updated:** 2026-07-02T16:10:00Z
 
 ## Active Evidence Directory
 
-**Current:** `evidence/database-locked-remediation-2026-07-02T15-55-51Z/` ✅🔓 **DATABASE_LOCK_REMEDIATION_GREEN**
+**Current:** `evidence/su-runner-pam-remediation-20260702T160431Z/` ✅🔧 **SU_RUNNER_FIXED**
+
+**Previous:** `evidence/database-locked-remediation-2026-07-02T15-55-51Z/` ✅🔓 **DATABASE_LOCK_REMEDIATION_GREEN**
 
 **Previous:** `evidence/playwright-mcp-history-remediation-20260702T152807Z/` ✅🧹 **HISTORY_REMEDIATION_GREEN**
 
 ## Status
 
-✅🔓 **DATABASE_LOCK_REMEDIATION_GREEN** — Database lock auf CT 102 erfolgreich resolved via kontrolliertes SIGTERM an stale PID 7103 (OpenCode `providers login`, seit Jun28 orphaned). 1.3 MB WAL unverändert, keine DB-Dateien gelöscht, kein SIGKILL, keine Secrets. Siehe Evidence-Verzeichnis für vollständige 15-Phasen-Dokumentation.
+✅🔧 **SU_RUNNER_FIXED** — `su - runner` Hang im LXC-Container behoben. Root Cause: `pam_systemd.so` in `/etc/pam.d/common-session` versucht Session bei unresponsive `systemd-logind` via D-Bus zu registrieren. Repair: `pam_systemd.so` in `common-session` + `runuser-l` auskommentiert. Backups erstellt. Workaround `runuser -u runner` validiert. 0 Secrets. 
+
+**Previous:** ✅🔓 **DATABASE_LOCK_REMEDIATION_GREEN** — Database lock auf CT 102 erfolgreich resolved via kontrolliertes SIGTERM an stale PID 7103.
 
 **Previous:** ✅🧹 **HISTORY_REMEDIATION_GREEN** — `.playwright-mcp/` vollständig aus `master` Git-History entfernt via `git filter-repo`. Token-Rotation bestätigt, `--force-with-lease` Push auf `master`, Remote validiert, Docs restored (115 files). 0 neue Leaks.
 
-## Key Files (Current Session: Runner Admin Access Recovery Phases 1-17)
+## Key Files (Current Session: su-runner PAM Remediation Phases 1-18)
+
+| File | Description |
+|------|-------------|
+| `preflight.md` | Phase 1 — Preflight: Git status, SSH, CT 102, Repair-Autorisierung |
+| `su-runner-reproduction.md` | Phase 2 — `su - runner` + `su runner` HANG bestätigt (exit 124) |
+| `runuser-sudo-workaround-check.md` | Phase 3 — `runuser -u` works, `runuser -l` hangs, sudo not installed |
+| `runner-user-shell-home-status.md` | Phase 4 — User: valid, Shell: /bin/bash, Home: correct perms |
+| `profile-structure-check.md` | Phase 5 — Profiles clean, no blocking lines |
+| `pam-systemd-diagnosis.md` | Phase 6 — Root Cause: `pam_systemd.so` in common-session + degraded logind |
+| `su-runner-strace-diagnosis.md` | Phase 7 — strace not available (N/A) |
+| `su-runner-repair-decision.md` | Phase 8 — Decision C: PAM_SYSTEMD_REPAIR (root cause unambiguous) |
+| `su-runner-repair-application.md` | Phase 9 — Repair applied: pam_systemd.so commented out, backups created |
+| `su-runner-post-check.md` | Phase 10 — All 4 su/runuser variants work (exit 0) |
+| `runner-readonly-after-su-diagnosis.md` | Phase 11 — Runner healthy, OpenCode 1.17.9, loader/dispatch present |
+| `n8n-api-recheck-after-su-diagnosis.md` | Phase 12 — n8n API 401 (pre-existing, unrelated to PAM fix) |
+| `dispatcher-health-after-su-diagnosis.md` | Phase 13 — HEALTH_YELLOW (benign warnings) |
+| `secret-hygiene-after-su-diagnosis.md` | Phase 14 — GREEN, 0 secrets |
+| `final-report.md` | Phase 18 — Final report with status decision |
+
+## Key Files (Previous: Database Locked Remediation)
 
 | File | Description |
 |------|-------------|

@@ -1,7 +1,7 @@
 # Project Status
 
-**Last Updated:** 2026-07-02T15:55:51Z
-**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **NEW_MACHINE_OPERATIONAL_READY** 🟢🖥️ | **N8N_API_READY** 🟢🔑 | **SSH_AUTHORIZED** 🟢🔐 | **SU_RUNNER_HANG_CONFIRMED** 🟡🔍 | **DATABASE_LOCK_REMEDIATION_GREEN** ✅🔓 | **N8N_MCP_CAPABLE** 🟢🔧 | **PLAYWRIGHT_MCP_CAPABLE** 🟢🔧 | **MCP_BUILD_PROCESS_PREPARED** 🟢📐 | **RUNNER_PROVIDER_ENV_READY** 🟢⚙️ | **HISTORY_REMEDIATION_GREEN** ✅🧹
+**Last Updated:** 2026-07-02T16:10:00Z
+**Current Status:** **DEEPSEEK_DUMMY_AGENT_GREEN** 🟢 | **PROVIDER_DISPATCH_INTEGRATED** ✅ | **COMMENT_SYNC_GREEN_BASELINE_FROZEN** 🟢🔒 | **NEW_MACHINE_OPERATIONAL_READY** 🟢🖥️ | **N8N_API_READY** 🟢🔑 | **SSH_AUTHORIZED** 🟢🔐 | **SU_RUNNER_FIXED** ✅🔧 | **DATABASE_LOCK_REMEDIATION_GREEN** ✅🔓 | **N8N_MCP_CAPABLE** 🟢🔧 | **PLAYWRIGHT_MCP_CAPABLE** 🟢🔧 | **MCP_BUILD_PROCESS_PREPARED** 🟢📐 | **RUNNER_PROVIDER_ENV_READY** 🟢⚙️ | **HISTORY_REMEDIATION_GREEN** ✅🧹
 
 ---
 
@@ -64,9 +64,10 @@
 
 ## Known Issues
 
-1. ⚠️ **n8n REST API 401** — REST API requires email auth, not configured. Public API v1 works.
-2. ℹ️ **Proxmox Host Zombie n8n** — Restart-loop, DO NOT TOUCH
-3. ℹ️ **Playwright n8n UI session expired** — Browser session cookies invalid. API v1 used as fallback for workflow operations.
+1. ✅ **su - runner hang** — FIXED (PAM pam_systemd.so in LXC container — see SU_RUNNER_FIXED section)
+2. ⚠️ **n8n REST API 401** — REST API requires email auth, not configured. Public API v1 works.
+3. ℹ️ **Proxmox Host Zombie n8n** — Restart-loop, DO NOT TOUCH
+4. ℹ️ **Playwright n8n UI session expired** — Browser session cookies invalid. API v1 used as fallback for workflow operations.
 
 ---
 
@@ -734,6 +735,33 @@ The GitHub comment now correctly reads real Runner Evidence from `status.json` i
 
 ### Evidence
 - `evidence/database-locked-remediation-2026-07-02T15-55-51Z/` (17 files)
+
+---
+
+## ✅ SU_RUNNER_FIXED — PAM pam_systemd.so Remediation (2026-07-02T16:10:00Z)
+
+### Root Cause
+`pam_systemd.so` in `/etc/pam.d/common-session` and `/etc/pam.d/runuser-l` hing beim Versuch, eine Session bei `systemd-logind` via D-Bus zu registrieren. Im LXC-Container ist systemd im "degraded"-Zustand und logind nicht voll funktionsfähig.
+
+### Repair Applied
+- **Backup:** `/etc/pam.d/common-session.bak-20260702T160431Z` + `/etc/pam.d/runuser-l.bak-20260702T160431Z`
+- **Change:** `session optional pam_systemd.so` in beiden Dateien auskommentiert
+- **Effect:** `su - runner`, `su runner`, `runuser -l runner` funktionieren jetzt (exit 0), `runuser -u runner` weiterhin funktionsfähig
+
+### Pre-Repair (hang) → Post-Repair (works)
+| Command | Before | After |
+|---------|--------|-------|
+| `su - runner` | HANG (exit 124) | ✅ WORKS (exit 0) |
+| `su runner` | HANG (exit 124) | ✅ WORKS (exit 0) |
+| `runuser -l runner` | HANG (exit 124) | ✅ WORKS (exit 0) |
+| `runuser -u runner` | WORKS (exit 0) | ✅ WORKS (exit 0) |
+
+### Evidence
+- `evidence/su-runner-pam-remediation-20260702T160431Z/` (15+ files)
+- 18 phases: Preflight → Reproduction → Workaround → User/Shell/Home → Profile → PAM → Strace → Decision → Repair → Post-Check → Runner → n8n API → Dispatcher → Hygiene → Status → Validation → Commit → Final
+
+### Previous State
+- ~~`SU_RUNNER_HANG_CONFIRMED` 🟡🔍~~ → `SU_RUNNER_FIXED` ✅🔧
 
 ---
 

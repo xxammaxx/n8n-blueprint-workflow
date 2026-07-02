@@ -1,14 +1,14 @@
 # Linux Mint Operational Readiness
 
-**Last Updated:** 2026-07-02T15:55:51Z  
-**Session:** database-locked-remediation (Phases 1-15)  
-**Agent:** Issue Orchestrator (Database Lock Remediation)
+**Last Updated:** 2026-07-02T16:10:00Z  
+**Session:** su-runner PAM remediation (Phases 1-18)  
+**Agent:** Issue Orchestrator (su-runner PAM Remediation)
 
 ---
 
 ## Overall Status: **NEW_MACHINE_OPERATIONAL_READY_WITH_HISTORY_LEAK_NOTE**
 
-Combined operational readiness: **READY** 🟢 — SSH zum Runner GREEN, n8n API GREEN, Provider-Env strukturell READY. **DATABASE_LOCK_REMEDIATION_GREEN** — Stale PID 7103 via SIGTERM resolved, Lock beseitigt. Weitere bekannte Themen: `su - runner` hängt (PAM-Problem, Workaround: `runuser`), n8n MCP und Playwright MCP sind technisch unterstützt und Konzepte/Templates liegen vor.
+Combined operational readiness: **READY** 🟢 — SSH zum Runner GREEN, n8n API reachable, Provider-Env strukturell READY. **DATABASE_LOCK_REMEDIATION_GREEN** — Stale PID 7103 via SIGTERM resolved. **SU_RUNNER_FIXED** — `pam_systemd.so` in LXC-Container auskommentiert, `su - runner` funktioniert jetzt.
 
 ---
 
@@ -17,7 +17,7 @@ Combined operational readiness: **READY** 🟢 — SSH zum Runner GREEN, n8n API
 | Decision | Value |
 |----------|-------|
 | **Primary** | `NEW_MACHINE_OPERATIONAL_READY_WITH_HISTORY_LEAK_NOTE` |
-| **New Sub-Status** | `SU_RUNNER_HANG_CONFIRMED` — PAM/`su`-Problem, Workaround `runuser` |
+| **New Sub-Status** | `SU_RUNNER_FIXED` — PAM/`pam_systemd.so` im LXC-Container auskommentiert, `su - runner` works ✅ |
 | **New Sub-Status** | `DATABASE_LOCK_REMEDIATION_GREEN` — Stale PID 7103 via SIGTERM resolved ✅ |
 | **New Sub-Status** | `N8N_MCP_CAPABLE` — n8n 2.26.8, MCP unterstützt, nicht aktiviert |
 | **New Sub-Status** | `PLAYWRIGHT_MCP_CAPABLE` — `@playwright/mcp` installierbar, `--isolated` |
@@ -62,6 +62,13 @@ Real n8n JWT tokens in tracked `.playwright-mcp/` files (commits 485dc18, 508884
 ---
 
 ## Known Issues
+
+### Resolved: su - runner Hang (PAM pam_systemd.so in LXC)
+- **Root Cause:** `pam_systemd.so` in `/etc/pam.d/common-session` — versucht Session bei `systemd-logind` via D-Bus zu registrieren (logind nicht funktionsfähig in LXC)
+- **Resolution:** `session optional pam_systemd.so` in `common-session` und `runuser-l` auskommentiert
+- **Resolution Date:** 2026-07-02T16:08:00Z
+- **Status:** SU_RUNNER_FIXED ✅
+- **Workaround:** `runuser -u runner -- <cmd>` ebenfalls funktionsfähig
 
 ### Resolved: Database Locked (CT 102)
 - **Root Cause:** PID 7103 — stale OpenCode `providers login` (since Jun28, orphaned)
